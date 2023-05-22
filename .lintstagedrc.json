@@ -1,0 +1,4 @@
+{
+  "*.{ts,tsx}": ["yarn lint:prettier", "yarn lint:eslint"],
+  "*.{js,json,html}": ["yarn lint:prettier"]
+}

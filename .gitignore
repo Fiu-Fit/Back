@@ -1,0 +1,35 @@
+# Project files
+node_modules
+*.log
+lib
+dist
+build
+.idea
+.env
+.vscode
+.npmrc
+.fleet
+
+# System Files
+.DS_Store
+Thumbs.db
+**/.DS_Store
+
+# Package Manager Files
+package-lock.json
+**/package-lock.json
+# Yarn Berry
+.yarn/*
+!.yarn/patches
+!.yarn/releases
+!.yarn/plugins
+!.yarn/sdks
+!.yarn/versions
+.pnp.*
+
+*.tgz
+xml
+
+remote.pub
+host.key
+yamls/

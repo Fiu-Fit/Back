@@ -1,0 +1,48 @@
+{
+  "name": "fiu-fit",
+  "private": true,
+  "workspaces": [
+    "app/*"
+  ],
+  "scripts": {
+    "lerna": "lerna",
+    "clean": "yarn run lerna run clean",
+    "purge": "yarn run lerna clean --yes && rimraf node_modules",
+    "setup": "yarn run bootstrap && yarn run build",
+    "bootstrap": "yarn run lerna bootstrap",
+    "build": "yarn run lerna run build --sort",
+    "test": "yarn run lerna run test",
+    "lint": "yarn run lint:prettier && yarn run lint:eslint",
+    "commit": "git add . && git-cz",
+    "lint:prettier": "prettier --config .prettierrc.json --ignore-path .prettierignore --write",
+    "lint:eslint": "eslint --fix -c .eslintrc.json --ignore-path .eslintignore",
+    "postinstall": "yarn husky install",
+    "wip-ci": "git add . && git commit -m 'WIP' && git push -u origin HEAD"
+  },
+  "devDependencies": {
+    "@types/jest": "^29.5.1",
+    "@types/node": "^18.16.3",
+    "@typescript-eslint/eslint-plugin": "^5.59.2",
+    "@typescript-eslint/parser": "^5.59.2",
+    "cz-conventional-changelog": "^3.3.0",
+    "eslint": "^8.39.0",
+    "eslint-config-prettier": "^8.8.0",
+    "eslint-plugin-import": "^2.27.5",
+    "eslint-plugin-prettier": "^4.2.1",
+    "eslint-plugin-react": "^7.32.2",
+    "eslint-plugin-unused-imports": "^2.0.0",
+    "git-cz": "^4.9.0",
+    "husky": "^8.0.3",
+    "jest": "^29.5.0",
+    "jest-junit": "^16.0.0",
+    "lerna": "^6.6.1",
+    "lint-staged": "^13.2.2",
+    "prettier": "^2.8.8",
+    "rimraf": "^5.0.0",
+    "ts-jest": "^29.1.0",
+    "typescript": "^5.0.4"
+  },
+  "resolutions": {
+    "@types/express-serve-static-core": "4.17.33"
+  }
+}
