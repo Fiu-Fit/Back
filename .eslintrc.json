@@ -5,12 +5,11 @@
     "plugin:@typescript-eslint/eslint-recommended",
     "plugin:import/typescript",
     "plugin:react/recommended",
-    "prettier",
-    "prettier/@typescript-eslint"
+    "prettier"
   ],
   "plugins": ["prettier", "@typescript-eslint", "import", "unused-imports"],
   "parserOptions": {
-    "ecmaVersion": 2022,
+    "ecmaVersion": "latest",
     "sourceType": "module",
     "ecmaFeatures": {
       "jsx": true
