@@ -112,7 +112,7 @@ export class AuthService {
       data: {
         userId,
         type:      UserActivityType.Login,
-        timestamp: new Date()
+        createdAt: new Date()
       }
     });
   }
@@ -145,7 +145,7 @@ export class AuthService {
       data: {
         userId:    user.id,
         type:      UserActivityType.PasswordReset,
-        timestamp: new Date()
+        createdAt: new Date()
       }
     });
   }

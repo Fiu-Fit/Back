@@ -1,5 +1,5 @@
-import { Transform, TransformFnParams } from 'class-transformer';
-import { IsBoolean, IsDateString, IsOptional } from 'class-validator';
+import { Transform, TransformFnParams, Type } from 'class-transformer';
+import { IsBoolean, IsNumber, IsOptional, IsPositive } from 'class-validator';
 
 const booleanMapper = (transformParams: TransformFnParams) => {
   switch (transformParams.value) {
@@ -24,10 +24,8 @@ export class GetAuthMetricsQueryDTO {
   blocked?: boolean;
 
   @IsOptional()
-  @IsDateString()
-  start?: string;
-
-  @IsOptional()
-  @IsDateString()
-  end?: string;
+  @IsNumber()
+  @Type(() => Number)
+  @IsPositive()
+  year: number = new Date().getFullYear();
 }
