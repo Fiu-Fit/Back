@@ -9,6 +9,8 @@ build
 .vscode
 .npmrc
 .fleet
+.turbo
+.yarn
 
 # System Files
 .DS_Store

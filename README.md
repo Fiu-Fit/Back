@@ -7,9 +7,11 @@
   nvm install
   nvm alias default 16
   ```
-* Yarn
+* Yarn version 3
   ```bash
   npm install -g yarn
+  
+  yarn set version latest
   ```
 
 ## Setup
