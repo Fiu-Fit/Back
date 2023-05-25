@@ -28,6 +28,8 @@ package-lock.json
 !.yarn/versions
 .pnp.*
 
+.yarn/app/*/.yarn
+
 *.tgz
 xml
 
