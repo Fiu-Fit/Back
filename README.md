@@ -20,7 +20,7 @@ Seguir el `README.md` de cada app
 
 ## Instalando dependencias
 
-Ejecutar `yarn` en el directorio `root` del proyecto.
+Ejecutar `yarn` en el directorio `root` del proyecto y ejecutar `yarn` en cada servicio.
 
 ### Ejecutando apps
 
