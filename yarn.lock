@@ -1409,7 +1409,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fiu-fit/users-service@workspace:app/users-service"
   dependencies:
-    "@fiu-fit/common": "https://github.com/Fiu-Fit/common.git"
+    "@fiu-fit/common": "git@github.com:Fiu-Fit/common.git"
     "@grpc/grpc-js": ^1.8.13
     "@grpc/proto-loader": ^0.7.6
     "@nestjs/axios": ^2.0.0
