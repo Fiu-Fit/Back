@@ -13,6 +13,7 @@
     "deploy": {
       "dependsOn": ["build", "test", "lint"]
     },
-    "purge": {}
+    "purge": {},
+    "start": {}
   }
 }

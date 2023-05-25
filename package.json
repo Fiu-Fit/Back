@@ -21,7 +21,8 @@
     "lint:prettier": "prettier --config .prettierrc.json --ignore-path .prettierignore --write",
     "lint:eslint": "eslint --fix -c .eslintrc.json --ignore-path .eslintignore",
     "postinstall": "yarn husky install",
-    "wip-ci": "git add . && git commit -m 'WIP' && git push -u origin HEAD"
+    "wip-ci": "git add . && git commit -m 'WIP' && git push -u origin HEAD",
+    "start": "turbo run start"
   },
   "devDependencies": {
     "@types/jest": "^29.5.1",
@@ -49,5 +50,8 @@
   "resolutions": {
     "@types/express-serve-static-core": "4.17.33"
   },
-  "packageManager": "yarn@3.5.1"
+  "packageManager": "yarn@3.5.1",
+  "dependencies": {
+    "turbo": "^1.9.9"
+  }
 }
