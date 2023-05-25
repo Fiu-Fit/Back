@@ -14,14 +14,15 @@
     "purge": "turbo run clean --yes && rimraf node_modules",
     "setup": "yarn run bootstrap && yarn run build",
     "bootstrap": "turbo run bootstrap",
-    "build": "turbo run build --sort",
+    "build": "turbo run build",
     "test": "turbo run test",
     "lint": "turbo run lint:prettier && turbo run lint:eslint",
     "lint:prettier": "prettier --config .prettierrc.json --ignore-path .prettierignore --write",
     "lint:eslint": "eslint --fix -c .eslintrc.json --ignore-path .eslintignore",
     "postinstall": "yarn husky install",
     "wip-ci": "git add . && git commit -m 'WIP' && git push -u origin HEAD",
-    "start": "turbo run start"
+    "start": "turbo run start",
+    "start:dev": "turbo run start:dev"
   },
   "devDependencies": {
     "@types/jest": "^29.5.1",

@@ -1,7 +1,7 @@
 {
   "references": [
     { "path": "./app/api-gateway" },
-    { "path": "./app/metrics-service" },
+    { "path": "./app/progress-service" },
     { "path": "./app/users-service" },
     { "path": "./app/workout-service" }
   ]
