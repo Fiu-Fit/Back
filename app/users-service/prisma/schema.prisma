@@ -24,6 +24,7 @@ model User {
   federatedIdentity Boolean        @default(false) @map("federated_identity")
   userActivity      UserActivity[]
   createdAt         DateTime       @default(now()) @map("created_at")
+  interests         Int[]          @default([])
 }
 
 enum Role {

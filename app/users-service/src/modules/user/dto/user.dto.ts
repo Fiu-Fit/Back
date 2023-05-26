@@ -1,3 +1,4 @@
+import { Category } from '@fiu-fit/common';
 import { Role } from '@prisma/client';
 
 export interface UserDTO {
@@ -7,4 +8,5 @@ export interface UserDTO {
   uid: string;
   role: Role;
   bodyWeight: number;
+  interests: Category[];
 }
