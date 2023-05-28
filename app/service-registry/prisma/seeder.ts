@@ -1,38 +1,40 @@
 import { LoggerFactory } from '@fiu-fit/common';
 import { PrismaClient } from '@prisma/client';
-import { generateApiKey } from 'generate-api-key';
-import { ServiceName } from '../shared/services';
+import { ServiceName, generateKey } from '../shared/services';
 
 const prisma = new PrismaClient();
 
-function generateKey(): string {
-  return generateApiKey() as string;
-}
 async function main() {
-  await prisma.services.upsert({
+  await prisma.service.upsert({
     where:  { id: 1 },
     update: {},
     create: {
-      apiKey: generateKey(),
-      name:   ServiceName.Workout
+      apiKey:      generateKey(),
+      name:        ServiceName.Workout,
+      url:         process.env.WORKOUT_SERVICE_URL || 'http://localhost:8083',
+      description: 'Workout service'
     }
   });
 
-  await prisma.services.upsert({
+  await prisma.service.upsert({
     where:  { id: 2 },
     update: {},
     create: {
-      apiKey: generateKey(),
-      name:   ServiceName.User
+      apiKey:      generateKey(),
+      name:        ServiceName.User,
+      url:         process.env.USER_SERVICE_URL || 'http://localhost:8082',
+      description: 'User service'
     }
   });
 
-  await prisma.services.upsert({
+  await prisma.service.upsert({
     where:  { id: 3 },
     update: {},
     create: {
-      apiKey: generateKey(),
-      name:   ServiceName.Progress
+      apiKey:      generateKey(),
+      name:        ServiceName.Progress,
+      url:         process.env.PROGRESS_SERVICE_URL || 'http://localhost:8084',
+      description: 'Progress service'
     }
   });
 }

@@ -10,7 +10,10 @@ import { GoalController } from './goal.controller';
     HttpModule.registerAsync({
       imports:    [ConfigModule],
       useFactory: (configService: ConfigService) =>
-        ServiceConfig.createHttpModuleOptions(ServiceName.Goals, configService),
+        ServiceConfig.createHttpModuleOptions(
+          ServiceName.Progress,
+          configService
+        ),
       inject: [ConfigService]
     })
   ],

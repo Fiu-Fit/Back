@@ -10,10 +10,12 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Services {
+model Service {
   id            Int      @id @default(autoincrement())
   apiKey        String   @unique @map("api_key")
   name          String
+  url           String   @unique
+  description   String
   status        ServiceStatus @default(Available)
 }
 

@@ -9,6 +9,7 @@ import { GoalModule } from './modules/goals/goal.module';
 import { MetricsModule } from './modules/metrics/metrics.module';
 import { ProgressModule } from './modules/progress/progress.module';
 import { RatingModule } from './modules/ratings/rating.module';
+import { ServiceRegistryModule } from './modules/service-registry/service-registry.module';
 import { UserModule } from './modules/user/user.module';
 import { WorkoutModule } from './modules/workout/workout.module';
 
@@ -23,7 +24,8 @@ import { WorkoutModule } from './modules/workout/workout.module';
     GoalModule,
     MetricsModule,
     RatingModule,
-    FollowerModule
+    FollowerModule,
+    ServiceRegistryModule
   ],
   controllers: [AppController],
   providers:   [AppService]

@@ -1,36 +1,33 @@
 import { HttpModuleOptions } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { ServiceRegistryService } from '../modules/service-registry/service-registry.service';
 
 export const ServiceName = {
-  Workout:   'workout',
-  User:      'user',
-  Progress:  'progress',
-  Goals:     'goals',
-  Ratings:   'ratings',
-  Followers: 'followers'
+  Workout:         'workout',
+  User:            'user',
+  Progress:        'progress',
+  ServiceRegistry: 'serviceRegistry'
 };
 
 export const ServiceApiKeys: Record<string, string> = {
-  workout:   'WORKOUT_API_KEY',
-  user:      'USER_API_KEY',
-  progress:  'PROGRESS_API_KEY',
-  goals:     'GOALS_API_KEY',
-  ratings:   'RATINGS_API_KEY',
-  followers: 'USER_API_KEY'
+  workout:         'WORKOUT_API_KEY',
+  user:            'USER_API_KEY',
+  progress:        'PROGRESS_API_KEY',
+  serviceRegistry: 'SERVICE_REGISTRY_API_KEY'
 };
 
 export const ServiceUrl: Record<string, string> = {
-  workout:   'WORKOUT_SERVICE_URL',
-  user:      'USER_SERVICE_URL',
-  progress:  'PROGRESS_SERVICE_URL',
-  goals:     'GOALS_SERVICE_URL',
-  ratings:   'RATINGS_SERVICE_URL',
-  followers: 'USER_SERVICE_URL'
+  workout:         'WORKOUT_SERVICE_URL',
+  user:            'USER_SERVICE_URL',
+  progress:        'PROGRESS_SERVICE_URL',
+  serviceRegistry: 'SERVICE_REGISTRY_URL'
 };
 
 @Injectable()
 export class ServiceConfig {
+  constructor(private serviceRegistryService: ServiceRegistryService) {}
+
   static createHttpModuleOptions(
     serviceName: string,
     configService: ConfigService
@@ -44,5 +41,9 @@ export class ServiceConfig {
       },
       baseURL
     });
+  }
+
+  createHttpModuleOptionsWithRegistry(serviceName: string) {
+    return this.serviceRegistryService.getServiceByName(serviceName);
   }
 }

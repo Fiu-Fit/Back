@@ -11,7 +11,7 @@ import { RatingController } from './rating.controller';
       imports:    [ConfigModule],
       useFactory: (configService: ConfigService) =>
         ServiceConfig.createHttpModuleOptions(
-          ServiceName.Ratings,
+          ServiceName.Workout,
           configService
         ),
       inject: [ConfigService]
