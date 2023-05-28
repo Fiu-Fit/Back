@@ -3,6 +3,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ServiceConfig, ServiceName } from '../../shared/service-config';
 import { ServiceRegistryController } from './service-registry.controller';
+import { ServiceRegistryService } from './service-registry.service';
 
 @Module({
   imports: [
@@ -17,6 +18,8 @@ import { ServiceRegistryController } from './service-registry.controller';
       inject: [ConfigService]
     })
   ],
-  controllers: [ServiceRegistryController]
+  controllers: [ServiceRegistryController],
+  providers:   [ServiceRegistryService],
+  exports:     [ServiceRegistryService]
 })
 export class ServiceRegistryModule {}

@@ -44,4 +44,9 @@ export class ServiceRegistryController {
   deleteService(@Param('id') id: number): Promise<Service> {
     return this.serviceRegistryService.deleteService(id);
   }
+
+  @Get('name/:name')
+  getServiceByName(@Param('name') name: string): Promise<Service> {
+    return this.serviceRegistryService.getServiceByName(name);
+  }
 }

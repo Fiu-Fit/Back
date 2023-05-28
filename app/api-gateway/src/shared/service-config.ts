@@ -24,6 +24,20 @@ export const ServiceUrl: Record<string, string> = {
   serviceRegistry: 'SERVICE_REGISTRY_URL'
 };
 
+export type Service = {
+  id: number;
+  apiKey: string;
+  name: string;
+  url: string;
+  description: string;
+  status: ServiceStatus;
+};
+
+export enum ServiceStatus {
+  Available = 'Available',
+  Blocked = 'Blocked'
+}
+
 @Injectable()
 export class ServiceConfig {
   constructor(private serviceRegistryService: ServiceRegistryService) {}
@@ -43,7 +57,17 @@ export class ServiceConfig {
     });
   }
 
-  createHttpModuleOptionsWithRegistry(serviceName: string) {
-    return this.serviceRegistryService.getServiceByName(serviceName);
+  static async createHttpModuleOptionsFromService(
+    serviceRegistryService: ServiceRegistryService,
+    serviceName: string
+  ): Promise<HttpModuleOptions> {
+    const service = await serviceRegistryService.getServiceByName(serviceName);
+
+    return Promise.resolve({
+      headers: {
+        'Api-Key': service.apiKey
+      },
+      baseURL: service.url
+    });
   }
 }
