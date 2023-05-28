@@ -34,18 +34,10 @@ export class UserLocationService {
     return userLocation.save();
   }
 
-  public async findUserLocation(userId: number): Promise<UserLocation> {
-    const userLocation = await this.userLocationModel.findOne({
+  public findUserLocation(userId: number): Promise<UserLocation> {
+    return this.userLocationModel.findOne({
       userId
-    });
-
-    if (!userLocation) {
-      throw new BadRequestException({
-        errorView: 'Usuario no tiene ubicacion asociada'
-      });
-    }
-
-    return userLocation;
+    });;
   }
 
   public async findNearestUsers(
@@ -53,6 +45,12 @@ export class UserLocationService {
     radius: number
   ): Promise<UserLocation[]> {
     const userLocation = await this.findUserLocation(userId);
+
+    if (!userLocation) {
+      throw new BadRequestException({
+        errorView: 'Usuario no tiene ubicacion asignada'
+      })
+    }
 
     return this.userLocationModel.find({
       location: {

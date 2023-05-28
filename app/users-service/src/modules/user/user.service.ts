@@ -96,9 +96,20 @@ export class UserService {
   }
 
   getUserById(id: number): Promise<User | null> {
-    return this.prismaService.user.findUnique({
+    const userLocation = await this.userLocationService.findUserLocation(id);
+
+    const user = await this.prismaService.user.findUnique({
       where: { id }
     });
+
+    if (!user) {
+      throw new NotFoundException({ message: 'User not found' });
+    }
+
+    return {
+      ...user,
+      location: userLocation?.location?.coordinates
+    };
   }
 
   async getFavoriteWorkouts(id: number): Promise<Workout[]> {

@@ -33,10 +33,10 @@ export class UserController extends ServerController {
   async getNearestTrainers(
     @Param('id') id: number,
     @Query() query: Record<string, any>
-  ): Promise<Workout[]> {
+  ): Promise<User[]> {
     const { data } = await firstValueFrom(
       this.httpService
-        .get<Workout[]>(`/users/${id}/nearest-trainers`, { params: query })
+        .get<User[]>(`/users/${id}/nearest-trainers`, { params: query })
         .pipe(catchError(axiosErrorCatcher))
     );
     return data;
@@ -81,17 +81,3 @@ export class UserController extends ServerController {
     );
     return data;
   }
-
-  @Delete(':id/favoriteWorkouts/:workoutId')
-  async removeFavoriteWorkout(
-    @Param('id') id: number,
-    @Param('workoutId') workoutId: string
-  ): Promise<User> {
-    const { data } = await firstValueFrom(
-      this.httpService
-        .delete<User>(`/users/${id}/favoriteWorkouts/${workoutId}`)
-        .pipe(catchError(axiosErrorCatcher))
-    );
-    return data;
-  }
-}

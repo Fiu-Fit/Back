@@ -34,13 +34,7 @@ export class UserController {
   async getUserById(
     @Param('id', ParseIntPipe) id: number
   ): Promise<User | null> {
-    const user = await this.userService.getUserById(id);
-
-    if (!user) {
-      throw new NotFoundException({ message: 'User not found' });
-    }
-
-    return user;
+    return this.userService.getUserById(id);
   }
 
   @Get()
