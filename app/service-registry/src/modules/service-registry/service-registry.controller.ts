@@ -49,4 +49,9 @@ export class ServiceRegistryController {
   getServiceByName(@Param('name') name: string): Promise<Service> {
     return this.serviceRegistryService.getServiceByName(name);
   }
+
+  @Get('verify-api-key/:apikey')
+  verifyApiKey(@Param('apikey') apiKey: string): Promise<boolean> {
+    return this.serviceRegistryService.verifyApiKey(apiKey);
+  }
 }

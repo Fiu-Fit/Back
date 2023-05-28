@@ -44,7 +44,7 @@ export class ServiceRegistryService {
       where: { apiKey }
     });
 
-    return !service || service.status !== ServiceStatus.Available;
+    return service?.status === ServiceStatus.Available;
   }
 
   async getServiceByName(name: string): Promise<Service> {

@@ -16,4 +16,14 @@ export class ServiceRegistryService {
 
     return data;
   }
+
+  async verifyApiKey(apiKey: string): Promise<boolean> {
+    const { data } = await firstValueFrom(
+      this.httpService
+        .get<boolean>(`/service-registry/verify-api-key/${apiKey}`)
+        .pipe(catchError(axiosErrorCatcher))
+    );
+
+    return data;
+  }
 }
