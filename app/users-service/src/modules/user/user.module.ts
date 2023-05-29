@@ -1,9 +1,14 @@
 import { HttpModule } from '@nestjs/axios';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
+import { MongooseModule } from '@nestjs/mongoose';
 import { PrismaService } from '../../prisma.service';
-import { FollowerModule } from '../followers/follower.module';
-import { FollowerService } from '../followers/follower.service';
+import {
+  UserLocation,
+  UserLocationsSchema
+} from '../user-location/schema/user-location.schema';
+import { UserLocationModule } from '../user-location/user-location.module';
+import { UserLocationService } from '../user-location/user-location.service';
 import { UserController } from './user.controller';
 import { UserService } from './user.service';
 
@@ -13,9 +18,12 @@ import { UserService } from './user.service';
       envFilePath: ['.env']
     }),
     HttpModule,
-    FollowerModule
+    UserLocationModule,
+    MongooseModule.forFeature([
+      { name: UserLocation.name, schema: UserLocationsSchema }
+    ])
   ],
   controllers: [UserController],
-  providers:   [UserService, FollowerService, PrismaService]
+  providers:   [UserService, PrismaService, UserLocationService]
 })
 export class UserModule {}

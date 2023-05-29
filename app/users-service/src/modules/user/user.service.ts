@@ -5,18 +5,20 @@ import {
   NotFoundException,
   UnauthorizedException
 } from '@nestjs/common';
-import { Prisma, User } from '@prisma/client';
+import { Prisma, Role, User } from '@prisma/client';
 import * as admin from 'firebase-admin';
 import { firstValueFrom } from 'rxjs';
 import { firebaseAdmin } from '../../firebase/firebase';
 import { PrismaService } from '../../prisma.service';
+import { UserLocationService } from '../user-location/user-location.service';
 import { GetUsersQueryDTO, UserDTO } from './dto';
 
 @Injectable()
 export class UserService {
   constructor(
     private prismaService: PrismaService,
-    private httpService: HttpService
+    private httpService: HttpService,
+    private userLocationService: UserLocationService
   ) {}
 
   async findAndCount(filter: GetUsersQueryDTO): Promise<Page<User>> {
@@ -94,9 +96,20 @@ export class UserService {
   }
 
   getUserById(id: number): Promise<User | null> {
-    return this.prismaService.user.findUnique({
+    const userLocation = await this.userLocationService.findUserLocation(id);
+
+    const user = await this.prismaService.user.findUnique({
       where: { id }
     });
+
+    if (!user) {
+      throw new NotFoundException({ message: 'User not found' });
+    }
+
+    return {
+      ...user,
+      location: userLocation?.location?.coordinates
+    };
   }
 
   async getFavoriteWorkouts(id: number): Promise<Workout[]> {
@@ -159,12 +172,18 @@ export class UserService {
     });
   }
 
-  editUser(id: number, user: UserDTO): Promise<User> {
+  async editUser(id: number, user: UserDTO): Promise<User> {
+    const { coordinates, ...rest } = user;
+
+    if (coordinates) {
+      await this.userLocationService.updateLocation(id, coordinates);
+    }
+
     return this.prismaService.user.update({
       where: {
         id
       },
-      data: user
+      data: rest
     });
   }
 
@@ -210,5 +229,21 @@ export class UserService {
         message: `The token is invalid: ${error}`
       });
     }
+  }
+
+  async getNearestTrainers(userId: number, radius: number): Promise<User[]> {
+    const nearestUsers = await this.userLocationService.findNearestUsers(
+      userId,
+      radius
+    );
+
+    return this.prismaService.user.findMany({
+      where: {
+        id: {
+          in: nearestUsers.map(userLocation => userLocation.userId)
+        },
+        role: Role.Trainer
+      }
+    });
   }
 }
