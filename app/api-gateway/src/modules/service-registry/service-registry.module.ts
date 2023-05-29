@@ -1,6 +1,6 @@
 import { HttpModule } from '@nestjs/axios';
 import { Module } from '@nestjs/common';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ConfigModule } from '@nestjs/config';
 import { ServiceConfig, ServiceName } from '../../shared/service-config';
 import { ServiceRegistryController } from './service-registry.controller';
 import { ServiceRegistryService } from './service-registry.service';
@@ -9,13 +9,14 @@ import { ServiceRegistryService } from './service-registry.service';
   imports: [
     ConfigModule.forRoot(),
     HttpModule.registerAsync({
-      imports:    [ConfigModule],
-      useFactory: (configService: ConfigService) =>
-        ServiceConfig.createHttpModuleOptions(
-          ServiceName.ServiceRegistry,
-          configService
-        ),
-      inject: [ConfigService]
+      imports:    [ServiceRegistryModule, HttpModule],
+      useFactory: (serviceRegistryService: ServiceRegistryService) => {
+        return ServiceConfig.createHttpModuleOptionsFromService(
+          serviceRegistryService,
+          ServiceName.User
+        );
+      },
+      inject: [ServiceRegistryService]
     })
   ],
   controllers: [ServiceRegistryController],

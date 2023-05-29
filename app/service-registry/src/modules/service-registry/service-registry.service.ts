@@ -52,7 +52,7 @@ export class ServiceRegistryService {
       where: { name }
     });
 
-    if (!service || service.status !== ServiceStatus.Available) {
+    if (!service) {
       throw new BadRequestException({
         message: 'Servicio no esta disponible'
       });
