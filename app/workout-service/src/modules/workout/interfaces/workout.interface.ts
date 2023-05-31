@@ -1,8 +1,8 @@
 export enum Unit {
-  SECONDS = 0,
-  REPETITIONS = 1,
-  METERS = 2,
-  UNRECOGNIZED = -1
+  KILOGRAMS,
+  METERS,
+  SECONDS,
+  REPETITIONS
 }
 
 export enum Category {
@@ -38,4 +38,6 @@ export interface WorkoutExercise {
   sets: number;
   reps: number;
   unit: Unit; // for reps
+  weigth?: number;
+  repDuration: number;
 }
