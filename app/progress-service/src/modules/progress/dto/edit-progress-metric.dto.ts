@@ -10,7 +10,7 @@ import {
 export class EditProgressMetricDTO {
   @IsNumber()
   @IsPositive()
-  burntCalories: number;
+  timeSpent: number;
 
   @IsNumber()
   value: number;

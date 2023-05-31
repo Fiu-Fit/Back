@@ -1,7 +1,13 @@
-import { Exercise, Page, User } from '@fiu-fit/common';
+import {
+  Exercise,
+  Page,
+  User,
+  Workout,
+  WorkoutExercise
+} from '@fiu-fit/common';
 import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
-import { ProgressMetric } from '@prisma/client';
+import { ProgressMetric, Unit } from '@prisma/client';
 import { firstValueFrom } from 'rxjs';
 import { PrismaService } from '../../prisma.service';
 import {
@@ -53,7 +59,7 @@ export class ProgressService {
       data.userId
     );
 
-    const metricData = { ...data, timeSpent: undefined, burntCalories };
+    const metricData = { ...data, burntCalories };
 
     return this.prisma.progressMetric.create({
       data: metricData
@@ -92,15 +98,24 @@ export class ProgressService {
     });
   }
 
-  editProgressMetric(
+  async editProgressMetric(
     id: number,
     data: EditProgressMetricDTO
   ): Promise<ProgressMetric | null> {
+    const burntCalories = await this.burntCalories(
+      data.exerciseId,
+      data.timeSpent,
+      data.userId
+    );
+
     return this.prisma.progressMetric.update({
       where: {
         id
       },
-      data
+      data: {
+        ...data,
+        burntCalories
+      }
     });
   }
 
@@ -109,6 +124,84 @@ export class ProgressService {
       where: {
         id
       }
+    });
+  }
+
+  async completeWorkout(
+    workoutId: string,
+    userId: number
+  ): Promise<ProgressMetric[]> {
+    const workout = await firstValueFrom(
+      this.httpService.get<Workout>(
+        `${process.env.WORKOUT_SERVICE_URL}/workouts/${workoutId}`,
+        {
+          headers: { 'api-key': process.env.WORKOUT_API_KEY }
+        }
+      )
+    );
+
+    const progressMetrics: ProgressMetric[] = [];
+    const exercises = workout.data.exercises;
+
+    for (const exercise of exercises) {
+      const unit = exercise.unit.toString();
+
+      const prismaUnit =
+        unit === 'KILOGRAMS'
+          ? Unit.KILOGRAMS
+          : unit === 'METERS'
+          ? Unit.METERS
+          : unit === 'SECONDS'
+          ? Unit.SECONDS
+          : Unit.REPETITIONS;
+
+      const updatedMetric = await this.updateMetricWithSameExercise(
+        exercise,
+        userId,
+        prismaUnit
+      );
+      if (updatedMetric) {
+        progressMetrics.push(updatedMetric);
+        continue;
+      }
+
+      const metric = await this.createProgressMetric({
+        timeSpent:  exercise.repDuration * exercise.sets * exercise.reps,
+        value:      exercise.reps * exercise.sets,
+        unit:       prismaUnit,
+        exerciseId: exercise.exerciseId,
+        userId
+      });
+      progressMetrics.push(metric);
+    }
+    return progressMetrics;
+  }
+
+  async updateMetricWithSameExercise(
+    exercise: WorkoutExercise,
+    userId: number,
+    unit: Unit
+  ): Promise<ProgressMetric | null> {
+    const metric = await this.prisma.progressMetric.findUnique({
+      where: {
+        exerciseId_userId: {
+          exerciseId: exercise.exerciseId,
+          userId
+        }
+      }
+    });
+
+    if (!metric) {
+      return null;
+    }
+
+    return this.editProgressMetric(metric.id, {
+      timeSpent:
+        exercise.repDuration * exercise.sets * exercise.reps + metric.timeSpent,
+      value:      exercise.reps * exercise.sets + metric.value,
+      unit:       unit,
+      exerciseId: exercise.exerciseId,
+      userId
     });
   }
 }
