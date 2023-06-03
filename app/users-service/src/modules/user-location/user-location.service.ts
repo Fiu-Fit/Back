@@ -34,10 +34,10 @@ export class UserLocationService {
     return userLocation.save();
   }
 
-  public findUserLocation(userId: number): Promise<UserLocation> {
+  public findUserLocation(userId: number): Promise<UserLocation | null> {
     return this.userLocationModel.findOne({
       userId
-    });;
+    });
   }
 
   public async findNearestUsers(
@@ -49,7 +49,7 @@ export class UserLocationService {
     if (!userLocation) {
       throw new BadRequestException({
         errorView: 'Usuario no tiene ubicacion asignada'
-      })
+      });
     }
 
     return this.userLocationModel.find({

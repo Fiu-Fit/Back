@@ -95,7 +95,9 @@ export class UserService {
     };
   }
 
-  getUserById(id: number): Promise<User | null> {
+  async getUserById(
+    id: number
+  ): Promise<User & { location: number[] | undefined }> {
     const userLocation = await this.userLocationService.findUserLocation(id);
 
     const user = await this.prismaService.user.findUnique({

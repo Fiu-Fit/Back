@@ -3,7 +3,6 @@ import { HttpService } from '@nestjs/axios';
 import {
   Body,
   Controller,
-  Delete,
   Get,
   Headers,
   HttpCode,
@@ -81,3 +80,4 @@ export class UserController extends ServerController {
     );
     return data;
   }
+}
