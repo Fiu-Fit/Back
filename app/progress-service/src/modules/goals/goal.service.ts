@@ -1,6 +1,8 @@
+import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
 import { Goal, GoalStatus } from '@prisma/client';
 import { sumBy } from 'lodash';
+import { firstValueFrom } from 'rxjs';
 import { PrismaService } from '../../prisma.service';
 import { GetProgressMetricsQueryDTO } from '../progress/dto';
 import { ProgressService } from '../progress/progress.service';
@@ -11,7 +13,8 @@ import { GoalDto } from './dto/goal.dto';
 export class GoalService {
   constructor(
     private prismaService: PrismaService,
-    private progressService: ProgressService
+    private progressService: ProgressService,
+    private httpService: HttpService
   ) {}
 
   createGoal(goal: GoalDto): Promise<Goal> {
@@ -86,7 +89,7 @@ export class GoalService {
       goal.deadline && goal.deadline >= new Date()
         ? GoalStatus.Completed
         : GoalStatus.CompletedLate;
-    return this.updateGoalStatus(goal, status);
+    return this.completeGoal(goal, status);
   }
 
   /**
@@ -95,7 +98,26 @@ export class GoalService {
    * @param status the new status of the Goal.
    * @returns the updated Goal.
    */
-  updateGoalStatus(goal: Goal, status: GoalStatus): Promise<Goal> {
+  completeGoal(goal: Goal, status: GoalStatus): Promise<Goal> {
+    this.sendGoalNotifications(goal);
+
     return this.editGoal(goal.id, { ...goal, status });
+  }
+
+  async sendGoalNotifications(goal: Goal) {
+    // create goal notification to show it in notifications screen
+    await firstValueFrom(
+      this.httpService.post(
+        `${process.env.USER_SERVICE_URL}/notifications/goals`,
+        {
+          userId: goal.userId,
+          goalId: goal.id
+        }
+      )
+    );
+
+    // create push notification to show it in the user's device
+
+    // create whatsapp notification to show it in the user's whatsapp
   }
 }
