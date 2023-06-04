@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { GoalNotification, MessageNotification } from '@prisma/client';
 import { PrismaService } from '../../prisma.service';
 import { GoalNotificationDTO } from './dto/goal-notification.dto';
@@ -36,15 +36,35 @@ export class NotificationService {
     return [...goalNotifications, ...messageNotifications];
   }
 
-  deleteGoalNotification(id: number): Promise<GoalNotification> {
-    return this.prismaService.goalNotification.delete({
-      where: { id }
-    });
+  async deleteGoalNotification(id: number): Promise<GoalNotification> {
+    const notification = await this.prismaService.goalNotification
+      .delete({
+        where: { id }
+      })
+      .catch(() => {
+        throw new NotFoundException({ message: 'Notification not found' });
+      });
+
+    if (!notification) {
+      throw new NotFoundException({ message: 'Notification not found' });
+    }
+
+    return notification;
   }
 
-  deleteMessageNotification(id: number): Promise<MessageNotification> {
-    return this.prismaService.messageNotification.delete({
-      where: { id }
-    });
+  async deleteMessageNotification(id: number): Promise<MessageNotification> {
+    const notification = await this.prismaService.messageNotification
+      .delete({
+        where: { id }
+      })
+      .catch(() => {
+        throw new NotFoundException({ message: 'Notification not found' });
+      });
+
+    if (!notification) {
+      throw new NotFoundException({ message: 'Notification not found' });
+    }
+
+    return notification;
   }
 }

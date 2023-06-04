@@ -38,14 +38,24 @@ export class NotificationController {
   }
 
   @Delete('goals/:id')
-  deleteNotification(@Param('id') id: number): Promise<GoalNotification> {
-    return this.notificationService.deleteGoalNotification(id);
+  async deleteNotification(
+    @Param('id') id: number
+  ): Promise<GoalNotification | null> {
+    try {
+      return await this.notificationService.deleteGoalNotification(id);
+    } catch (error) {
+      throw error;
+    }
   }
 
   @Delete('messages/:id')
-  deleteMessageNotification(
+  async deleteMessageNotification(
     @Param('id') id: number
-  ): Promise<MessageNotification> {
-    return this.notificationService.deleteMessageNotification(id);
+  ): Promise<MessageNotification | null> {
+    try {
+      return await this.notificationService.deleteMessageNotification(id);
+    } catch (error) {
+      throw error;
+    }
   }
 }
