@@ -16,11 +16,18 @@ import { NotificationService } from './notification.service';
 export class NotificationController {
   constructor(private readonly notificationService: NotificationService) {}
 
-  @Get()
-  getNotifications(
+  @Get('goals')
+  getGoalNotifications(
     @Query('userId') userId: number
-  ): Promise<Array<GoalNotification | MessageNotification>> {
-    return this.notificationService.getUserNotifications(userId);
+  ): Promise<GoalNotification[]> {
+    return this.notificationService.getGoalNotifications(userId);
+  }
+
+  @Get('messages')
+  getMessageNotifications(
+    @Query('userId') userId: number
+  ): Promise<MessageNotification[]> {
+    return this.notificationService.getMessageNotifications(userId);
   }
 
   @Post('goals')

@@ -3,9 +3,11 @@ import {
   Body,
   Controller,
   Delete,
+  Get,
   Injectable,
   Param,
   Post,
+  Query,
   UseGuards
 } from '@nestjs/common';
 import { firstValueFrom } from 'rxjs';
@@ -18,6 +20,22 @@ import { AuthGuard } from '../auth/auth.guard';
 export class NotificationController extends ServerController {
   constructor(httpService: HttpService) {
     super(httpService, 'notifications');
+  }
+
+  @Get('goals')
+  async getGoalNotifications(@Query('userId') userId: number) {
+    const { data } = await firstValueFrom(
+      this.httpService.get('/notifications/goals', { params: { userId } })
+    );
+    return data;
+  }
+
+  @Get('messages')
+  async getMessageNotifications(@Query('userId') userId: number) {
+    const { data } = await firstValueFrom(
+      this.httpService.get('/notifications/messages', { params: { userId } })
+    );
+    return data;
   }
 
   @Post('goals')

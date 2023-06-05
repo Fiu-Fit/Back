@@ -10,6 +10,7 @@ import {
   HttpStatus,
   Injectable,
   Param,
+  Patch,
   Post,
   Put,
   UseGuards
@@ -76,6 +77,29 @@ export class UserController extends ServerController {
     const { data } = await firstValueFrom(
       this.httpService
         .delete<User>(`/users/${id}/favoriteWorkouts/${workoutId}`)
+        .pipe(catchError(axiosErrorCatcher))
+    );
+    return data;
+  }
+
+  @Get(':id/token')
+  async getDeviceToken(@Param('id') id: number): Promise<string | null> {
+    const { data } = await firstValueFrom(
+      this.httpService
+        .get<string>(`/users/${id}/token`)
+        .pipe(catchError(axiosErrorCatcher))
+    );
+    return data;
+  }
+
+  @Patch(':id/token')
+  async updateDeviceToken(
+    @Param('id') id: number,
+    @Body('token') token: string
+  ): Promise<User> {
+    const { data } = await firstValueFrom(
+      this.httpService
+        .patch<User>(`/users/${id}/token`, { token })
         .pipe(catchError(axiosErrorCatcher))
     );
     return data;

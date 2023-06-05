@@ -18,22 +18,18 @@ export class NotificationService {
     return this.prismaService.messageNotification.create({ data });
   }
 
-  async getUserNotifications(
-    userId: number
-  ): Promise<Array<GoalNotification | MessageNotification>> {
-    const goalNotifications =
-      await this.prismaService.goalNotification.findMany({
-        where:   { userId },
-        orderBy: { receivedAt: 'desc' }
-      });
+  getGoalNotifications(userId: number): Promise<GoalNotification[]> {
+    return this.prismaService.goalNotification.findMany({
+      where:   { userId },
+      orderBy: { receivedAt: 'desc' }
+    });
+  }
 
-    const messageNotifications =
-      await this.prismaService.messageNotification.findMany({
-        where:   { userId },
-        orderBy: { receivedAt: 'desc' }
-      });
-
-    return [...goalNotifications, ...messageNotifications];
+  getMessageNotifications(userId: number): Promise<MessageNotification[]> {
+    return this.prismaService.messageNotification.findMany({
+      where:   { userId },
+      orderBy: { receivedAt: 'desc' }
+    });
   }
 
   async deleteGoalNotification(id: number): Promise<GoalNotification> {
