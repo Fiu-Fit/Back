@@ -20,7 +20,7 @@
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "pretest:e2e": "yarn db:test:restart",
     "test:e2e": "dotenv -e .env.test -- jest --no-cache --config ./test/jest-e2e.json",
-    "common:install": "yarn add @fiu-fit/common@git@github.com:Fiu-Fit/common.git && yarn"
+    "common:install": "yarn add https://github.com/Fiu-Fit/common.git && yarn"
   },
   "prisma": {
     "seed": "ts-node ./prisma/seeder.ts"
