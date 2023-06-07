@@ -8,6 +8,7 @@ async function main() {
     update: {},
     create: {
       burntCalories: 100,
+      timeSpent:     100,
       value:         10,
       unit:          Unit.KILOGRAMS,
       exerciseId:    '64553744c6e2840fd63b190c',
@@ -21,6 +22,7 @@ async function main() {
     update: {},
     create: {
       burntCalories: 200,
+      timeSpent:     100,
       value:         500,
       unit:          Unit.SECONDS,
       exerciseId:    '645536d6c6e2840fd63b1904',
@@ -34,6 +36,7 @@ async function main() {
     update: {},
     create: {
       burntCalories: 100,
+      timeSpent:     100,
       value:         100,
       unit:          Unit.METERS,
       exerciseId:    '64553721c6e2840fd63b1908',
@@ -47,6 +50,7 @@ async function main() {
     update: {},
     create: {
       burntCalories: 500,
+      timeSpent:     100,
       value:         100,
       unit:          Unit.SECONDS,
       exerciseId:    '64553734c6e2840fd63b190a',

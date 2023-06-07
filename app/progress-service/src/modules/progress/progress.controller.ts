@@ -8,11 +8,13 @@ import {
   Put,
   Query
 } from '@nestjs/common/decorators';
+import { ProgressMetric } from '@prisma/client';
 import {
   EditProgressMetricDTO,
   GetProgressMetricsQueryDTO,
   ProgressMetricDTO
 } from './dto';
+import { CompleteWorkoutDTO } from './dto/complete-workout.dto';
 import { ProgressService } from './progress.service';
 
 @Controller('progress')
@@ -55,5 +57,15 @@ export class ProgressController {
   @Delete(':id')
   deleteProgressMetric(@Param('id') id: number) {
     return this.progressService.deleteProgressMetric(id);
+  }
+
+  @Post('complete')
+  completeWorkout(
+    @Body() completeWorkoutDTO: CompleteWorkoutDTO
+  ): Promise<ProgressMetric[]> {
+    return this.progressService.completeWorkout(
+      completeWorkoutDTO.workoutId,
+      completeWorkoutDTO.userId
+    );
   }
 }

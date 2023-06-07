@@ -20,6 +20,9 @@ export class WorkoutExercise {
 
   @Prop()
   unit: Unit;
+
+  @Prop()
+  repDuration: number; // seconds spent per rep
 }
 
 @Schema()
