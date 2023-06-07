@@ -117,6 +117,17 @@ export class UserService {
       )
     );
 
+    const payload = {
+      notification: {
+        body:  'This is an FCM notification!',
+        title: 'FCM Notification'
+      },
+      token: user.deviceToken
+    };
+
+    admin.messaging().send({ ...payload });
+    console.log('Notification sent succesfully!');
+
     return workouts.data;
   }
 
@@ -210,5 +221,19 @@ export class UserService {
         message: `The token is invalid: ${error}`
       });
     }
+  }
+
+  updateDeviceToken(id: number, token: string): Promise<User> {
+    return this.prismaService.user.update({
+      where: { id },
+      data:  { deviceToken: token }
+    });
+  }
+
+  async getDeviceToken(id: number): Promise<string | null> {
+    const user = await this.prismaService.user.findUnique({
+      where: { id }
+    });
+    return user?.deviceToken ?? null;
   }
 }

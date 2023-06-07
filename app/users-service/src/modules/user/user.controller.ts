@@ -8,6 +8,7 @@ import {
   NotFoundException,
   Param,
   ParseIntPipe,
+  Patch,
   Post,
   Put,
   Query,
@@ -116,5 +117,20 @@ export class UserController {
     @Param('workoutId') workoutId: string
   ): Promise<User> {
     return this.userService.removeFavoriteWorkout(id, workoutId);
+  }
+
+  @Patch(':id/token')
+  updateDeviceToken(
+    @Param('id', ParseIntPipe) id: number,
+    @Body('token') token: string
+  ): Promise<User> {
+    return this.userService.updateDeviceToken(id, token);
+  }
+
+  @Get(':id/token')
+  getDeviceToken(
+    @Param('id', ParseIntPipe) id: number
+  ): Promise<string | null> {
+    return this.userService.getDeviceToken(id);
   }
 }
