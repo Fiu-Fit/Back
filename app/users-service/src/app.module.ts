@@ -6,6 +6,7 @@ import { AppService } from './app.service';
 import { AuthModule } from './modules/auth/auth.module';
 import { FollowerModule } from './modules/followers/follower.module';
 import { MetricsModule } from './modules/metrics/metrics.module';
+import { NotificationModule } from './modules/notifications/notification.module';
 import { UserModule } from './modules/user/user.module';
 import { UserLocationModule } from './modules/user-location/user-location.module';
 
@@ -17,6 +18,7 @@ import { UserLocationModule } from './modules/user-location/user-location.module
     AuthModule,
     FollowerModule,
     MetricsModule,
+    NotificationModule,
     UserLocationModule
   ],
   controllers: [AppController],
