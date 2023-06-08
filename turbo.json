@@ -15,7 +15,6 @@
     },
     "purge": {},
     "start": {},
-    "start:dev": {},
-    "": {}
+    "start:dev": {}
   }
 }

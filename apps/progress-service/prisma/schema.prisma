@@ -1,0 +1,50 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model ProgressMetric {
+  id            Int      @id @default(autoincrement())
+  burntCalories Float
+  timeSpent     Int
+  value         Float
+  unit          Unit
+  exerciseId    String
+  userId        Int
+  updatedAt     DateTime @updatedAt
+  
+  @@unique(fields: [exerciseId, userId], name: "exerciseId_userId")
+}
+
+
+enum Unit {
+  KILOGRAMS
+  METERS
+  SECONDS
+  REPETITIONS
+}
+
+model Goal {
+  id           Int          @id @default(autoincrement())
+  title        String
+  description  String
+  userId       Int
+  targetValue  Int
+  deadline     DateTime?
+  createdAt    DateTime     @default(now())
+  exerciseId   String
+  status       GoalStatus   @default(InProgress)
+}
+
+enum GoalStatus {
+  InProgress
+  Completed
+  CompletedLate
+}
