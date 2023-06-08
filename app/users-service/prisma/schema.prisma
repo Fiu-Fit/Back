@@ -25,6 +25,8 @@ model User {
   userActivity      UserActivity[]
   createdAt         DateTime       @default(now()) @map("created_at")
   interests         Int[]          @default([])
+  goalNotifications     GoalNotification[]
+  messageNotifications  MessageNotification[]
 }
 
 enum Role {
@@ -50,7 +52,24 @@ model UserActivity {
   createdAt DateTime @default(now()) @map("created_at")
 }
 
+
 enum UserActivityType {
   Login
   PasswordReset
+}
+
+model GoalNotification {
+  id        Int              @id @default(autoincrement())
+  user      User             @relation(fields: [userId], references: [id])
+  userId    Int             @map("user_id")
+  goalId    Int             @map("goal_id")
+  receivedAt DateTime @default(now()) @map("received_at")
+}
+
+model MessageNotification {
+  id        Int              @id @default(autoincrement())
+  user      User             @relation(fields: [userId], references: [id])
+  userId    Int             @map("user_id")
+  messageId    Int             @map("message_id")
+  receivedAt DateTime @default(now()) @map("received_at")
 }
