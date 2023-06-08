@@ -59,7 +59,7 @@ export class ProgressController {
     return this.progressService.deleteProgressMetric(id);
   }
 
-  @Post('complete-workout')
+  @Post('complete')
   completeWorkout(
     @Body() completeWorkoutDTO: CompleteWorkoutDTO
   ): Promise<ProgressMetric[]> {
