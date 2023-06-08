@@ -116,18 +116,6 @@ export class UserService {
         }
       )
     );
-
-    const payload = {
-      notification: {
-        body:  'This is an FCM notification!',
-        title: 'FCM Notification'
-      },
-      token: user.deviceToken
-    };
-
-    admin.messaging().send({ ...payload });
-    console.log('Notification sent succesfully!');
-
     return workouts.data;
   }
 

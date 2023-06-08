@@ -1,13 +1,18 @@
+import { LoggerFactory } from '@fiu-fit/common';
+import { NotificationType } from '@fiu-fit/common/dist/interfaces/notification-type';
 import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
 import { Goal, GoalStatus } from '@prisma/client';
 import { sumBy } from 'lodash';
 import { firstValueFrom } from 'rxjs';
+import { admin } from '../../firebase/firebase';
 import { PrismaService } from '../../prisma.service';
 import { GetProgressMetricsQueryDTO } from '../progress/dto';
 import { ProgressService } from '../progress/progress.service';
 import { GetGoalsQueryDto } from './dto/get-goals-query.dto';
 import { GoalDto } from './dto/goal.dto';
+
+const logger = LoggerFactory('goal-service');
 
 @Injectable()
 export class GoalService {
@@ -105,19 +110,62 @@ export class GoalService {
   }
 
   async sendGoalNotifications(goal: Goal) {
-    // create goal notification to show it in notifications screen
+    logger.info('creating goal notifications...');
+
     await firstValueFrom(
       this.httpService.post(
         `${process.env.USER_SERVICE_URL}/notifications/goals`,
         {
           userId: goal.userId,
           goalId: goal.id
+        },
+        {
+          headers: {
+            'api-key': process.env.USER_API_KEY
+          }
         }
       )
     );
 
-    // create push notification to show it in the user's device
+    await this.sendPushNotification(goal);
 
-    // create whatsapp notification to show it in the user's whatsapp
+    // TODO: create whatsapp notification to show it in the user's whatsapp
+  }
+
+  async sendPushNotification(goal: Goal) {
+    logger.info('Sending push notification...');
+
+    const token = await firstValueFrom(
+      this.httpService.get<string>(
+        `${process.env.USER_SERVICE_URL}/users/${goal.userId}/token`,
+        {
+          headers: {
+            'api-key': process.env.USER_API_KEY
+          }
+        }
+      )
+    );
+
+    logger.info('token: ', token.data);
+
+    if (!token) {
+      return;
+    }
+
+    const message = {
+      notification: {
+        title:    'Meta completada',
+        body:     'Felicitaciones, completaste una nueva meta!',
+        imageUrl: process.env.GOAL_COMPLETED_IMAGE_URL
+      },
+      data: {
+        goalId: goal.id.toString(),
+        type:   NotificationType.GoalCompleted.toString()
+      },
+      token: token.data
+    };
+
+    admin.messaging().send({ ...message });
+    logger.info('Notification sent succesfully!');
   }
 }

@@ -29,13 +29,13 @@
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "pretest:e2e": "yarn db:test:restart",
     "test:e2e": "dotenv -e .env.test -- jest --no-cache --config ./test/jest-e2e.json",
-    "common:install": "yarn add @fiu-fit/common@git@github.com:Fiu-Fit/common.git && yarn"
+    "common:install": "yarn add @fiu-fit/common@https://github.com/Fiu-Fit/common.git && yarn"
   },
   "prisma": {
     "seed": "ts-node ./prisma/seeder.ts"
   },
   "dependencies": {
-    "@fiu-fit/common": "git@github.com:Fiu-Fit/common.git",
+    "@fiu-fit/common": "https://github.com/Fiu-Fit/common.git",
     "@nestjs/axios": "^2.0.0",
     "@nestjs/common": "^9.3.12",
     "@nestjs/config": "^2.3.1",
@@ -49,6 +49,8 @@
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.0",
     "express": "^4.18.2",
+    "firebase": "^9.22.1",
+    "firebase-admin": "^11.9.0",
     "husky": "^8.0.3",
     "lodash": "^4.17.21",
     "reflect-metadata": "^0.1.13",
