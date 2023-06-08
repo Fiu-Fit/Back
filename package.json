@@ -21,7 +21,11 @@
     "postinstall": "yarn husky install",
     "wip-ci": "git add . && git commit -m 'WIP' && git push -u origin HEAD",
     "start": "turbo run start",
-    "start:dev": "turbo run start:dev"
+    "start:dev": "turbo run start:dev",
+    "build:gateway": "turbo run build --filter=@fiu-fit/api-gateway",
+    "build:users": "turbo run build --filter=@fiu-fit/users-service",
+    "build:progress": "turbo run build --filter=@fiu-fit/progress-service",
+    "build:workout": "turbo run build --filter=@fiu-fit/workout-service"
   },
   "devDependencies": {
     "@types/jest": "^29.5.1",
