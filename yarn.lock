@@ -1262,7 +1262,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fiu-fit/api-gateway@workspace:app/api-gateway"
   dependencies:
-    "@fiu-fit/common": "git@github.com:Fiu-Fit/common.git"
+    "@fiu-fit/common": "*"
     "@grpc/grpc-js": ^1.8.13
     "@grpc/proto-loader": ^0.7.6
     "@nestjs/axios": ^2.0.0
@@ -1327,29 +1327,21 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@fiu-fit/common@git@github.com:Fiu-Fit/common.git":
-  version: 1.0.0
-  resolution: "@fiu-fit/common@git@github.com:Fiu-Fit/common.git#commit=ac892c5f8361ee32f283b274033181a2f1b0f4c5"
+"@fiu-fit/common@*, @fiu-fit/common@workspace:packages/common":
+  version: 0.0.0-use.local
+  resolution: "@fiu-fit/common@workspace:packages/common"
   dependencies:
+    "@types/node": ^18.15.11
+    typescript: ^5.0.4
     winston: ^3.8.2
-  checksum: 841beca6cc074b96abc23d3378ff1d0d25e8de2de3ec1c8aa7dd9d5d39582cb045e443df65d3946cfc6062bc3b6488843a7a9b1c13f166e9de779984aba7df34
-  languageName: node
-  linkType: hard
-
-"@fiu-fit/common@https://github.com/Fiu-Fit/common.git":
-  version: 1.0.0
-  resolution: "@fiu-fit/common@https://github.com/Fiu-Fit/common.git#commit=ac892c5f8361ee32f283b274033181a2f1b0f4c5"
-  dependencies:
-    winston: ^3.8.2
-  checksum: 841beca6cc074b96abc23d3378ff1d0d25e8de2de3ec1c8aa7dd9d5d39582cb045e443df65d3946cfc6062bc3b6488843a7a9b1c13f166e9de779984aba7df34
-  languageName: node
-  linkType: hard
+  languageName: unknown
+  linkType: soft
 
 "@fiu-fit/progress-service@workspace:app/progress-service":
   version: 0.0.0-use.local
   resolution: "@fiu-fit/progress-service@workspace:app/progress-service"
   dependencies:
-    "@fiu-fit/common": "https://github.com/Fiu-Fit/common.git"
+    "@fiu-fit/common": "*"
     "@nestjs/axios": ^2.0.0
     "@nestjs/cli": ^9.3.0
     "@nestjs/common": ^9.3.12
@@ -1409,7 +1401,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fiu-fit/users-service@workspace:app/users-service"
   dependencies:
-    "@fiu-fit/common": "git@github.com:Fiu-Fit/common.git"
+    "@fiu-fit/common": "*"
     "@grpc/grpc-js": ^1.8.13
     "@grpc/proto-loader": ^0.7.6
     "@nestjs/axios": ^2.0.0
@@ -1473,7 +1465,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fiu-fit/workout-service@workspace:app/workout-service"
   dependencies:
-    "@fiu-fit/common": "https://github.com/Fiu-Fit/common.git"
+    "@fiu-fit/common": "*"
     "@grpc/grpc-js": ^1.8.13
     "@grpc/proto-loader": ^0.7.6
     "@nestjs/axios": ^2.0.0

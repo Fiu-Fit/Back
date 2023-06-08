@@ -1,11 +1,10 @@
 {
   "name": "fiu-fit",
   "private": true,
-  "workspaces": {
-    "packages": [
-      "app/*"
-    ]
-  },
+  "workspaces": [
+    "app/*",
+    "packages/*"
+  ],
   "installConfig": {
     "hoistingLimits": "workspaces"
   },
