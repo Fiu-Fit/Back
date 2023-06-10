@@ -25,9 +25,6 @@ jobs:
     - name: Install Yarn
       run: npm install -g yarn
 
-    - name: Install common
-      run: yarn common:install
-
     - name: Install dependencies with Yarn
       run: yarn install --frozen-lockfile
     
