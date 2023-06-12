@@ -1337,15 +1337,6 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@fiu-fit/common@git@github.com:Fiu-Fit/common.git":
-  version: 1.0.0
-  resolution: "@fiu-fit/common@git@github.com:Fiu-Fit/common.git#commit=e753840c0fb98363639499dcdbfc22bff7881ac1"
-  dependencies:
-    winston: ^3.8.2
-  checksum: abae5ec7ebdb2352b70b3c6012519d904bad4eaaa0e5d20e2554a0eae6bb5dfd88e7d566736318ca31b72e97bf1b6347bf05390fc60ce0a38af2575ca76bb6cd
-  languageName: node
-  linkType: hard
-
 "@fiu-fit/progress-service@workspace:app/progress-service":
   version: 0.0.0-use.local
   resolution: "@fiu-fit/progress-service@workspace:app/progress-service"
@@ -1410,7 +1401,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@fiu-fit/service-registry@workspace:app/service-registry"
   dependencies:
-    "@fiu-fit/common": "git@github.com:Fiu-Fit/common.git"
+    "@fiu-fit/common": "*"
     "@nestjs/axios": ^2.0.0
     "@nestjs/cli": ^9.3.0
     "@nestjs/common": ^9.3.12

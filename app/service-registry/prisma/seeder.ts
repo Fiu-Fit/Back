@@ -11,7 +11,6 @@ async function main() {
     create: {
       apiKey:      generateKey(),
       name:        ServiceName.Workout,
-      url:         process.env.WORKOUT_SERVICE_URL || 'http://localhost:8083',
       description: 'Workout service'
     }
   });
@@ -22,7 +21,6 @@ async function main() {
     create: {
       apiKey:      generateKey(),
       name:        ServiceName.User,
-      url:         process.env.USER_SERVICE_URL || 'http://localhost:8082',
       description: 'User service'
     }
   });
@@ -33,7 +31,6 @@ async function main() {
     create: {
       apiKey:      generateKey(),
       name:        ServiceName.Progress,
-      url:         process.env.PROGRESS_SERVICE_URL || 'http://localhost:8084',
       description: 'Progress service'
     }
   });

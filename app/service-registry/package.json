@@ -35,7 +35,7 @@
     "seed": "ts-node ./prisma/seeder.ts"
   },
   "dependencies": {
-    "@fiu-fit/common": "git@github.com:Fiu-Fit/common.git",
+    "@fiu-fit/common": "*",
     "@nestjs/axios": "^2.0.0",
     "@nestjs/common": "^9.3.12",
     "@nestjs/config": "^2.3.1",

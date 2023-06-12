@@ -11,12 +11,11 @@ datasource db {
 }
 
 model Service {
-  id            Int      @id @default(autoincrement())
-  apiKey        String   @unique @map("api_key")
-  name          String
-  url           String   @unique
-  description   String
-  status        ServiceStatus @default(Available)
+  id          Int           @id @default(autoincrement())
+  apiKey      String        @unique @map("api_key")
+  name        String
+  description String
+  status      ServiceStatus @default(Available)
 }
 
 enum ServiceStatus {
