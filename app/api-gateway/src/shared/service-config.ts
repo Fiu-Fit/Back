@@ -6,6 +6,10 @@ export const ServiceName = {
   Workout:         'workout',
   User:            'user',
   Progress:        'progress',
+  Goals:           'goals',
+  Ratings:         'ratings',
+  Followers:       'followers',
+  Notifications:   'notifications',
   ServiceRegistry: 'serviceRegistry'
 };
 

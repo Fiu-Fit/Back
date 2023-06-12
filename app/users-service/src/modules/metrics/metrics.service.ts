@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { UserActivityType } from '@prisma/client';
+import { Role, UserActivityType } from '@prisma/client';
 import { PrismaService } from '../../prisma.service';
-import { GetAuthMetricsQueryDTO } from './dto';
+import { GetAuthMetricsQueryDTO, GetUserMetricsQueryDTO } from './dto';
 
 @Injectable()
 export class MetricsService {
@@ -64,5 +64,23 @@ export class MetricsService {
     };
 
     return this.countByMonth(where, 'userActivity', filter.year);
+  }
+
+  async getUsersMetrics(filter: GetUserMetricsQueryDTO) {
+    const count = await this.prismaService.user.groupBy({
+      by:     ['role'],
+      where:  filter,
+      _count: {
+        _all: true
+      }
+    });
+
+    const countedValues = Object.fromEntries(
+      count.map(item => [item.role, item._count._all])
+    );
+
+    return Object.fromEntries(
+      Object.values(Role).map(role => [role, countedValues[role] || 0])
+    );
   }
 }

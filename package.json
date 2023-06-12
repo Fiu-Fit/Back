@@ -1,11 +1,10 @@
 {
   "name": "fiu-fit",
   "private": true,
-  "workspaces": {
-    "packages": [
-      "app/*"
-    ]
-  },
+  "workspaces": [
+    "app/*",
+    "packages/*"
+  ],
   "installConfig": {
     "hoistingLimits": "workspaces"
   },
@@ -22,7 +21,12 @@
     "postinstall": "yarn husky install",
     "wip-ci": "git add . && git commit -m 'WIP' && git push -u origin HEAD",
     "start": "turbo run start",
-    "start:dev": "turbo run start:dev"
+    "start:dev": "turbo run start:dev",
+    "build:gateway": "turbo run build --force --filter=@fiu-fit/api-gateway",
+    "build:users": "turbo run build --force --filter=@fiu-fit/users-service",
+    "build:progress": "turbo run build --force --filter=@fiu-fit/progress-service",
+    "build:workout": "turbo run build --force --filter=@fiu-fit/workout-service",
+    "build:common": "turbo run build --force --filter=@fiu-fit/common"
   },
   "devDependencies": {
     "@types/jest": "^29.5.1",

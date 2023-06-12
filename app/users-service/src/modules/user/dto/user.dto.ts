@@ -9,4 +9,5 @@ export interface UserDTO {
   role: Role;
   bodyWeight: number;
   interests: Category[];
+  coordinates: [number, number];
 }

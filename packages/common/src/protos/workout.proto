@@ -1,0 +1,63 @@
+syntax = "proto3";
+
+package workout;
+
+service WorkoutService {
+  rpc Create (Workout) returns (Workout) {}
+  rpc FindById (WorkoutId) returns (Workout) {}
+  rpc FindByCategory (WorkoutCategory) returns (Workouts) {}
+  rpc FindByName (WorkoutName) returns (Workout) {}
+  rpc FindByExerciseId (ExerciseId) returns (Workouts) {}
+  rpc FindAll (Empty) returns (Workouts) {}
+  rpc Put (Workout) returns (Workout) {}
+  rpc DeleteById (WorkoutId) returns (Workout) {}
+}
+
+message WorkoutId {
+  string id = 1;
+}
+
+message Workout {
+  string id = 1;
+  string name = 2;
+  string description = 3;
+  int32 duration = 4;
+  int32 difficulty = 5;
+  string category = 6;
+  repeated WorkoutExercise exercises = 7;
+  repeated int32 athleteIds = 8;
+  int32 authorId = 9;
+}
+
+message WorkoutExercise {
+  string exerciseId = 1;
+  int32 repetitions = 2;
+  Units units = 3;
+}
+
+enum Units {
+  SECONDS = 0;
+  MINUTES = 1;
+  HOURS = 2;
+  REPETITIONS = 3;
+  METERS = 4;
+  KILOMETERS = 5;
+}
+
+message Empty {}
+
+message Workouts {
+  repeated Workout workouts = 1;
+}
+
+message WorkoutName {
+  string name = 1;
+}
+
+message WorkoutCategory {
+  string category = 1;
+}
+
+message ExerciseId {
+  string exerciseId = 1;
+}

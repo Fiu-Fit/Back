@@ -15,7 +15,7 @@
     "db:test:rm": "docker compose rm test-db -s -f -v",
     "db:test:up": "docker compose up test-db -d",
     "db:test:restart": "yarn db:test:rm && yarn db:test:up && (sleep 1 || timeout 1) && yarn prisma:test:deploy",
-    "purge": "rimraf node_modules && rimraf dist",
+    "purge": "rimraf node_modules",
     "prebuild": "rimraf dist",
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
@@ -28,14 +28,13 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "pretest:e2e": "yarn db:test:restart",
-    "test:e2e": "dotenv -e .env.test -- jest --no-cache --config ./test/jest-e2e.json",
-    "common:install": "yarn add @fiu-fit/common@git@github.com:Fiu-Fit/common.git && yarn"
+    "test:e2e": "dotenv -e .env.test -- jest --no-cache --config ./test/jest-e2e.json"
   },
   "prisma": {
     "seed": "ts-node ./prisma/seeder.ts"
   },
   "dependencies": {
-    "@fiu-fit/common": "git@github.com:Fiu-Fit/common.git",
+    "@fiu-fit/common": "*",
     "@grpc/grpc-js": "^1.8.13",
     "@grpc/proto-loader": "^0.7.6",
     "@nestjs/axios": "^2.0.0",
@@ -44,6 +43,7 @@
     "@nestjs/core": "^9.3.12",
     "@nestjs/jwt": "^10.0.3",
     "@nestjs/microservices": "^9.3.12",
+    "@nestjs/mongoose": "^9.2.2",
     "@nestjs/platform-express": "^9.3.12",
     "@prisma/client": "4.14.1",
     "axios": "^1.4.0",
@@ -54,6 +54,7 @@
     "firebase": "^9.19.1",
     "firebase-admin": "^11.6.0",
     "husky": "^8.0.3",
+    "mongoose": "^7.2.1",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^4.4.1",
     "rxjs": "^7.8.0",

@@ -13,17 +13,22 @@ datasource db {
 model ProgressMetric {
   id            Int      @id @default(autoincrement())
   burntCalories Float
+  timeSpent     Int
   value         Float
   unit          Unit
   exerciseId    String
   userId        Int
   updatedAt     DateTime @updatedAt
+  
+  @@unique(fields: [exerciseId, userId], name: "exerciseId_userId")
 }
+
 
 enum Unit {
   KILOGRAMS
   METERS
   SECONDS
+  REPETITIONS
 }
 
 model Goal {
