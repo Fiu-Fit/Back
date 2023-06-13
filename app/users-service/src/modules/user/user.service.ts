@@ -232,20 +232,6 @@ export class UserService {
     }
   }
 
-  updateDeviceToken(id: number, token: string): Promise<User> {
-    return this.prismaService.user.update({
-      where: { id },
-      data:  { deviceToken: token }
-    });
-  }
-
-  async getDeviceToken(id: number): Promise<string | null> {
-    const user = await this.prismaService.user.findUnique({
-      where: { id }
-    });
-    return user?.deviceToken ?? null;
-  }
-
   async getNearestTrainers(userId: number, radius: number): Promise<User[]> {
     const nearestUsers = await this.userLocationService.findNearestUsers(
       userId,
