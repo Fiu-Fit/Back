@@ -11,12 +11,11 @@ import { ProgressController } from './progress.controller';
     ConfigModule.forRoot(),
     HttpModule.registerAsync({
       imports:    [ServiceRegistryModule, HttpModule],
-      useFactory: (serviceRegistryService: ServiceRegistryService) => {
-        return ServiceConfig.createHttpModuleOptionsFromService(
+      useFactory: (serviceRegistryService: ServiceRegistryService) =>
+        ServiceConfig.createHttpModuleOptionsFromService(
           serviceRegistryService,
           ServiceName.Progress
-        );
-      },
+        ),
       inject: [ServiceRegistryService]
     })
   ],
