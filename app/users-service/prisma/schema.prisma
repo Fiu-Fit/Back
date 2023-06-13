@@ -28,6 +28,7 @@ model User {
   goalNotifications    GoalNotification[]
   messageNotifications MessageNotification[]
   deviceToken          String                @default("") @map("device_token")
+  phoneNumber          String?               @map("phone_number")
 }
 
 enum Role {
