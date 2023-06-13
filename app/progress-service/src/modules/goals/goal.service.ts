@@ -1,10 +1,11 @@
-import { LoggerFactory } from '@fiu-fit/common';
+import { LoggerFactory, User } from '@fiu-fit/common';
 import { NotificationType } from '@fiu-fit/common/dist/interfaces/notification-type';
 import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
 import { Goal, GoalStatus } from '@prisma/client';
 import { sumBy } from 'lodash';
 import { firstValueFrom } from 'rxjs';
+import { Twilio } from 'twilio';
 import { admin } from '../../firebase/firebase';
 import { PrismaService } from '../../prisma.service';
 import { GetProgressMetricsQueryDTO } from '../progress/dto';
@@ -127,17 +128,9 @@ export class GoalService {
       )
     );
 
-    await this.sendPushNotification(goal);
-
-    // TODO: create whatsapp notification to show it in the user's whatsapp
-  }
-
-  async sendPushNotification(goal: Goal) {
-    logger.info('Sending push notification...');
-
-    const token = await firstValueFrom(
-      this.httpService.get<string>(
-        `${process.env.USER_SERVICE_URL}/users/${goal.userId}/token`,
+    const user = await firstValueFrom(
+      this.httpService.get<User>(
+        `${process.env.USER_SERVICE_URL}/users/${goal.userId}`,
         {
           headers: {
             'api-key': process.env.USER_API_KEY
@@ -146,11 +139,30 @@ export class GoalService {
       )
     );
 
-    logger.info('token: ', token.data);
+    if (!user.data) {
+      logger.debug('User not found');
+      return;
+    }
+
+    logger.debug('user: ', user.data);
+
+    this.sendPushNotification(goal, user.data.deviceToken);
+
+    if (!user.data.phoneNumber) {
+      logger.debug('User does not have a phone number');
+      return;
+    }
+    this.sendWhatsappNotification(goal, user.data.phoneNumber);
+  }
+
+  sendPushNotification(goal: Goal, token: string) {
+    logger.info('Sending push notification...');
 
     if (!token) {
       return;
     }
+
+    logger.info('token: ', token);
 
     const message = {
       notification: {
@@ -162,10 +174,26 @@ export class GoalService {
         goalId: goal.id.toString(),
         type:   NotificationType.GoalCompleted.toString()
       },
-      token: token.data
+      token
     };
 
     admin.messaging().send({ ...message });
     logger.info('Notification sent succesfully!');
+  }
+
+  sendWhatsappNotification(goal: Goal, phoneNumber: string) {
+    const accountSid = process.env.TWILIO_ACCOUNT_SID;
+    const authToken = process.env.TWILIO_AUTH_TOKEN;
+    const client = new Twilio(accountSid, authToken);
+
+    client.messages
+      .create({
+        body: `Felicitaciones, completaste la meta "${goal.title}"!`,
+        from: 'whatsapp:+14155238886',
+        to:   'whatsapp:' + phoneNumber
+      })
+      .then((message: { sid: any }) => logger.info(message.sid));
+
+    logger.info('Whatsapp notification sent succesfully!');
   }
 }
