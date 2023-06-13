@@ -1,3 +1,4 @@
+import { HttpModule } from '@nestjs/axios';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
@@ -11,7 +12,8 @@ import { WorkoutsModule } from './modules/workout/workouts.module';
     WorkoutsModule,
     ExerciseModule,
     RatingModule,
-    MongooseModule.forRoot(process.env.DATABASE_URL || '')
+    MongooseModule.forRoot(process.env.DATABASE_URL || ''),
+    HttpModule
   ],
   controllers: []
 })

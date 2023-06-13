@@ -1,8 +1,10 @@
 import { HttpModule } from '@nestjs/axios';
 import { Module } from '@nestjs/common';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ConfigModule } from '@nestjs/config';
 import { ServiceConfig, ServiceName } from '../../shared/service-config';
 import { AuthModule } from '../auth/auth.module';
+import { ServiceRegistryModule } from '../service-registry/service-registry.module';
+import { ServiceRegistryService } from '../service-registry/service-registry.service';
 import { FollowerController } from './follower.controller';
 
 @Module({
@@ -10,13 +12,13 @@ import { FollowerController } from './follower.controller';
     AuthModule,
     ConfigModule.forRoot(),
     HttpModule.registerAsync({
-      imports:    [ConfigModule],
-      useFactory: (configService: ConfigService) =>
-        ServiceConfig.createHttpModuleOptions(
-          ServiceName.Followers,
-          configService
+      imports:    [ServiceRegistryModule, HttpModule],
+      useFactory: (serviceRegistryService: ServiceRegistryService) =>
+        ServiceConfig.createHttpModuleOptionsFromService(
+          serviceRegistryService,
+          ServiceName.User
         ),
-      inject: [ConfigService]
+      inject: [ServiceRegistryService]
     })
   ],
   exports:     [],

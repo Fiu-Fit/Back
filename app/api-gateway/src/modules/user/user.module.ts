@@ -1,8 +1,10 @@
 import { HttpModule } from '@nestjs/axios';
 import { Module } from '@nestjs/common';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ConfigModule } from '@nestjs/config';
 import { ServiceConfig, ServiceName } from '../../shared/service-config';
 import { AuthModule } from '../auth/auth.module';
+import { ServiceRegistryModule } from '../service-registry/service-registry.module';
+import { ServiceRegistryService } from '../service-registry/service-registry.service';
 import { UserController } from './user.controller';
 
 @Module({
@@ -10,10 +12,13 @@ import { UserController } from './user.controller';
     AuthModule,
     ConfigModule.forRoot(),
     HttpModule.registerAsync({
-      imports:    [ConfigModule],
-      useFactory: (configService: ConfigService) =>
-        ServiceConfig.createHttpModuleOptions(ServiceName.User, configService),
-      inject: [ConfigService]
+      imports:    [ServiceRegistryModule, HttpModule],
+      useFactory: (serviceRegistryService: ServiceRegistryService) =>
+        ServiceConfig.createHttpModuleOptionsFromService(
+          serviceRegistryService,
+          ServiceName.User
+        ),
+      inject: [ServiceRegistryService]
     })
   ],
   exports:     [],
