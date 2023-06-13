@@ -13,6 +13,7 @@ import {
   Patch,
   Post,
   Put,
+  Query,
   UseGuards
 } from '@nestjs/common';
 import { catchError, firstValueFrom } from 'rxjs';
@@ -27,6 +28,19 @@ import { User } from './interfaces/user.interface';
 export class UserController extends ServerController {
   constructor(protected httpService: HttpService) {
     super(httpService, 'users');
+  }
+
+  @Get(':id/nearest-trainers')
+  async getNearestTrainers(
+    @Param('id') id: number,
+    @Query() query: Record<string, any>
+  ): Promise<User[]> {
+    const { data } = await firstValueFrom(
+      this.httpService
+        .get<User[]>(`/users/${id}/nearest-trainers`, { params: query })
+        .pipe(catchError(axiosErrorCatcher))
+    );
+    return data;
   }
 
   @Post('me')

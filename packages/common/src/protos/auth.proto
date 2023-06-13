@@ -1,0 +1,43 @@
+syntax = "proto3";
+
+package auth;
+
+service AuthService {
+  rpc Register (RegisterRequest) returns (Token);
+  rpc Login (LoginRequest) returns (Token);
+  rpc Validate (Token) returns (ValidResponse);
+  rpc Logout (Empty) returns (Empty);
+}
+
+message ValidResponse {
+  int32 status = 1;
+  repeated string errors = 2;
+  int32 userId = 3;
+}
+
+message Empty {
+
+}
+
+message Token {
+  string token = 1;
+}
+
+message RegisterRequest {
+  string firstName = 1;
+  string lastName = 2;
+  string email = 3;
+  string password = 4;
+  Role role = 5;
+}
+
+message LoginRequest {
+  string email = 1;
+  string password = 2;
+}
+
+enum Role {
+  Admin = 0;
+  Athlete = 1;
+  Trainer = 2;
+}

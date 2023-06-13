@@ -20,9 +20,10 @@ Seguir el `README.md` de cada app
 
 ## Instalando dependencias
 
-Ejecutar `yarn` en el directorio `root` del proyecto y ejecutar `yarn` en cada servicio.
+Ejecutar `yarn build:common` y `yarn install` en el directorio root. 
 
 ### Ejecutando apps
 
 Para ejecutar cualquier app del proyecto, ejectuar `yarn start` en el directorio correspondiente de la app.
 
+Tambien es posible ejecutar todas a la vez usando el comando `yarn start` en root.

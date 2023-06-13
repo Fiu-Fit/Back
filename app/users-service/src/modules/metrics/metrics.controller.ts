@@ -1,6 +1,6 @@
 import { Controller, Get, Query, UseGuards } from '@nestjs/common';
 import { AdminGuard } from '../auth/admin.guard';
-import { GetAuthMetricsQueryDTO } from './dto';
+import { GetAuthMetricsQueryDTO, GetUserMetricsQueryDTO } from './dto';
 import { MetricsService } from './metrics.service';
 
 @UseGuards(AdminGuard)
@@ -21,5 +21,10 @@ export class MetricsController {
   @Get('password-reset')
   getPasswordResetMetrics(@Query() filter: GetAuthMetricsQueryDTO) {
     return this.metricsService.getPasswordResetMetrics(filter);
+  }
+
+  @Get('users')
+  getUsersMetrics(@Query() filter: GetUserMetricsQueryDTO) {
+    return this.metricsService.getUsersMetrics(filter);
   }
 }

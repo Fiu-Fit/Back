@@ -11,10 +11,10 @@ export class ProgressController extends ServerController {
     super(httpService, 'progress');
   }
 
-  @Post('complete-workout')
+  @Post('complete')
   async completeWorkout(@Body() completeWorkoutDto: any) {
     const { data } = await firstValueFrom(
-      this.httpService.post('/progress/complete-workout', completeWorkoutDto)
+      this.httpService.post('/progress/complete', completeWorkoutDto)
     );
     return data;
   }

@@ -15,29 +15,25 @@ import {
   UnauthorizedException
 } from '@nestjs/common';
 import { Role, User } from '@prisma/client';
-import { FollowerService } from '../followers/follower.service';
 import { GetUsersQueryDTO } from './dto';
 import { UserDTO } from './dto/user.dto';
 import { UserService } from './user.service';
 
 @Controller('users')
 export class UserController {
-  constructor(
-    private readonly userService: UserService,
-    private readonly followerService: FollowerService
-  ) {}
+  constructor(private readonly userService: UserService) {}
+
+  @Get(':id/nearest-trainers')
+  getNearestTrainers(
+    @Param('id', ParseIntPipe) id: number,
+    @Query('radius') radius: number
+  ): Promise<User[]> {
+    return this.userService.getNearestTrainers(id, radius);
+  }
 
   @Get(':id')
-  async getUserById(
-    @Param('id', ParseIntPipe) id: number
-  ): Promise<User | null> {
-    const user = await this.userService.getUserById(id);
-
-    if (!user) {
-      throw new NotFoundException({ message: 'User not found' });
-    }
-
-    return user;
+  getUserById(@Param('id', ParseIntPipe) id: number): Promise<User | null> {
+    return this.userService.getUserById(id);
   }
 
   @Get()

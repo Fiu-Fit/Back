@@ -155,7 +155,7 @@ export class GoalService {
     const message = {
       notification: {
         title:    'Meta completada',
-        body:     'Felicitaciones, completaste una nueva meta!',
+        body:     'Felicitaciones, completaste una meta!',
         imageUrl: process.env.GOAL_COMPLETED_IMAGE_URL
       },
       data: {
