@@ -3,6 +3,7 @@
     { "path": "./app/api-gateway" },
     { "path": "./app/progress-service" },
     { "path": "./app/users-service" },
-    { "path": "./app/workout-service" }
+    { "path": "./app/workout-service" },
+    { "path": "./app/service-registry" }
   ]
 }

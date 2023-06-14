@@ -1,3 +1,4 @@
+import { HttpModule } from '@nestjs/axios';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
@@ -19,7 +20,8 @@ import { UserLocationModule } from './modules/user-location/user-location.module
     FollowerModule,
     MetricsModule,
     NotificationModule,
-    UserLocationModule
+    UserLocationModule,
+    HttpModule
   ],
   controllers: [AppController],
   providers:   [AppService]

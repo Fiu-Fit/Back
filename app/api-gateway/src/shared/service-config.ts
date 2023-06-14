@@ -1,25 +1,12 @@
 import { HttpModuleOptions } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
+import { ServiceRegistryService } from '../modules/service-registry/service-registry.service';
 
 export const ServiceName = {
-  Workout:       'workout',
-  User:          'user',
-  Progress:      'progress',
-  Goals:         'goals',
-  Ratings:       'ratings',
-  Followers:     'followers',
-  Notifications: 'notifications'
-};
-
-export const ServiceApiKeys: Record<string, string> = {
-  workout:       'WORKOUT_API_KEY',
-  user:          'USER_API_KEY',
-  progress:      'PROGRESS_API_KEY',
-  goals:         'PROGRESS_API_KEY',
-  ratings:       'RATINGS_API_KEY',
-  followers:     'USER_API_KEY',
-  notifications: 'USER_API_KEY'
+  Workout:         'workout',
+  User:            'user',
+  Progress:        'progress',
+  ServiceRegistry: 'serviceRegistry'
 };
 
 export const ServiceUrl: Record<string, string> = {
@@ -27,19 +14,27 @@ export const ServiceUrl: Record<string, string> = {
   user:          'USER_SERVICE_URL',
   progress:      'PROGRESS_SERVICE_URL',
   goals:         'PROGRESS_SERVICE_URL',
-  ratings:       'RATINGS_SERVICE_URL',
+  ratings:       'USER_SERVICE_URL',
   followers:     'USER_SERVICE_URL',
   notifications: 'USER_SERVICE_URL'
 };
 
+export type Service = {
+  id: number;
+  apiKey: string;
+};
+
 @Injectable()
 export class ServiceConfig {
-  static createHttpModuleOptions(
-    serviceName: string,
-    configService: ConfigService
+  static async createHttpModuleOptionsFromService(
+    serviceRegistryService: ServiceRegistryService,
+    serviceName: string
   ): Promise<HttpModuleOptions> {
-    const apiKey = configService.get<string>(ServiceApiKeys[serviceName]);
-    const baseURL = configService.get<string>(ServiceUrl[serviceName]);
+    const { apiKey } = await serviceRegistryService.getServiceByName(
+      serviceName
+    );
+
+    const baseURL = process.env[ServiceUrl[serviceName]];
 
     return Promise.resolve({
       headers: {

@@ -1,20 +1,22 @@
 import { HttpModule } from '@nestjs/axios';
 import { Module } from '@nestjs/common';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ConfigModule } from '@nestjs/config';
 import { ServiceConfig, ServiceName } from '../../shared/service-config';
+import { ServiceRegistryModule } from '../service-registry/service-registry.module';
+import { ServiceRegistryService } from '../service-registry/service-registry.service';
 import { NotificationController } from './notification.controller';
 
 @Module({
   imports: [
     ConfigModule.forRoot(),
     HttpModule.registerAsync({
-      imports:    [ConfigModule],
-      useFactory: (configService: ConfigService) =>
-        ServiceConfig.createHttpModuleOptions(
-          ServiceName.Notifications,
-          configService
+      imports:    [ServiceRegistryModule, HttpModule],
+      useFactory: (serviceRegistryService: ServiceRegistryService) =>
+        ServiceConfig.createHttpModuleOptionsFromService(
+          serviceRegistryService,
+          ServiceName.User
         ),
-      inject: [ConfigService]
+      inject: [ServiceRegistryService]
     })
   ],
   exports:     [],

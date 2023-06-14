@@ -26,7 +26,8 @@
     "build:users": "turbo run build --force --filter=@fiu-fit/users-service",
     "build:progress": "turbo run build --force --filter=@fiu-fit/progress-service",
     "build:workout": "turbo run build --force --filter=@fiu-fit/workout-service",
-    "build:common": "turbo run build --force --filter=@fiu-fit/common"
+    "build:common": "turbo run build --force --filter=@fiu-fit/common",
+    "build:service-registry": "turbo run build --force --filter=@fiu-fit/service-registry"
   },
   "devDependencies": {
     "@types/jest": "^29.5.1",
