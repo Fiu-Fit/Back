@@ -80,4 +80,17 @@ export class UserController extends ServerController {
     );
     return data;
   }
+
+  @Delete(':id/favoriteWorkouts/:workoutId')
+  async removeFavoriteWorkout(
+    @Param('id') id: number,
+    @Param('workoutId') workoutId: string
+  ): Promise<User> {
+    const { data } = await firstValueFrom(
+      this.httpService
+        .delete<User>(`/users/${id}/favoriteWorkouts/${workoutId}`)
+        .pipe(catchError(axiosErrorCatcher))
+    );
+    return data;
+  }
 }
