@@ -3,6 +3,7 @@ import { HttpService } from '@nestjs/axios';
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Headers,
   HttpCode,
