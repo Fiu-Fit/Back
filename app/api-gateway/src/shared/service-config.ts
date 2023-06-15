@@ -14,7 +14,7 @@ export const ServiceUrl: Record<string, string> = {
   user:          'USER_SERVICE_URL',
   progress:      'PROGRESS_SERVICE_URL',
   goals:         'PROGRESS_SERVICE_URL',
-  ratings:       'USER_SERVICE_URL',
+  ratings:       'WORKOUT_SERVICE_URL',
   followers:     'USER_SERVICE_URL',
   notifications: 'USER_SERVICE_URL'
 };

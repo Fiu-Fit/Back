@@ -9,8 +9,8 @@ import {
   Query
 } from '@nestjs/common';
 import { RatingDto } from './dto/rating.dto';
-import { Rating } from './interfaces/rating.interface';
 import { RatingService } from './rating.service';
+import { Rating } from './schemas/rating.schema';
 
 @Controller('ratings')
 export class RatingController {

@@ -3,6 +3,7 @@ import { HttpService } from '@nestjs/axios';
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Headers,
   HttpCode,
@@ -76,6 +77,19 @@ export class UserController extends ServerController {
     const { data } = await firstValueFrom(
       this.httpService
         .put<User>(`/users/${id}/favoriteWorkouts`, { workoutId })
+        .pipe(catchError(axiosErrorCatcher))
+    );
+    return data;
+  }
+
+  @Delete(':id/favoriteWorkouts/:workoutId')
+  async removeFavoriteWorkout(
+    @Param('id') id: number,
+    @Param('workoutId') workoutId: string
+  ): Promise<User> {
+    const { data } = await firstValueFrom(
+      this.httpService
+        .delete<User>(`/users/${id}/favoriteWorkouts/${workoutId}`)
         .pipe(catchError(axiosErrorCatcher))
     );
     return data;

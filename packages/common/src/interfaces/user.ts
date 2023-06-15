@@ -8,4 +8,6 @@ export interface User {
   blocked: boolean;
   federatedIdentity: boolean;
   favoriteWorkouts: string[];
+  deviceToken: string;
+  phoneNumber?: string;
 }

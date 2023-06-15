@@ -15,6 +15,7 @@ export interface User {
   role: Role;
   favoriteWorkouts: string[];
   interests: Category[];
+  phoneNumber?: string;
 }
 
 export interface Empty {}

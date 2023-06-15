@@ -1,6 +1,6 @@
+import { Category } from '@fiu-fit/common';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument } from 'mongoose';
-import { Category } from '../../workout/interfaces/workout.interface';
 
 export type ExerciseDocument = HydratedDocument<Exercise>;
 

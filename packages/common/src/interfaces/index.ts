@@ -5,3 +5,4 @@ export * from './exercise';
 export * from './workout';
 export * from './workoutExercise';
 export * from './user';
+export * from './rating';

@@ -11,5 +11,6 @@ export interface Workout {
   exercises: WorkoutExercise[];
   athleteIds: number[];
   authorId: number;
+  averageRating?: number;
   updatedAt?: string;
 }
