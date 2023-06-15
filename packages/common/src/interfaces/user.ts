@@ -5,4 +5,7 @@ export interface User {
   email: string;
   role: string | number;
   bodyWeight: number;
+  blocked: boolean;
+  federatedIdentity: boolean;
+  favoriteWorkouts: string[];
 }

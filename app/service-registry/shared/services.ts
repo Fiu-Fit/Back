@@ -7,5 +7,7 @@ export const ServiceName = {
 };
 
 export function generateKey(): string {
-  return generateApiKey() as string;
+  return generateApiKey({
+    pool: 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._~+'
+  }) as string;
 }
