@@ -10,4 +10,5 @@ export interface UserDTO {
   bodyWeight: number;
   interests: Category[];
   coordinates: [number, number];
+  phoneNumber?: string;
 }

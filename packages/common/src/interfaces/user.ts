@@ -5,4 +5,6 @@ export interface User {
   email: string;
   role: string | number;
   bodyWeight: number;
+  deviceToken: string;
+  phoneNumber?: string;
 }

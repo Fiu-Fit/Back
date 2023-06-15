@@ -131,7 +131,6 @@ export class UserService {
         }
       )
     );
-
     return workouts.data;
   }
 
