@@ -15,6 +15,7 @@ import {
   ProgressMetricDTO
 } from './dto';
 import { CompleteWorkoutDTO } from './dto/complete-workout.dto';
+import { UserProgress } from './dto/user-progress';
 import { ProgressService } from './progress.service';
 
 @Controller('progress')
@@ -39,6 +40,14 @@ export class ProgressController {
     }
 
     return progressMetric;
+  }
+
+  @Get('user-progress/:userId')
+  getUserProgress(
+    @Param('userId') userId: number,
+    @Query() filter: GetProgressMetricsQueryDTO
+  ): Promise<UserProgress> {
+    return this.progressService.getUserProgress(userId, filter);
   }
 
   @Put(':id')

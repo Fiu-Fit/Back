@@ -1,5 +1,6 @@
 import {
   Exercise,
+  LoggerFactory,
   Page,
   User,
   Workout,
@@ -15,6 +16,9 @@ import {
   GetProgressMetricsQueryDTO,
   ProgressMetricDTO
 } from './dto';
+import { UserProgress } from './dto/user-progress';
+
+const logger = LoggerFactory('ProgressService');
 
 @Injectable()
 export class ProgressService {
@@ -59,7 +63,8 @@ export class ProgressService {
       data.userId
     );
 
-    const metricData = { ...data, burntCalories };
+    const metricData = { burntCalories, ...data };
+    console.log(metricData);
 
     return this.prisma.progressMetric.create({
       data: metricData
@@ -203,5 +208,78 @@ export class ProgressService {
       exerciseId: exercise.exerciseId,
       userId
     });
+  }
+
+  async getUserProgress(
+    userId: number,
+    dates: GetProgressMetricsQueryDTO
+  ): Promise<UserProgress> {
+    const filter = { ...dates, userId };
+    const metrics = await this.findAndCount({
+      ...filter
+    });
+
+    const exercisesSet = new Set<string>();
+    metrics.rows.forEach(metric => {
+      exercisesSet.add(metric.exerciseId); // unique ids
+    });
+
+    const activityTypes = await this.getExerciseCategories(
+      Array.from(exercisesSet)
+    );
+
+    const traveledDistance = metrics.rows
+      .filter(metric => metric.unit === Unit.METERS)
+      .reduce((actual, total) => actual + total.value, 0);
+
+    const timeSpent = metrics.rows.reduce(
+      (actual, total) => actual + total.timeSpent,
+      0
+    );
+
+    const burntCalories = metrics.rows.reduce(
+      (actual, total) => actual + total.burntCalories,
+      0
+    );
+
+    logger.debug('User progress: ', {
+      traveledDistance,
+      timeSpent,
+      burntCalories,
+      activityTypes
+    });
+
+    return {
+      traveledDistance,
+      timeSpent,
+      burntCalories,
+      activityTypes
+    };
+  }
+
+  async getExerciseCategories(
+    exerciseIds: string[]
+  ): Promise<{ [category: number]: number }> {
+    const exercises = await firstValueFrom(
+      this.httpService.get<Exercise[]>(
+        `${process.env.WORKOUT_SERVICE_URL}/exercises`,
+        {
+          params:  { exerciseId: [exerciseIds] },
+          headers: { 'api-key': process.env.WORKOUT_API_KEY }
+        }
+      )
+    );
+
+    const categoryCounts: { [category: number]: number } = {};
+
+    exercises.data.forEach(exercise => {
+      if (categoryCounts[exercise.category]) {
+        categoryCounts[exercise.category]++;
+      }
+      categoryCounts[exercise.category] = 1;
+    });
+
+    logger.info('Hash of categories: ', categoryCounts);
+    return categoryCounts;
   }
 }
