@@ -13,6 +13,7 @@ import { axiosErrorCatcher } from '../../shared/axios-error-catcher';
 import {
   LoginRequest,
   RegisterRequest,
+  ResetPasswordRequest,
   Token
 } from './interfaces/auth.interface';
 
@@ -80,12 +81,10 @@ export class AuthController {
   }
 
   @Post('password-reset')
-  async passwordReset(@Headers('Authorization') bearerToken: string) {
+  async resetPassword(@Body() body: ResetPasswordRequest) {
     const { data } = await firstValueFrom(
       this.httpService
-        .post<Token>('auth/password-reset', null, {
-          headers: { Authorization: bearerToken }
-        })
+        .post<Token>('auth/password-reset', body)
         .pipe(catchError(axiosErrorCatcher))
     );
     return data;
