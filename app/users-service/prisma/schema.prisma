@@ -64,6 +64,7 @@ model GoalNotification {
   user       User     @relation(fields: [userId], references: [id])
   userId     Int      @map("user_id")
   goalId     Int      @map("goal_id")
+  goalTitle  String   @map("goal_title")
   receivedAt DateTime @default(now()) @map("received_at")
 }
 
@@ -72,5 +73,6 @@ model MessageNotification {
   user       User     @relation(fields: [userId], references: [id])
   userId     Int      @map("user_id")
   messageId  Int      @map("message_id")
+  senderName String   @map("sender_name")
   receivedAt DateTime @default(now()) @map("received_at")
 }
