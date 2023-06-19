@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsNumber } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
 export class GoalNotificationDTO {
   @IsNumber()
@@ -8,4 +8,8 @@ export class GoalNotificationDTO {
   @IsNumber()
   @IsNotEmpty()
   goalId: number;
+
+  @IsString()
+  @IsNotEmpty()
+  goalTitle: string;
 }

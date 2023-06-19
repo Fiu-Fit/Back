@@ -117,8 +117,9 @@ export class GoalService {
       this.httpService.post(
         `${process.env.USER_SERVICE_URL}/notifications/goals`,
         {
-          userId: goal.userId,
-          goalId: goal.id
+          userId:    goal.userId,
+          goalId:    goal.id,
+          goalTitle: goal.title
         },
         {
           headers: {
