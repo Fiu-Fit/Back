@@ -1,4 +1,4 @@
-import { LoggerFactory, User } from '@fiu-fit/common';
+import { LoggerFactory, Service, User } from '@fiu-fit/common';
 import { NotificationType } from '@fiu-fit/common/dist/interfaces/notification-type';
 import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
@@ -113,6 +113,14 @@ export class GoalService {
   async sendGoalNotifications(goal: Goal) {
     logger.info('creating goal notifications...');
 
+    const {
+      data: { apiKey }
+    } = await firstValueFrom(
+      this.httpService.get<Service>(
+        `${process.env.SERVICE_REGISTRY_URL}/service-registry/name/user`
+      )
+    );
+
     await firstValueFrom(
       this.httpService.post(
         `${process.env.USER_SERVICE_URL}/notifications/goals`,
@@ -123,7 +131,7 @@ export class GoalService {
         },
         {
           headers: {
-            'api-key': process.env.USER_API_KEY
+            'api-key': apiKey
           }
         }
       )
@@ -134,7 +142,7 @@ export class GoalService {
         `${process.env.USER_SERVICE_URL}/users/${goal.userId}`,
         {
           headers: {
-            'api-key': process.env.USER_API_KEY
+            'api-key': apiKey
           }
         }
       )

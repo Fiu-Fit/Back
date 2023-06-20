@@ -1,3 +1,4 @@
+import { LoggerFactory } from '@fiu-fit/common';
 import {
   Body,
   Controller,
@@ -12,6 +13,7 @@ import { Service } from '@prisma/client';
 import { ServiceRegistryDto } from './dto/service-registry.dto';
 import { ServiceRegistryService } from './service-registry.service';
 
+const logger = LoggerFactory('service-registry-controller');
 @Injectable()
 @Controller('service-registry')
 export class ServiceRegistryController {
@@ -47,6 +49,7 @@ export class ServiceRegistryController {
 
   @Get('name/:name')
   getServiceByName(@Param('name') name: string): Promise<Service> {
+    logger.debug('Service name: ', name);
     return this.serviceRegistryService.getServiceByName(name);
   }
 

@@ -44,6 +44,8 @@ export class ServiceRegistryService {
       where: { apiKey }
     });
 
+    console.log('service: ', service);
+
     return service?.status === ServiceStatus.Available;
   }
 
@@ -54,7 +56,7 @@ export class ServiceRegistryService {
 
     if (!service) {
       throw new BadRequestException({
-        message: 'Servicio no esta disponible'
+        message: `Servicio ${name} no esta disponible`
       });
     }
 

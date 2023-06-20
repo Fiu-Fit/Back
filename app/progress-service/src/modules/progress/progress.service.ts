@@ -1,6 +1,8 @@
 import {
   Exercise,
+  LoggerFactory,
   Page,
+  Service,
   User,
   Workout,
   WorkoutExercise
@@ -16,6 +18,8 @@ import {
   ProgressMetricDTO
 } from './dto';
 
+const logger = LoggerFactory('progress-service');
+
 @Injectable()
 export class ProgressService {
   constructor(
@@ -28,24 +32,37 @@ export class ProgressService {
     timeSpent: number,
     userId: number
   ): Promise<number> {
+    const workoutService = await firstValueFrom(
+      this.httpService.get<Service>(
+        `${process.env.SERVICE_REGISTRY_URL}/service-registry/name/workout`
+      )
+    );
+
     const {
       data: { METValue }
     } = await firstValueFrom(
       this.httpService.get<Exercise>(
         `${process.env.WORKOUT_SERVICE_URL}/exercises/${exerciseId}`,
         {
-          headers: { 'api-key': process.env.WORKOUT_API_KEY }
+          headers: { 'api-key': workoutService.data.apiKey }
         }
       )
     );
 
+    const userService = await firstValueFrom(
+      this.httpService.get<Service>(
+        `${process.env.SERVICE_REGISTRY_URL}/service-registry/name/user`
+      )
+    );
+
+    logger.info('Getting bodyweight...');
     const {
       data: { bodyWeight }
     } = await firstValueFrom(
       this.httpService.get<User>(
         `${process.env.USER_SERVICE_URL}/users/${userId}`,
         {
-          headers: { 'api-key': process.env.USER_API_KEY }
+          headers: { 'api-key': userService.data.apiKey }
         }
       )
     );
@@ -131,11 +148,21 @@ export class ProgressService {
     workoutId: string,
     userId: number
   ): Promise<ProgressMetric[]> {
+    logger.info('Getting workout...');
+
+    const {
+      data: { apiKey }
+    } = await firstValueFrom(
+      this.httpService.get<Service>(
+        `${process.env.SERVICE_REGISTRY_URL}/service-registry/name/workout`
+      )
+    );
+
     const workout = await firstValueFrom(
       this.httpService.get<Workout>(
         `${process.env.WORKOUT_SERVICE_URL}/workouts/${workoutId}`,
         {
-          headers: { 'api-key': process.env.WORKOUT_API_KEY }
+          headers: { 'api-key': apiKey }
         }
       )
     );
@@ -161,12 +188,16 @@ export class ProgressService {
         prismaUnit
       );
       if (updatedMetric) {
+        logger.info('Metric has been updated');
         progressMetrics.push(updatedMetric);
         continue;
       }
 
+      logger.info('Creating progress metric');
+      logger.info('repDuration: ', exercise.repDuration);
+      const duration = exercise.repDuration ?? 1;
       const metric = await this.createProgressMetric({
-        timeSpent:  exercise.repDuration * exercise.sets * exercise.reps,
+        timeSpent:  duration * exercise.sets * exercise.reps,
         value:      exercise.reps * exercise.sets,
         unit:       prismaUnit,
         exerciseId: exercise.exerciseId,

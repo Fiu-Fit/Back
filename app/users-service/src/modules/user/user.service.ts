@@ -1,4 +1,4 @@
-import { Page, Workout } from '@fiu-fit/common';
+import { Page, Service, Workout } from '@fiu-fit/common';
 import { HttpService } from '@nestjs/axios';
 import {
   Injectable,
@@ -116,18 +116,27 @@ export class UserService {
 
   async getFavoriteWorkouts(id: number): Promise<Workout[]> {
     const user = await this.getUserById(id);
+
     if (!user) {
       throw new NotFoundException({ message: 'User not found' });
     }
 
     const filter = { filters: JSON.stringify({ _id: user.favoriteWorkouts }) };
 
+    const {
+      data: { apiKey }
+    } = await firstValueFrom(
+      this.httpService.get<Service>(
+        `${process.env.SERVICE_REGISTRY_URL}/service-registry/name/workout`
+      )
+    );
+
     const workouts = await firstValueFrom(
       this.httpService.get<Workout[]>(
         `${process.env.WORKOUT_SERVICE_URL}/workouts`,
         {
           params:  filter,
-          headers: { 'api-key': process.env.WORKOUT_API_KEY }
+          headers: { 'api-key': apiKey }
         }
       )
     );
@@ -139,7 +148,6 @@ export class UserService {
     if (!user) {
       throw new NotFoundException({ message: 'User not found' });
     }
-
     if (user.favoriteWorkouts.includes(workoutId)) {
       // do not add duplicate id
       return user;
