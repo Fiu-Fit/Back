@@ -76,6 +76,12 @@ export class AuthService {
       });
     }
 
+    if (user.blocked) {
+      throw new UnauthorizedException({
+        message: 'User is blocked'
+      });
+    }
+
     await this.updateLoginTime(user.id);
 
     return { token };
@@ -88,6 +94,12 @@ export class AuthService {
     if (!user || user.role !== Role.Admin) {
       throw new UnauthorizedException({
         message: 'Invalid credentials: You are not an admin'
+      });
+    }
+
+    if (user.blocked) {
+      throw new UnauthorizedException({
+        message: 'Admin user is blocked'
       });
     }
 
