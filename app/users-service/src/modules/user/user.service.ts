@@ -181,6 +181,16 @@ export class UserService {
     });
   }
 
+  getUsersWhoFavoritedWorkout(workoutId: string): Promise<User[]> {
+    return this.prismaService.user.findMany({
+      where: {
+        favoriteWorkouts: {
+          has: workoutId
+        }
+      }
+    });
+  }
+
   async editUser(id: number, user: UserDTO): Promise<User> {
     const { coordinates, ...rest } = user;
 

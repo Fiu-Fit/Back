@@ -1,7 +1,10 @@
+import { Service, User } from '@fiu-fit/common';
+import { HttpService } from '@nestjs/axios';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { ObjectId } from 'mongodb';
 import { Model } from 'mongoose';
+import { firstValueFrom } from 'rxjs';
 import { RatingService } from '../ratings/rating.service';
 import { WorkoutMetricDto } from './dto';
 import { WorkoutDto } from './dto/workout.dto';
@@ -12,7 +15,8 @@ export class WorkoutsService {
   constructor(
     @InjectModel(Workout.name)
     private workoutModel: Model<Workout>,
-    private ratingService: RatingService
+    private ratingService: RatingService,
+    private httpService: HttpService
   ) {}
 
   createWorkout(newWorkout: WorkoutDto): Promise<Workout> {
@@ -129,10 +133,27 @@ export class WorkoutsService {
       throw new NotFoundException('Workout not found');
     }
 
+    const {
+      data: { apiKey }
+    } = await firstValueFrom(
+      this.httpService.get<Service>(
+        `${process.env.SERVICE_REGISTRY_URL}/service-registry/name/user`
+      )
+    );
+
+    const { data: favoritedBy } = await firstValueFrom(
+      this.httpService.get<User[]>(
+        `${process.env.USERS_SERVICE_URL}/users/favorited/${id}`,
+        {
+          headers: { 'api-key': apiKey }
+        }
+      )
+    );
+
     const ratings = await this.ratingService.getRatingCountPerValue(id);
 
     return {
-      favoriteCount: workout.athleteIds.length,
+      favoriteCount: favoritedBy.length,
       averageRating: await this.ratingService.getAverageRating(id),
       ratings:       ratings
     };

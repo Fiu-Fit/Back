@@ -1,3 +1,4 @@
+import { HttpModule } from '@nestjs/axios';
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { RatingService } from '../ratings/rating.service';
@@ -11,7 +12,8 @@ import { WorkoutsService } from './workouts.service';
     MongooseModule.forFeature([
       { name: Workout.name, schema: WorkoutSchema },
       { name: Rating.name, schema: RatingSchema }
-    ])
+    ]),
+    HttpModule
   ],
   exports:     [WorkoutsService],
   controllers: [WorkoutsController],

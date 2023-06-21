@@ -40,6 +40,13 @@ export class UserController {
     return this.userService.findAndCount(filter);
   }
 
+  @Get('favorited/:workoutId')
+  getUsersWhoFavoritedWorkout(
+    @Param('workoutId') workoutId: string
+  ): Promise<User[]> {
+    return this.userService.getUsersWhoFavoritedWorkout(workoutId);
+  }
+
   @Put(':id')
   async putEditUser(
     @Param('id', ParseIntPipe) id: number,
