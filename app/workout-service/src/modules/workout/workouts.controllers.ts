@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -8,6 +9,8 @@ import {
   Put,
   Query
 } from '@nestjs/common';
+import { ObjectId } from 'mongodb';
+import { WorkoutMetricDto } from './dto';
 import { WorkoutDto } from './dto/workout.dto';
 import { Workout } from './schemas/workout.schema';
 import { WorkoutsService } from './workouts.service';
@@ -34,11 +37,15 @@ export class WorkoutsController {
 
   @Get(':id')
   getWorkoutById(@Param('id') id: string): Promise<Workout> {
+    if (!ObjectId.isValid(id)) throw new BadRequestException('Invalid id');
+
     return this.workoutsService.getWorkoutById(id);
   }
 
   @Delete(':id')
   deleteWorkout(@Param('id') id: string): Promise<Workout> {
+    if (!ObjectId.isValid(id)) throw new BadRequestException('Invalid id');
+
     const deletedWorkout = this.workoutsService.deleteWorkout(id);
     return deletedWorkout;
   }
@@ -48,6 +55,15 @@ export class WorkoutsController {
     @Param('id') id: string,
     @Body() workout: Workout
   ): Promise<Workout> {
+    if (!ObjectId.isValid(id)) throw new BadRequestException('Invalid id');
+
     return this.workoutsService.updateWorkout(id, workout);
+  }
+
+  @Get('metrics/:id')
+  getWorkoutMetrics(@Param('id') id: string): Promise<WorkoutMetricDto> {
+    if (!ObjectId.isValid(id)) throw new BadRequestException('Invalid id');
+
+    return this.workoutsService.getWorkoutMetrics(id);
   }
 }

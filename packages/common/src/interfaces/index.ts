@@ -7,3 +7,5 @@ export * from './workoutExercise';
 export * from './user';
 export * from './rating';
 export * from './service';
+export * from './ratingCount';
+export * from './workoutMetric';

@@ -3,6 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { ObjectId } from 'mongodb';
 import { Model } from 'mongoose';
 import { RatingService } from '../ratings/rating.service';
+import { WorkoutMetricDto } from './dto';
 import { WorkoutDto } from './dto/workout.dto';
 import { Workout } from './schemas/workout.schema';
 
@@ -120,5 +121,20 @@ export class WorkoutsService {
       throw new NotFoundException('Exercise not found');
     }
     return updatedWorkout;
+  }
+
+  async getWorkoutMetrics(id: string): Promise<WorkoutMetricDto> {
+    const workout = await this.workoutModel.findById(id);
+    if (!workout) {
+      throw new NotFoundException('Workout not found');
+    }
+
+    const ratings = await this.ratingService.getRatingCountPerValue(id);
+
+    return {
+      favoriteCount: workout.athleteIds.length,
+      averageRating: await this.ratingService.getAverageRating(id),
+      ratings:       ratings
+    };
   }
 }

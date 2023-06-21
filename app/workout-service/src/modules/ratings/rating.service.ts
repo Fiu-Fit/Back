@@ -1,3 +1,4 @@
+import { RatingCount } from '@fiu-fit/common';
 import {
   BadRequestException,
   Injectable,
@@ -5,6 +6,7 @@ import {
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { sumBy } from 'lodash';
+import { ObjectId } from 'mongodb';
 import { Model } from 'mongoose';
 import { RatingDto } from './dto/rating.dto';
 import { Rating } from './schemas/rating.schema';
@@ -70,5 +72,33 @@ export class RatingService {
       throw new BadRequestException('No ratings found');
     }
     return Math.round(sumBy(ratings, 'rating') / ratings.length);
+  }
+
+  async getRatingCountPerValue(workoutId: string): Promise<RatingCount[]> {
+    const ratingsByValue = await this.ratingModel.aggregate([
+      { $match: { workoutId: new ObjectId(workoutId) } },
+      {
+        $group: {
+          _id:   '$rating',
+          count: { $sum: 1 }
+        }
+      }
+    ]);
+
+    if (!ratingsByValue) {
+      throw new BadRequestException('No ratings found');
+    }
+
+    const completeRatingsByValue = [];
+
+    for (let i = 1; i <= 5; i++) {
+      const currentRating = ratingsByValue.find(rating => rating._id === i) || {
+        _id:   i,
+        count: 0
+      };
+      completeRatingsByValue.push(currentRating);
+    }
+
+    return completeRatingsByValue;
   }
 }
