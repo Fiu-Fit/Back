@@ -19,8 +19,6 @@ import {
 } from './dto';
 import { UserProgress } from './dto/user-progress';
 
-const logger = LoggerFactory('ProgressService');
-
 const logger = LoggerFactory('progress-service');
 
 @Injectable()
@@ -69,7 +67,7 @@ export class ProgressService {
         }
       )
     );
-    return ((METValue * 3.5 * bodyWeight) / (200 * 60)) * timeSpent;
+    return Math.round((METValue * 3.5 * bodyWeight) / (200 * 60)) * timeSpent;
   }
 
   async createProgressMetric(data: ProgressMetricDTO): Promise<ProgressMetric> {
@@ -274,15 +272,15 @@ export class ProgressService {
 
     logger.debug('User progress: ', {
       traveledDistance,
-      timeSpent,
-      burntCalories,
+      timeSpent:     Math.round(timeSpent / 60), // in minutes
+      burntCalories: Math.round(burntCalories),
       activityTypes
     });
 
     return {
       traveledDistance,
-      timeSpent,
-      burntCalories,
+      timeSpent:     Math.round(timeSpent / 60), // in minutes
+      burntCalories: Math.round(burntCalories),
       activityTypes
     };
   }
@@ -290,15 +288,27 @@ export class ProgressService {
   async getExerciseCategories(
     exerciseIds: string[]
   ): Promise<{ [category: number]: number }> {
+    logger.info('Exercises ids: ', exerciseIds);
+
+    const {
+      data: { apiKey }
+    } = await firstValueFrom(
+      this.httpService.get<Service>(
+        `${process.env.SERVICE_REGISTRY_URL}/service-registry/name/workout`
+      )
+    );
+
     const exercises = await firstValueFrom(
       this.httpService.get<Exercise[]>(
         `${process.env.WORKOUT_SERVICE_URL}/exercises`,
         {
-          params:  { exerciseId: [exerciseIds] },
-          headers: { 'api-key': process.env.WORKOUT_API_KEY }
+          params:  { filters: JSON.stringify({ _id: exerciseIds }) },
+          headers: { 'api-key': apiKey }
         }
       )
     );
+
+    logger.info('Exercises number: ', exercises.data.length);
 
     const categoryCounts: { [category: number]: number } = {};
 
