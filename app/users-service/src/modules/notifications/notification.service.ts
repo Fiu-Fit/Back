@@ -32,10 +32,10 @@ export class NotificationService {
     });
   }
 
-  async deleteGoalNotification(id: number): Promise<GoalNotification> {
+  async deleteGoalNotification(goalId: number): Promise<GoalNotification> {
     const notification = await this.prismaService.goalNotification
       .delete({
-        where: { id }
+        where: { goalId }
       })
       .catch(() => {
         throw new NotFoundException({ message: 'Notification not found' });
@@ -48,10 +48,12 @@ export class NotificationService {
     return notification;
   }
 
-  async deleteMessageNotification(id: number): Promise<MessageNotification> {
+  async deleteMessageNotification(
+    messageId: number
+  ): Promise<MessageNotification> {
     const notification = await this.prismaService.messageNotification
       .delete({
-        where: { id }
+        where: { messageId }
       })
       .catch(() => {
         throw new NotFoundException({ message: 'Notification not found' });
