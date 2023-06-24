@@ -1,4 +1,4 @@
-import { Controller, Get, Query, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query, UseGuards } from '@nestjs/common';
 import { AdminGuard } from '../auth/admin.guard';
 import { GetAuthMetricsQueryDTO, GetUserMetricsQueryDTO } from './dto';
 import { MetricsService } from './metrics.service';
@@ -26,5 +26,10 @@ export class MetricsController {
   @Get('users')
   getUsersMetrics(@Query() filter: GetUserMetricsQueryDTO) {
     return this.metricsService.getUsersMetrics(filter);
+  }
+
+  @Post('login')
+  createLoginMetric(@Body('uid') uid: string) {
+    return this.metricsService.createLoginMetric(uid);
   }
 }
