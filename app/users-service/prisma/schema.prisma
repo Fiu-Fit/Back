@@ -85,7 +85,7 @@ model Verification {
   requestStatus RequestStatus
   resourceId    String
   receivedAt    DateTime      @default(now()) @map("received_at")
-  User          User?
+  user          User?
 }
 
 enum RequestStatus {
