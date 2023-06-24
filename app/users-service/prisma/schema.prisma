@@ -83,6 +83,7 @@ model Verification {
   id            Int           @id @default(autoincrement())
   userId        Int           @map("user_id")
   requestStatus RequestStatus
+  resourceId    String
   receivedAt    DateTime      @default(now()) @map("received_at")
   User          User?
 }
