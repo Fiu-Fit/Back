@@ -15,6 +15,7 @@ CREATE TABLE "Verification" (
     "id" SERIAL NOT NULL,
     "user_id" INTEGER NOT NULL,
     "requestStatus" "RequestStatus" NOT NULL,
+    "resourceId" TEXT NOT NULL,
     "received_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "Verification_pkey" PRIMARY KEY ("id")
