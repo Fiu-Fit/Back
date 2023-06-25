@@ -62,6 +62,9 @@ export class Workout {
 
   @Prop()
   multimedia: string[];
+
+  @Prop()
+  isBlocked: boolean;
 }
 
 export const WorkoutSchema = SchemaFactory.createForClass(Workout)

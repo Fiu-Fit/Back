@@ -46,7 +46,7 @@ export class WorkoutsController {
   @Put(':id')
   updateWorkout(
     @Param('id') id: string,
-    @Body() workout: Workout
+    @Body() workout: Partial<WorkoutDto>
   ): Promise<Workout> {
     return this.workoutsService.updateWorkout(id, workout);
   }

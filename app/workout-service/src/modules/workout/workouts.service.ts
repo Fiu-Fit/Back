@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { ObjectId } from 'mongodb';
 import { Model } from 'mongoose';
@@ -90,7 +94,11 @@ export class WorkoutsService {
     ]);
 
     if (!workout) {
-      throw new NotFoundException('Workout not found');
+      throw new NotFoundException('El plan de entrenamiento no existe');
+    }
+
+    if (workout.isBlocked) {
+      throw new BadRequestException('El plan de entrenamiento esta bloqueado');
     }
 
     return {
@@ -110,10 +118,13 @@ export class WorkoutsService {
     return workout;
   }
 
-  async updateWorkout(id: string, exercise: Workout): Promise<Workout> {
+  async updateWorkout(
+    id: string,
+    workout: Partial<WorkoutDto>
+  ): Promise<Workout> {
     const updatedWorkout = await this.workoutModel.findByIdAndUpdate(
       { _id: id },
-      exercise,
+      workout,
       { new: true }
     );
     if (!updatedWorkout) {
