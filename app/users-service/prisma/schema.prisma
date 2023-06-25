@@ -64,7 +64,7 @@ model GoalNotification {
   id         Int      @id @default(autoincrement())
   user       User     @relation(fields: [userId], references: [id])
   userId     Int      @map("user_id")
-  goalId     Int      @map("goal_id") @unique
+  goalId     Int      @unique @map("goal_id")
   goalTitle  String   @map("goal_title")
   receivedAt DateTime @default(now()) @map("received_at")
 }
@@ -73,7 +73,7 @@ model MessageNotification {
   id         Int      @id @default(autoincrement())
   user       User     @relation(fields: [userId], references: [id])
   userId     Int      @map("user_id")
-  messageId  Int      @map("message_id") @unique
+  senderId   Int      @map("sender_id")
   senderName String   @map("sender_name")
   receivedAt DateTime @default(now()) @map("received_at")
 }
