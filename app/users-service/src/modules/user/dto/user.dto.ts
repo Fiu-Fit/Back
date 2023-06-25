@@ -12,4 +12,6 @@ export interface UserDTO {
   coordinates: [number, number];
   phoneNumber?: string;
   profilePicture?: string;
+  confirmationPIN?: string;
+  confirmed?: boolean;
 }

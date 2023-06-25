@@ -5,6 +5,7 @@ import {
   IsEnum,
   IsNotEmpty,
   IsNumber,
+  IsOptional,
   IsString
 } from 'class-validator';
 
@@ -34,4 +35,8 @@ export class AdminRegisterRequest {
   @IsNumber()
   @Equals(ADMIN_DEFAULT_BODY_WEIGHT)
   bodyWeight: number = -1;
+
+  @IsString()
+  @IsOptional()
+  phoneNumber?: string;
 }

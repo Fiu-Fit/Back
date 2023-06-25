@@ -31,6 +31,9 @@ model User {
   phoneNumber          String?               @map("phone_number")
   verification         Verification?
   profilePicture       String?               @map("profile_picture")
+
+  confirmationPIN     String?               @map("confirmation_pin")
+  confirmed           Boolean               @default(false)
 }
 
 enum Role {

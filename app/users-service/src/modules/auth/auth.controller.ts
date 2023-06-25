@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Patch,
   Post,
   UnauthorizedException,
   UseGuards
@@ -54,5 +55,13 @@ export class AuthController {
   @Post('password-reset')
   async resetPassword(@Body() body: ResetPasswordRequest) {
     await this.authService.resetPassword(body.email);
+  }
+
+  @Patch('confirm-registration')
+  confirmRegistration(
+    @Body('confirmationPIN') confirmationPIN: string,
+    @Body('userId') userId: number
+  ) {
+    return this.authService.confirmRegistration(userId, confirmationPIN);
   }
 }
