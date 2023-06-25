@@ -9,6 +9,7 @@ import {
   UserCredential,
   createUserWithEmailAndPassword,
   getAuth,
+  sendPasswordResetEmail,
   signInWithEmailAndPassword,
   signOut
 } from 'firebase/auth';
@@ -149,9 +150,12 @@ export class AuthService {
     return token;
   }
 
-  async addPasswordReset(token: string): Promise<UserActivity> {
-    const user = await this.userService.getUserByToken(token);
-    if (!user) throw new UnauthorizedException('Invalid token');
+  async resetPassword(email: string): Promise<UserActivity> {
+    const user = await this.userService.getUserByEmail(email);
+    if (!user) throw new BadRequestException('Invalid email');
+
+    const auth = getAuth(firebaseApp);
+    sendPasswordResetEmail(auth, email);
 
     return this.prismaService.userActivity.create({
       data: {

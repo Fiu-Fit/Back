@@ -1,5 +1,6 @@
 import { GoalStatus } from '@prisma/client';
 import {
+  IsArray,
   IsEnum,
   IsNumber,
   IsOptional,
@@ -30,4 +31,8 @@ export class GoalDto {
 
   @IsEnum(GoalStatus)
   status: GoalStatus;
+
+  @IsArray()
+  @IsString({ each: true })
+  multimedia: string[];
 }

@@ -1,7 +1,6 @@
 import {
   Body,
   Controller,
-  Headers,
   Post,
   UnauthorizedException,
   UseGuards
@@ -9,7 +8,12 @@ import {
 import { Role } from '@prisma/client';
 import { AdminGuard } from './admin.guard';
 import { AuthService } from './auth.service';
-import { AdminRegisterRequest, LoginRequest, RegisterRequest } from './dto';
+import {
+  AdminRegisterRequest,
+  LoginRequest,
+  RegisterRequest,
+  ResetPasswordRequest
+} from './dto';
 
 @Controller('auth')
 export class AuthController {
@@ -48,7 +52,7 @@ export class AuthController {
   }
 
   @Post('password-reset')
-  async passwordReset(@Headers('Authorization') bearerToken: string) {
-    await this.authService.addPasswordReset(bearerToken);
+  async resetPassword(@Body() body: ResetPasswordRequest) {
+    await this.authService.resetPassword(body.email);
   }
 }

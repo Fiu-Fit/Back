@@ -29,6 +29,7 @@ model User {
   messageNotifications MessageNotification[]
   deviceToken          String                @default("") @map("device_token")
   phoneNumber          String?               @map("phone_number")
+  profileUrl           String?               @map("profile_url")
 }
 
 enum Role {
