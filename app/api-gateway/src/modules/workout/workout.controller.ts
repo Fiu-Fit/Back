@@ -21,14 +21,14 @@ export class WorkoutController extends ServerController {
     super(httpService, 'workouts');
   }
 
-  @Get('metrics/:id')
+  @Get(':id/metrics')
   async getWorkoutMetrics(
     @Param('id') id: string,
     @Query() filters: string
   ): Promise<WorkoutMetric> {
     const { data } = await firstValueFrom(
       this.httpService
-        .get<WorkoutMetric>(`workouts/metrics/${id}`, {
+        .get<WorkoutMetric>(`workouts/${id}/metrics`, {
           params: filters
         })
         .pipe(catchError(axiosErrorCatcher))

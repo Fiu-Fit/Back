@@ -158,25 +158,23 @@ export class WorkoutsService {
     const ratings: RatingCount[][] = [];
     const averageRatings: number[] = [];
     const favoritedByCount = favoritedBy.map(page => page.count);
-    const startDate = new Date(year, 0, 1);
     const endDate = new Date(year, 1, 1);
 
     for (let i = 0; i < 12; i++) {
       const rating = await this.ratingService.getRatingCountPerValue(
         id,
-        startDate,
+        undefined,
         endDate
       );
       const averageRating = await this.ratingService.getAverageRating(
         id,
-        startDate,
+        undefined,
         endDate
       );
 
       ratings.push(rating);
       averageRatings.push(averageRating);
 
-      startDate.setMonth(startDate.getMonth() + 1);
       endDate.setMonth(endDate.getMonth() + 1);
     }
 

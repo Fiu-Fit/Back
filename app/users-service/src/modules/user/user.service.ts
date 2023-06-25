@@ -249,18 +249,16 @@ export class UserService {
   ): Promise<Array<Page<User>>> {
     const pages = [];
     const year = filter?.year || new Date().getFullYear();
-    const startDate = new Date(year, 0, 1);
     const endDate = new Date(year, 1, 1);
 
     for (let i = 0; i < 12; i++) {
       const page = await this.getUsersWhoFavoritedWorkoutPage(
         workoutId,
-        startDate,
+        undefined,
         endDate
       );
       pages.push(page);
 
-      startDate.setMonth(startDate.getMonth() + 1);
       endDate.setMonth(endDate.getMonth() + 1);
     }
 

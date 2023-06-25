@@ -60,7 +60,7 @@ export class WorkoutsController {
     return this.workoutsService.updateWorkout(id, workout);
   }
 
-  @Get('metrics/:id')
+  @Get(':id/metrics')
   getWorkoutMetrics(
     @Param('id') id: string,
     @Query() filters: WorkoutMetricsFilterDto
