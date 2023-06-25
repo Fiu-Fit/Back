@@ -1,7 +1,9 @@
-import { IsOptional, IsPositive } from 'class-validator';
+import { Type } from 'class-transformer';
+import { IsNumber, IsOptional } from 'class-validator';
 
 export class WorkoutMetricsFilterDto {
+  @IsNumber()
+  @Type(() => Number)
   @IsOptional()
-  @IsPositive()
   year?: number;
 }
