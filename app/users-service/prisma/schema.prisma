@@ -30,6 +30,7 @@ model User {
   deviceToken          String                @default("") @map("device_token")
   phoneNumber          String?               @map("phone_number")
   profileUrl           String?               @map("profile_url")
+  verification         Verification?
 }
 
 enum Role {
@@ -64,7 +65,7 @@ model GoalNotification {
   id         Int      @id @default(autoincrement())
   user       User     @relation(fields: [userId], references: [id])
   userId     Int      @map("user_id")
-  goalId     Int      @map("goal_id") @unique
+  goalId     Int      @unique @map("goal_id")
   goalTitle  String   @map("goal_title")
   receivedAt DateTime @default(now()) @map("received_at")
 }
@@ -73,7 +74,22 @@ model MessageNotification {
   id         Int      @id @default(autoincrement())
   user       User     @relation(fields: [userId], references: [id])
   userId     Int      @map("user_id")
-  messageId  Int      @map("message_id") @unique
+  messageId  Int      @unique @map("message_id")
   senderName String   @map("sender_name")
   receivedAt DateTime @default(now()) @map("received_at")
+}
+
+model Verification {
+  id            Int           @id @default(autoincrement())
+  userId        Int           @map("user_id") @unique
+  user          User          @relation(fields: [userId], references: [id])
+  status        RequestStatus
+  resourceId    String
+  receivedAt    DateTime      @default(now()) @map("received_at")
+}
+
+enum RequestStatus {
+  Pending
+  Declined
+  Approved
 }
