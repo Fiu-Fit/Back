@@ -15,7 +15,7 @@ export class VerificationService {
       data: {
         userId,
         resourceId,
-        requestStatus: RequestStatus.Pending
+        status: RequestStatus.Pending
       }
     });
   }
@@ -31,16 +31,22 @@ export class VerificationService {
   }
 
   async getVerificationRequests(
-    requestStatus?: RequestStatus
+    status?: RequestStatus
   ): Promise<Page<Verification>> {
     const verificationRequests = await this.prismaService.verification.findMany(
       {
-        where: { requestStatus }
+        where: { status }
       }
     );
     return {
       rows:  verificationRequests,
       count: verificationRequests.length
     };
+  }
+
+  getVerification(id: number): Promise<Verification | null> {
+    return this.prismaService.verification.findUnique({
+      where: { id }
+    });
   }
 }

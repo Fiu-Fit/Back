@@ -12,6 +12,7 @@ import { ProgressModule } from './modules/progress/progress.module';
 import { RatingModule } from './modules/ratings/rating.module';
 import { ServiceRegistryModule } from './modules/service-registry/service-registry.module';
 import { UserModule } from './modules/user/user.module';
+import { VerificationsModule } from './modules/verifications/verifications.module';
 import { WorkoutModule } from './modules/workout/workout.module';
 
 @Module({
@@ -27,7 +28,8 @@ import { WorkoutModule } from './modules/workout/workout.module';
     RatingModule,
     FollowerModule,
     NotificationModule,
-    ServiceRegistryModule
+    ServiceRegistryModule,
+    VerificationsModule
   ],
   controllers: [AppController],
   providers:   [AppService]

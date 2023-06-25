@@ -1,15 +1,17 @@
 import { Page } from '@fiu-fit/common';
 import {
+  BadRequestException,
   Body,
   Controller,
-  Delete,
   Get,
   Injectable,
+  NotFoundException,
+  Param,
   ParseIntPipe,
   Post,
-  Query
+  Put
 } from '@nestjs/common';
-import { Follower, User, Verification } from '@prisma/client';
+import { Verification } from '@prisma/client';
 import { VerificationService } from './verification.service';
 
 @Controller('verifications')
@@ -17,35 +19,50 @@ import { VerificationService } from './verification.service';
 export class VerificationController {
   constructor(private readonly verificationService: VerificationService) {}
 
-  @Post('')
+  @Post()
   addVerification(
-    @Body('verification') verification: { userId: number; resourceId: number }
+    @Body('userId') userId: number,
+    @Body('resourceId') resourceId: string
   ): Promise<Verification> {
-    return this.verificationService.addVerificationRequest(
-      verification.userId,
-      verification.resourceId
-    );
+    if (!userId || !resourceId) {
+      throw new BadRequestException({
+        message: 'Id de usuario y video de verificacion son requeridos'
+      });
+    }
+
+    return this.verificationService.addVerificationRequest(userId, resourceId);
   }
 
-  @Get('followers')
-  getFollowers(
-    @Query('userId', ParseIntPipe) userId: number
-  ): Promise<Page<User>> {
-    return this.verificationService.getUserFollowers(userId);
+  @Get()
+  getVerifications(): Promise<Page<Verification>> {
+    return this.verificationService.getVerificationRequests();
   }
 
-  @Get('following')
-  getFollowing(
-    @Query('userId', ParseIntPipe) userId: number
-  ): Promise<Page<User>> {
-    return this.verificationService.getUserFollowings(userId);
+  @Get(':id')
+  async getVerification(
+    @Param('id', ParseIntPipe) id: number
+  ): Promise<Verification> {
+    const verification = await this.verificationService.getVerification(id);
+
+    if (!verification) {
+      throw new NotFoundException({ message: 'Verification not found' });
+    }
+
+    return verification;
   }
 
-  @Delete('unfollow')
-  unfollowUser(
-    @Query('userId', ParseIntPipe) userId: number,
-    @Query('followerId', ParseIntPipe) followerId: number
-  ): Promise<Follower> {
-    return this.verificationService.unfollowUser(userId, followerId);
+  @Put(':id')
+  async updateVerification(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() verification: Verification
+  ): Promise<Verification> {
+    const updatedVerification =
+      await this.verificationService.updateVerification(id, verification);
+
+    if (!updatedVerification) {
+      throw new NotFoundException({ message: 'Verification not found' });
+    }
+
+    return updatedVerification;
   }
 }

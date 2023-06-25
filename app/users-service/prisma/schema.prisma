@@ -30,6 +30,7 @@ model User {
   deviceToken          String                @default("") @map("device_token")
   phoneNumber          String?               @map("phone_number")
   profileUrl           String?               @map("profile_url")
+  verification         Verification?
 }
 
 enum Role {
@@ -80,11 +81,11 @@ model MessageNotification {
 
 model Verification {
   id            Int           @id @default(autoincrement())
-  userId        Int           @map("user_id")
-  requestStatus RequestStatus
+  userId        Int           @map("user_id") @unique
+  user          User          @relation(fields: [userId], references: [id])
+  status        RequestStatus
   resourceId    String
   receivedAt    DateTime      @default(now()) @map("received_at")
-  user          User?
 }
 
 enum RequestStatus {
