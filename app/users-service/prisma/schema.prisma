@@ -17,7 +17,7 @@ model User {
   firstName            String                @map("first_name")
   lastName             String                @map("last_name")
   bodyWeight           Float                 @map("body_weight")
-  favoriteWorkouts     String[]              @default([]) @map("favorite_workouts")
+  favoriteWorkouts     FavoriteWorkout[]
   followers            Follower[]
   role                 Role
   blocked              Boolean               @default(false)
@@ -75,4 +75,13 @@ model MessageNotification {
   messageId  Int      @map("message_id")
   senderName String   @map("sender_name")
   receivedAt DateTime @default(now()) @map("received_at")
+}
+
+model FavoriteWorkout {
+  id         Int      @id @default(autoincrement())
+  user       User     @relation(fields: [userId], references: [id])
+  userId     Int      @map("user_id")
+  workoutId  String      @map("workout_id")
+  createdAt  DateTime @default(now()) @map("created_at")
+  @@unique([userId, workoutId])
 }

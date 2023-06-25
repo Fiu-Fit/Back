@@ -1,4 +1,4 @@
-import { Service, User } from '@fiu-fit/common';
+import { Page, RatingCount, Service, User } from '@fiu-fit/common';
 import { HttpService } from '@nestjs/axios';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
@@ -6,7 +6,7 @@ import { ObjectId } from 'mongodb';
 import { Model } from 'mongoose';
 import { firstValueFrom } from 'rxjs';
 import { RatingService } from '../ratings/rating.service';
-import { WorkoutMetricDto } from './dto';
+import { WorkoutMetricDto, WorkoutMetricsFilterDto } from './dto';
 import { WorkoutDto } from './dto/workout.dto';
 import { Workout } from './schemas/workout.schema';
 
@@ -127,7 +127,10 @@ export class WorkoutsService {
     return updatedWorkout;
   }
 
-  async getWorkoutMetrics(id: string): Promise<WorkoutMetricDto> {
+  async getWorkoutMetrics(
+    id: string,
+    filters: WorkoutMetricsFilterDto
+  ): Promise<WorkoutMetricDto[]> {
     const workout = await this.workoutModel.findById(id);
     if (!workout) {
       throw new NotFoundException('Workout not found');
@@ -142,20 +145,49 @@ export class WorkoutsService {
     );
 
     const { data: favoritedBy } = await firstValueFrom(
-      this.httpService.get<User[]>(
+      this.httpService.get<Array<Page<User>>>(
         `${process.env.USERS_SERVICE_URL}/users/favorited/${id}`,
         {
-          headers: { 'api-key': apiKey }
+          headers: { 'api-key': apiKey },
+          params:  filters
         }
       )
     );
 
-    const ratings = await this.ratingService.getRatingCountPerValue(id);
+    const year = filters.year || new Date().getFullYear();
+    const ratings: RatingCount[][] = [];
+    const averageRatings: number[] = [];
+    const favoritedByCount = favoritedBy.map(page => page.count);
+    const startDate = new Date(year, 0, 1);
+    const endDate = new Date(year, 1, 1);
 
-    return {
-      favoriteCount: favoritedBy.length,
-      averageRating: await this.ratingService.getAverageRating(id),
-      ratings:       ratings
-    };
+    for (let i = 0; i < 12; i++) {
+      const rating = await this.ratingService.getRatingCountPerValue(
+        id,
+        startDate,
+        endDate
+      );
+      const averageRating = await this.ratingService.getAverageRating(
+        id,
+        startDate,
+        endDate
+      );
+
+      ratings.push(rating);
+      averageRatings.push(averageRating);
+
+      startDate.setMonth(startDate.getMonth() + 1);
+      endDate.setMonth(endDate.getMonth() + 1);
+    }
+
+    const metrics = favoritedByCount.map((count, index) => {
+      return {
+        ratings:       ratings[index],
+        averageRating: averageRatings[index],
+        favoriteCount: count
+      };
+    });
+
+    return metrics;
   }
 }

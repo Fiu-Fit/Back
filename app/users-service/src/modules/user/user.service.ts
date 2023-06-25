@@ -5,13 +5,13 @@ import {
   NotFoundException,
   UnauthorizedException
 } from '@nestjs/common';
-import { Prisma, Role, User } from '@prisma/client';
+import { FavoriteWorkout, Prisma, Role, User } from '@prisma/client';
 import * as admin from 'firebase-admin';
 import { firstValueFrom } from 'rxjs';
 import { firebaseAdmin } from '../../firebase/firebase';
 import { PrismaService } from '../../prisma.service';
 import { UserLocationService } from '../user-location/user-location.service';
-import { GetUsersQueryDTO, UserDTO } from './dto';
+import { FavoritedByFilterDto, GetUsersQueryDTO, UserDTO } from './dto';
 
 @Injectable()
 export class UserService {
@@ -121,7 +121,15 @@ export class UserService {
       throw new NotFoundException({ message: 'User not found' });
     }
 
-    const filter = { filters: JSON.stringify({ _id: user.favoriteWorkouts }) };
+    const favoriteWorkouts = await this.prismaService.favoriteWorkout.findMany({
+      where: { userId: id }
+    });
+
+    const favoriteWorkoutsIds = favoriteWorkouts.map(
+      workout => workout.workoutId
+    );
+
+    const filter = { filters: JSON.stringify({ _id: favoriteWorkoutsIds }) };
 
     const {
       data: { apiKey }
@@ -143,36 +151,60 @@ export class UserService {
     return workouts.data;
   }
 
-  async addFavoriteWorkout(id: number, workoutId: string): Promise<User> {
+  async addFavoriteWorkout(
+    id: number,
+    workoutId: string
+  ): Promise<FavoriteWorkout> {
     const user = await this.getUserById(id);
     if (!user) {
       throw new NotFoundException({ message: 'User not found' });
     }
-    if (user.favoriteWorkouts.includes(workoutId)) {
-      // do not add duplicate id
-      return user;
-    }
 
-    const favoriteWorkouts = [...user.favoriteWorkouts, workoutId];
-    return this.prismaService.user.update({
-      where: { id },
-      data:  { favoriteWorkouts }
+    return this.prismaService.favoriteWorkout.upsert({
+      where: {
+        userId_workoutId: {
+          userId:    id,
+          workoutId: workoutId
+        }
+      },
+      create: {
+        userId:    id,
+        workoutId: workoutId
+      },
+      update: {}
     });
   }
 
-  async removeFavoriteWorkout(id: number, workoutId: string): Promise<User> {
+  async removeFavoriteWorkout(
+    id: number,
+    workoutId: string
+  ): Promise<FavoriteWorkout> {
     const user = await this.getUserById(id);
+
     if (!user) {
       throw new NotFoundException({ message: 'User not found' });
     }
 
-    const favoriteWorkouts = user.favoriteWorkouts.filter(
-      idToDelete => idToDelete !== workoutId
-    );
-    return this.prismaService.user.update({
-      where: { id },
-      data:  { favoriteWorkouts }
-    });
+    try {
+      return await this.prismaService.favoriteWorkout.delete({
+        where: {
+          userId_workoutId: {
+            userId:    id,
+            workoutId: workoutId
+          }
+        }
+      });
+    } catch (error) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        if (error.code === 'P2025') {
+          throw new NotFoundException({
+            message: 'Favorite workout not found'
+          });
+        }
+      }
+
+      throw error;
+    }
   }
 
   getUserByEmail(email: string): Promise<User | null> {
@@ -181,14 +213,58 @@ export class UserService {
     });
   }
 
-  getUsersWhoFavoritedWorkout(workoutId: string): Promise<User[]> {
-    return this.prismaService.user.findMany({
+  async getUsersWhoFavoritedWorkoutPage(
+    workoutId: string,
+    start?: Date,
+    end?: Date
+  ): Promise<Page<User>> {
+    const rows = await this.prismaService.favoriteWorkout.findMany({
       where: {
-        favoriteWorkouts: {
-          has: workoutId
+        workoutId,
+        createdAt: {
+          gte: start,
+          lt:  end
         }
-      }
+      },
+      select: { user: true }
     });
+
+    return {
+      rows:  rows.map(row => row.user),
+      count: await this.prismaService.favoriteWorkout.count({
+        where: {
+          workoutId,
+          createdAt: {
+            gte: start,
+            lt:  end
+          }
+        }
+      })
+    };
+  }
+
+  async getUsersWhoFavoritedWorkout(
+    workoutId: string,
+    filter?: FavoritedByFilterDto
+  ): Promise<Array<Page<User>>> {
+    const pages = [];
+    const year = filter?.year || new Date().getFullYear();
+    const startDate = new Date(year, 0, 1);
+    const endDate = new Date(year, 1, 1);
+
+    for (let i = 0; i < 12; i++) {
+      const page = await this.getUsersWhoFavoritedWorkoutPage(
+        workoutId,
+        startDate,
+        endDate
+      );
+      pages.push(page);
+
+      startDate.setMonth(startDate.getMonth() + 1);
+      endDate.setMonth(endDate.getMonth() + 1);
+    }
+
+    return pages;
   }
 
   async editUser(id: number, user: UserDTO): Promise<User> {

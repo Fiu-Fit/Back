@@ -10,7 +10,7 @@ import {
   Query
 } from '@nestjs/common';
 import { ObjectId } from 'mongodb';
-import { WorkoutMetricDto } from './dto';
+import { WorkoutMetricDto, WorkoutMetricsFilterDto } from './dto';
 import { WorkoutDto } from './dto/workout.dto';
 import { Workout } from './schemas/workout.schema';
 import { WorkoutsService } from './workouts.service';
@@ -61,9 +61,12 @@ export class WorkoutsController {
   }
 
   @Get('metrics/:id')
-  getWorkoutMetrics(@Param('id') id: string): Promise<WorkoutMetricDto> {
+  getWorkoutMetrics(
+    @Param('id') id: string,
+    @Query() filters: WorkoutMetricsFilterDto
+  ): Promise<WorkoutMetricDto[]> {
     if (!ObjectId.isValid(id)) throw new BadRequestException('Invalid id');
 
-    return this.workoutsService.getWorkoutMetrics(id);
+    return this.workoutsService.getWorkoutMetrics(id, filters);
   }
 }

@@ -1,4 +1,4 @@
 export interface RatingCount {
-  _id: number;
+  rating: number;
   count: number;
 }

@@ -66,17 +66,40 @@ export class RatingService {
     return updatedRating;
   }
 
-  async getAverageRating(workoutId: string): Promise<number> {
-    const ratings = await this.ratingModel.find({ workoutId });
+  async getAverageRating(
+    workoutId: string,
+    start?: Date,
+    end?: Date
+  ): Promise<number> {
+    const ratings = await this.ratingModel.find({
+      workoutId,
+      ratedAt: {
+        $gte: start ? new Date(start) : new Date(0),
+        $lt:  end ? new Date(end) : new Date()
+      }
+    });
+
     if (!ratings) {
       throw new BadRequestException('No ratings found');
     }
     return Math.round(sumBy(ratings, 'rating') / ratings.length);
   }
 
-  async getRatingCountPerValue(workoutId: string): Promise<RatingCount[]> {
+  async getRatingCountPerValue(
+    workoutId: string,
+    start?: Date,
+    end?: Date
+  ): Promise<RatingCount[]> {
     const ratingsByValue = await this.ratingModel.aggregate([
-      { $match: { workoutId: new ObjectId(workoutId) } },
+      {
+        $match: {
+          workoutId: new ObjectId(workoutId),
+          ratedAt:   {
+            $gte: start ? new Date(start) : new Date(0),
+            $lt:  end ? new Date(end) : new Date()
+          }
+        }
+      },
       {
         $group: {
           _id:   '$rating',
@@ -96,7 +119,11 @@ export class RatingService {
         _id:   i,
         count: 0
       };
-      completeRatingsByValue.push(currentRating);
+
+      completeRatingsByValue.push({
+        rating: currentRating._id,
+        count:  currentRating.count
+      });
     }
 
     return completeRatingsByValue;
