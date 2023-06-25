@@ -29,8 +29,7 @@ model User {
   messageNotifications MessageNotification[]
   deviceToken          String                @default("") @map("device_token")
   phoneNumber          String?               @map("phone_number")
-  verificationId       Int?                  @unique
-  verification         Verification?         @relation(fields: [verificationId], references: [id])
+  profileUrl           String?               @map("profile_url")
 }
 
 enum Role {

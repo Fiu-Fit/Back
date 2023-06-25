@@ -16,6 +16,7 @@ export interface User {
   favoriteWorkouts: string[];
   interests: Category[];
   phoneNumber?: string;
+  profilePicture?: string;
 }
 
 export interface Empty {}
