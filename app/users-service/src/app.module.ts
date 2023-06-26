@@ -10,6 +10,7 @@ import { MetricsModule } from './modules/metrics/metrics.module';
 import { NotificationModule } from './modules/notifications/notification.module';
 import { UserModule } from './modules/user/user.module';
 import { UserLocationModule } from './modules/user-location/user-location.module';
+import { VerificationModule } from './modules/verifications/verification.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { UserLocationModule } from './modules/user-location/user-location.module
     UserModule,
     AuthModule,
     FollowerModule,
+    VerificationModule,
     MetricsModule,
     NotificationModule,
     UserLocationModule,

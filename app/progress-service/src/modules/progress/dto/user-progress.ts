@@ -5,5 +5,5 @@ export class UserProgress {
 
   burntCalories: number;
 
-  activityTypes: { [category: number]: number };
+  numberOfExercises: number;
 }
