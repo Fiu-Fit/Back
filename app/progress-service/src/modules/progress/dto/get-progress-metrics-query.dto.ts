@@ -18,4 +18,7 @@ export class GetProgressMetricsQueryDTO {
   @Type(() => Number)
   @IsOptional()
   userId?: number;
+
+  @IsOptional()
+  category?: number;
 }

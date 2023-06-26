@@ -55,7 +55,7 @@
   "resolutions": {
     "@types/express-serve-static-core": "4.17.33"
   },
-  "packageManager": "yarn@3.5.1",
+  "packageManager": "yarn@3.6.0",
   "dependencies": {
     "turbo": "^1.9.9"
   }
