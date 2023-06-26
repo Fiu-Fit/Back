@@ -7,7 +7,7 @@ export class MessageNotificationDTO {
 
   @IsNumber()
   @IsNotEmpty()
-  messageId: number;
+  senderId: number;
 
   @IsString()
   @IsNotEmpty()

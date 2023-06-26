@@ -36,4 +36,6 @@ const firebaseConfig = {
 
 // Initialize Firebase
 export const firebaseApp = initializeApp(firebaseConfig);
+
+export { admin };
 // const analytics = getAnalytics(app);

@@ -1,6 +1,7 @@
 import { Category, WorkoutExercise } from '@fiu-fit/common';
 import {
   IsArray,
+  IsBoolean,
   IsEnum,
   IsNotEmpty,
   IsNumber,
@@ -51,4 +52,8 @@ export class WorkoutDto {
   @IsArray()
   @IsString({ each: true })
   multimedia: string[];
+
+  @IsBoolean()
+  @IsOptional()
+  isBlocked?: boolean;
 }

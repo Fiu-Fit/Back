@@ -44,9 +44,9 @@ export class NotificationController {
     return this.notificationService.createMessageNotification(data);
   }
 
-  @Delete('goals/:id')
+  @Delete('goals/:goalId')
   async deleteNotification(
-    @Param('id') id: number
+    @Param('goalId') id: number
   ): Promise<GoalNotification | null> {
     try {
       return await this.notificationService.deleteGoalNotification(id);
@@ -55,12 +55,10 @@ export class NotificationController {
     }
   }
 
-  @Delete('messages/:id')
-  async deleteMessageNotification(
-    @Param('id') id: number
-  ): Promise<MessageNotification | null> {
+  @Delete('messages/:senderId')
+  async deleteMessageNotification(@Param('senderId') senderId: number) {
     try {
-      return await this.notificationService.deleteMessageNotification(id);
+      await this.notificationService.deleteMessageNotifications(senderId);
     } catch (error) {
       throw error;
     }
