@@ -1,5 +1,4 @@
 import {
-  BadRequestException,
   Injectable,
   NotFoundException
 } from '@nestjs/common';
@@ -95,10 +94,6 @@ export class WorkoutsService {
 
     if (!workout) {
       throw new NotFoundException('El plan de entrenamiento no existe');
-    }
-
-    if (workout.isBlocked) {
-      throw new BadRequestException('El plan de entrenamiento esta bloqueado');
     }
 
     return {
