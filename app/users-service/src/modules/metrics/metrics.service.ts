@@ -89,7 +89,9 @@ export class MetricsService {
       where: { uid }
     });
 
-    if (!user) throw new UnauthorizedException('User not found');
+    if (!user) throw new UnauthorizedException('Usuario no existe');
+
+    if (user.blocked) throw new UnauthorizedException('Usuario esta bloqueado');
 
     await this.prismaService.userActivity.create({
       data: {
