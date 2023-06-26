@@ -73,7 +73,7 @@ model MessageNotification {
   id         Int      @id @default(autoincrement())
   user       User     @relation(fields: [userId], references: [id])
   userId     Int      @map("user_id")
-  messageId  Int      @unique @map("message_id")
+  senderId   Int      @map("sender_id")
   senderName String   @map("sender_name")
   receivedAt DateTime @default(now()) @map("received_at")
 }
