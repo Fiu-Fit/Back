@@ -41,6 +41,7 @@ model Goal {
   createdAt    DateTime     @default(now())
   exerciseId   String
   status       GoalStatus   @default(InProgress)
+  multimedia String[]
 }
 
 enum GoalStatus {
