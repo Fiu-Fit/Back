@@ -63,7 +63,7 @@ export class Workout {
   @Prop()
   multimedia: string[];
 
-  @Prop()
+  @Prop({ default: false })
   isBlocked: boolean;
 }
 
