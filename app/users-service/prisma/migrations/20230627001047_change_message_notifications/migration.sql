@@ -11,6 +11,3 @@ DROP INDEX "MessageNotification_message_id_key";
 -- AlterTable
 ALTER TABLE "MessageNotification" DROP COLUMN "message_id",
 ADD COLUMN     "sender_id" INTEGER NOT NULL;
-
--- AlterTable
-ALTER TABLE "User" ADD COLUMN     "profile_url" TEXT;

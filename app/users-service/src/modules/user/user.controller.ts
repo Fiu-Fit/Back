@@ -13,8 +13,8 @@ import {
   Query,
   UnauthorizedException
 } from '@nestjs/common';
-import { Role, User } from '@prisma/client';
-import { GetUsersQueryDTO } from './dto';
+import { FavoriteWorkout, Role, User } from '@prisma/client';
+import { FavoritedByFilterDto, GetUsersQueryDTO } from './dto';
 import { UserDTO } from './dto/user.dto';
 import { UserService } from './user.service';
 
@@ -38,6 +38,14 @@ export class UserController {
   @Get()
   getUsers(@Query() filter: GetUsersQueryDTO): Promise<Page<User>> {
     return this.userService.findAndCount(filter);
+  }
+
+  @Get('favorited/:workoutId')
+  getUsersWhoFavoritedWorkout(
+    @Param('workoutId') workoutId: string,
+    @Query() filter: FavoritedByFilterDto
+  ): Promise<Array<Page<User>>> {
+    return this.userService.getUsersWhoFavoritedWorkout(workoutId, filter);
   }
 
   @Put(':id')
@@ -102,7 +110,7 @@ export class UserController {
   addFavoriteWorkout(
     @Param('id', ParseIntPipe) id: number,
     @Body('workoutId') workoutId: string
-  ): Promise<User> {
+  ): Promise<FavoriteWorkout> {
     return this.userService.addFavoriteWorkout(id, workoutId);
   }
 
@@ -110,7 +118,7 @@ export class UserController {
   removeFavoriteWorkout(
     @Param('id', ParseIntPipe) id: number,
     @Param('workoutId') workoutId: string
-  ): Promise<User> {
+  ): Promise<FavoriteWorkout> {
     return this.userService.removeFavoriteWorkout(id, workoutId);
   }
 }

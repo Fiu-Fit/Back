@@ -94,4 +94,17 @@ export class UserController extends ServerController {
     );
     return data;
   }
+
+  @Get('favorited/:workoutId')
+  async getUsersWhoFavoritedWorkout(
+    @Param('workoutId') workoutId: string
+  ): Promise<User[]> {
+    const { data } = await firstValueFrom(
+      this.httpService
+        .get<User[]>(`/users/favorited/${workoutId}`)
+        .pipe(catchError(axiosErrorCatcher))
+    );
+
+    return data;
+  }
 }

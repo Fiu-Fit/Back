@@ -1,3 +1,4 @@
+import { RatingCount } from '@fiu-fit/common';
 import {
   BadRequestException,
   Injectable,
@@ -5,6 +6,7 @@ import {
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { sumBy } from 'lodash';
+import { ObjectId } from 'mongodb';
 import { Model } from 'mongoose';
 import { RatingDto } from './dto/rating.dto';
 import { Rating } from './schemas/rating.schema';
@@ -64,11 +66,66 @@ export class RatingService {
     return updatedRating;
   }
 
-  async getAverageRating(workoutId: string): Promise<number> {
-    const ratings = await this.ratingModel.find({ workoutId });
+  async getAverageRating(
+    workoutId: string,
+    start?: Date,
+    end?: Date
+  ): Promise<number> {
+    const ratings = await this.ratingModel.find({
+      workoutId,
+      ratedAt: {
+        $gte: start ? new Date(start) : new Date(0),
+        $lt:  end ? new Date(end) : new Date()
+      }
+    });
+
     if (!ratings) {
       throw new BadRequestException('No ratings found');
     }
     return Math.round(sumBy(ratings, 'rating') / ratings.length);
+  }
+
+  async getRatingCountPerValue(
+    workoutId: string,
+    start?: Date,
+    end?: Date
+  ): Promise<RatingCount[]> {
+    const ratingsByValue = await this.ratingModel.aggregate([
+      {
+        $match: {
+          workoutId: new ObjectId(workoutId),
+          ratedAt:   {
+            $gte: start ? new Date(start) : new Date(0),
+            $lt:  end ? new Date(end) : new Date()
+          }
+        }
+      },
+      {
+        $group: {
+          _id:   '$rating',
+          count: { $sum: 1 }
+        }
+      }
+    ]);
+
+    if (!ratingsByValue) {
+      throw new BadRequestException('No ratings found');
+    }
+
+    const completeRatingsByValue = [];
+
+    for (let i = 1; i <= 5; i++) {
+      const currentRating = ratingsByValue.find(rating => rating._id === i) || {
+        _id:   i,
+        count: 0
+      };
+
+      completeRatingsByValue.push({
+        rating: currentRating._id,
+        count:  currentRating.count
+      });
+    }
+
+    return completeRatingsByValue;
   }
 }
