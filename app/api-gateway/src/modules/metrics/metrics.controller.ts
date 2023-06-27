@@ -89,4 +89,21 @@ export class MetricsController {
 
     return data;
   }
+
+  @Get('trainers')
+  async getTrainerMetrics(
+    @Headers('Authorization') authToken: string,
+    @Query() filter: { [key: string]: string }
+  ) {
+    const { data } = await firstValueFrom(
+      this.httpService
+        .get<Page<User>>('metrics/trainers', {
+          params:  filter,
+          headers: { Authorization: authToken }
+        })
+        .pipe(catchError(axiosErrorCatcher))
+    );
+
+    return data;
+  }
 }
