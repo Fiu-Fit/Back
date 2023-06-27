@@ -8,6 +8,7 @@ import {
   Injectable,
   Post
 } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { catchError, firstValueFrom } from 'rxjs';
 import { axiosErrorCatcher } from '../../shared/axios-error-catcher';
 import {
@@ -17,6 +18,7 @@ import {
   Token
 } from './interfaces/auth.interface';
 
+@ApiTags('Authentication')
 @Injectable()
 @Controller('auth')
 export class AuthController {

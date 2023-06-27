@@ -10,11 +10,13 @@ import {
   Query,
   UseGuards
 } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { catchError, firstValueFrom } from 'rxjs';
 import { axiosErrorCatcher } from '../../shared/axios-error-catcher';
 import { ServerController } from '../../shared/server-controller';
 import { AuthGuard } from '../auth/auth.guard';
 
+@ApiTags('Followers')
 @Injectable()
 @UseGuards(AuthGuard)
 @Controller('followers')

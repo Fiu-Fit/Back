@@ -8,10 +8,12 @@ import {
   Query,
   UseGuards
 } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { firstValueFrom } from 'rxjs';
 import { ServerController } from '../../shared/server-controller';
 import { AuthGuard } from '../auth/auth.guard';
 
+@ApiTags('Progress')
 @UseGuards(AuthGuard)
 @Controller('progress')
 export class ProgressController extends ServerController {

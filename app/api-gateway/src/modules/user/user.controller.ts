@@ -15,12 +15,14 @@ import {
   Query,
   UseGuards
 } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { catchError, firstValueFrom } from 'rxjs';
 import { axiosErrorCatcher } from '../../shared/axios-error-catcher';
 import { ServerController } from '../../shared/server-controller';
 import { AuthGuard } from '../auth/auth.guard';
 import { User } from './interfaces/user.interface';
 
+@ApiTags('User')
 @Injectable()
 @UseGuards(AuthGuard)
 @Controller('users')

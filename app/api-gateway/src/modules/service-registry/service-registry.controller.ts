@@ -1,9 +1,11 @@
 import { HttpService } from '@nestjs/axios';
 import { Controller, Get, Injectable, Param } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { ServerController } from '../../shared/server-controller';
 import { Service } from '../../shared/service-config';
 import { ServiceRegistryService } from './service-registry.service';
 
+@ApiTags('Service Registry')
 @Injectable()
 @Controller('service-registry')
 export class ServiceRegistryController extends ServerController {

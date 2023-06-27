@@ -1,10 +1,12 @@
 import { Page } from '@fiu-fit/common';
 import { HttpService } from '@nestjs/axios';
 import { Body, Controller, Get, Headers, Post, Query } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { catchError, firstValueFrom } from 'rxjs';
 import { axiosErrorCatcher } from '../../shared/axios-error-catcher';
 import { User } from '../user/interfaces/user.interface';
 
+@ApiTags('Metrics')
 @Controller('metrics')
 export class MetricsController {
   constructor(private httpService: HttpService) {}

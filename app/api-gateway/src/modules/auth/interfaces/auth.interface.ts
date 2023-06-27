@@ -10,8 +10,9 @@ export interface RegisterRequest {
   role: string;
 }
 
-export interface LoginRequest {
+export class LoginRequest {
   email: string;
+
   password: string;
 }
 
