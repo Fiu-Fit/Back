@@ -8,6 +8,7 @@ export interface Goal {
   createdAt?: Date;
   exerciseId: string;
   status: GoalStatus;
+  multimedia: string[];
 }
 
 export enum GoalStatus {

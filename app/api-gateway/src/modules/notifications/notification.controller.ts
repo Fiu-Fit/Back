@@ -54,16 +54,16 @@ export class NotificationController extends ServerController {
     return data;
   }
 
-  @Delete('goals/:id')
-  async deleteGoalNotification(@Param('id') id: number) {
+  @Delete('goals/:goalId')
+  async deleteGoalNotification(@Param('goalId') id: number) {
     const { data } = await firstValueFrom(
       this.httpService.delete(`/notifications/goals/${id}`)
     );
     return data;
   }
 
-  @Delete('messages/:id')
-  async deleteMessageNotification(@Param('id') id: number) {
+  @Delete('messages/:senderId')
+  async deleteMessageNotification(@Param('senderId') id: number) {
     const { data } = await firstValueFrom(
       this.httpService.delete(`/notifications/messages/${id}`)
     );

@@ -1,6 +1,6 @@
 import { Page } from '@fiu-fit/common';
 import { HttpService } from '@nestjs/axios';
-import { Controller, Get, Headers, Query } from '@nestjs/common';
+import { Body, Controller, Get, Headers, Post, Query } from '@nestjs/common';
 import { catchError, firstValueFrom } from 'rxjs';
 import { axiosErrorCatcher } from '../../shared/axios-error-catcher';
 import { User } from '../user/interfaces/user.interface';
@@ -70,6 +70,19 @@ export class MetricsController {
         .get<Page<User>>('metrics/users', {
           params:  filter,
           headers: { Authorization: authToken }
+        })
+        .pipe(catchError(axiosErrorCatcher))
+    );
+
+    return data;
+  }
+
+  @Post('login')
+  async createLoginMetric(@Body('uid') uid: string) {
+    const { data } = await firstValueFrom(
+      this.httpService
+        .post('metrics/login', {
+          uid
         })
         .pipe(catchError(axiosErrorCatcher))
     );

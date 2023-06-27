@@ -9,6 +9,7 @@ import {
   UserCredential,
   createUserWithEmailAndPassword,
   getAuth,
+  sendPasswordResetEmail,
   signInWithEmailAndPassword,
   signOut
 } from 'firebase/auth';
@@ -76,6 +77,12 @@ export class AuthService {
       });
     }
 
+    if (user.blocked) {
+      throw new UnauthorizedException({
+        message: 'User is blocked'
+      });
+    }
+
     await this.updateLoginTime(user.id);
 
     return { token };
@@ -88,6 +95,12 @@ export class AuthService {
     if (!user || user.role !== Role.Admin) {
       throw new UnauthorizedException({
         message: 'Invalid credentials: You are not an admin'
+      });
+    }
+
+    if (user.blocked) {
+      throw new UnauthorizedException({
+        message: 'Admin user is blocked'
       });
     }
 
@@ -137,9 +150,12 @@ export class AuthService {
     return token;
   }
 
-  async addPasswordReset(token: string): Promise<UserActivity> {
-    const user = await this.userService.getUserByToken(token);
-    if (!user) throw new UnauthorizedException('Invalid token');
+  async resetPassword(email: string): Promise<UserActivity> {
+    const user = await this.userService.getUserByEmail(email);
+    if (!user) throw new BadRequestException('Invalid email');
+
+    const auth = getAuth(firebaseApp);
+    sendPasswordResetEmail(auth, email);
 
     return this.prismaService.userActivity.create({
       data: {

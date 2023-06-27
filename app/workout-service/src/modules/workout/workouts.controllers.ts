@@ -53,7 +53,7 @@ export class WorkoutsController {
   @Put(':id')
   updateWorkout(
     @Param('id') id: string,
-    @Body() workout: Workout
+    @Body() workout: Partial<WorkoutDto>
   ): Promise<Workout> {
     if (!ObjectId.isValid(id)) throw new BadRequestException('Invalid id');
 

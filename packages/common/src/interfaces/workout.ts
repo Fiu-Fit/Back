@@ -13,4 +13,5 @@ export interface Workout {
   authorId: number;
   averageRating?: number;
   updatedAt?: string;
+  multimedia: string[];
 }

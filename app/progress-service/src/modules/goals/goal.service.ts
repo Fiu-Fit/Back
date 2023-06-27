@@ -58,7 +58,25 @@ export class GoalService {
     });
   }
 
-  deleteGoal(id: number): Promise<Goal> {
+  async deleteGoal(id: number): Promise<Goal> {
+    const {
+      data: { apiKey }
+    } = await firstValueFrom(
+      this.httpService.get<Service>(
+        `${process.env.SERVICE_REGISTRY_URL}/service-registry/name/user`
+      )
+    );
+
+    await firstValueFrom(
+      this.httpService.delete(
+        `${process.env.USER_SERVICE_URL}/notifications/goals/${id}`,
+        {
+          headers: {
+            'api-key': apiKey
+          }
+        }
+      )
+    );
     return this.prismaService.goal.delete({
       where: { id }
     });
@@ -82,6 +100,7 @@ export class GoalService {
     const filter = new GetProgressMetricsQueryDTO();
     filter.exerciseId = goal.exerciseId.toString();
     filter.start = new Date(goal.createdAt).toISOString();
+    filter.userId = goal.userId;
 
     const metrics = await this.progressService.findAndCount(filter);
 
@@ -91,10 +110,14 @@ export class GoalService {
     if (value < goal.targetValue) {
       return goal;
     }
-    const status =
-      goal.deadline && goal.deadline >= new Date()
-        ? GoalStatus.Completed
-        : GoalStatus.CompletedLate;
+
+    let status;
+    if (goal.deadline && goal.deadline < new Date()) {
+      status = GoalStatus.CompletedLate;
+    } else {
+      status = GoalStatus.Completed;
+    }
+
     return this.completeGoal(goal, status);
   }
 

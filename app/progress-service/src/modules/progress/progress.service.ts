@@ -17,6 +17,7 @@ import {
   GetProgressMetricsQueryDTO,
   ProgressMetricDTO
 } from './dto';
+import { UserProgress } from './dto/user-progress';
 
 const logger = LoggerFactory('progress-service');
 
@@ -66,7 +67,7 @@ export class ProgressService {
         }
       )
     );
-    return ((METValue * 3.5 * bodyWeight) / (200 * 60)) * timeSpent;
+    return Math.round((METValue * 3.5 * bodyWeight) / (200 * 60)) * timeSpent;
   }
 
   async createProgressMetric(data: ProgressMetricDTO): Promise<ProgressMetric> {
@@ -76,7 +77,8 @@ export class ProgressService {
       data.userId
     );
 
-    const metricData = { ...data, burntCalories };
+    const metricData = { burntCalories, ...data };
+    console.log(metricData);
 
     return this.prisma.progressMetric.create({
       data: metricData
@@ -86,6 +88,7 @@ export class ProgressService {
   async findAndCount(
     filter: GetProgressMetricsQueryDTO
   ): Promise<Page<ProgressMetric>> {
+    logger.info('Filter to get metrics: ', filter);
     const filters = {
       updatedAt: {
         gte: filter.start,
@@ -234,5 +237,115 @@ export class ProgressService {
       exerciseId: exercise.exerciseId,
       userId
     });
+  }
+
+  /**
+   * Calculates the user progress in a time period, filtering by activity type if required.
+   * @param userId the id of the user to get the progress.
+   * @param filter to get the progress in a time period and to filter progress by exercise category.
+   * @returns the UserProgress.
+   */
+  async getUserProgress(
+    userId: number,
+    filter: GetProgressMetricsQueryDTO
+  ): Promise<UserProgress> {
+    let metrics: Page<ProgressMetric>;
+    logger.info('Filter to get user progress: ', filter);
+
+    if (filter.category) {
+      logger.info('Filtering by category: ', filter.category);
+      const { category, ...rest } = filter;
+      metrics = await this.findAndCount({
+        ...rest,
+        userId
+      });
+
+      metrics = await this.filterMetricsByCategory(metrics, category);
+    } else {
+      metrics = await this.findAndCount({
+        ...filter,
+        userId
+      });
+    }
+
+    logger.info(`Metrics for user ${userId}: `, metrics);
+
+    const traveledDistance = metrics.rows
+      .filter(metric => metric.unit === Unit.METERS)
+      .reduce((actual, total) => actual + total.value, 0);
+
+    const timeSpent = metrics.rows.reduce(
+      (actual, total) => actual + total.timeSpent,
+      0
+    );
+
+    const burntCalories = metrics.rows.reduce(
+      (actual, total) => actual + total.burntCalories,
+      0
+    );
+
+    logger.debug('User progress: ', {
+      traveledDistance,
+      timeSpent:         Math.round(timeSpent / 60), // in minutes
+      burntCalories:     Math.round(burntCalories),
+      numberOfExercises: metrics.count
+    });
+
+    return {
+      traveledDistance,
+      timeSpent:         Math.round(timeSpent / 60), // in minutes
+      burntCalories:     Math.round(burntCalories),
+      numberOfExercises: metrics.count
+    };
+  }
+
+  /**
+   * Gets the exercises that match the given ids and category.
+   * @param exerciseIds array of exercise ids to filter.
+   * @param category category to filter.
+   * @returns an array with the filtered exerciseIds.
+   */
+  async getFilteredExerciseIds(
+    exerciseIds: string[],
+    category: number
+  ): Promise<string[]> {
+    const {
+      data: { apiKey }
+    } = await firstValueFrom(
+      this.httpService.get<Service>(
+        `${process.env.SERVICE_REGISTRY_URL}/service-registry/name/workout`
+      )
+    );
+
+    const exercises = await firstValueFrom(
+      this.httpService.get<Exercise[]>(
+        `${process.env.WORKOUT_SERVICE_URL}/exercises`,
+        {
+          params:  { filters: JSON.stringify({ _id: exerciseIds, category }) },
+          headers: { 'api-key': apiKey }
+        }
+      )
+    );
+
+    return exercises.data.map(exercise => exercise._id);
+  }
+
+  async filterMetricsByCategory(
+    metrics: Page<ProgressMetric>,
+    category: number
+  ): Promise<Page<ProgressMetric>> {
+    const exerciseIds = await this.getFilteredExerciseIds(
+      metrics.rows.map(metric => metric.exerciseId),
+      category
+    );
+
+    const filteredMetrics = metrics.rows.filter(metric =>
+      exerciseIds.includes(metric.exerciseId)
+    );
+    logger.info('Filtered metrics: ', filteredMetrics);
+    return {
+      rows:  filteredMetrics,
+      count: filteredMetrics.length
+    };
   }
 }

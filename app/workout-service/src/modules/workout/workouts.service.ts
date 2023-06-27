@@ -95,7 +95,7 @@ export class WorkoutsService {
     ]);
 
     if (!workout) {
-      throw new NotFoundException('Workout not found');
+      throw new NotFoundException('El plan de entrenamiento no existe');
     }
 
     return {
@@ -115,10 +115,13 @@ export class WorkoutsService {
     return workout;
   }
 
-  async updateWorkout(id: string, exercise: Workout): Promise<Workout> {
+  async updateWorkout(
+    id: string,
+    workout: Partial<WorkoutDto>
+  ): Promise<Workout> {
     const updatedWorkout = await this.workoutModel.findByIdAndUpdate(
       { _id: id },
-      exercise,
+      workout,
       { new: true }
     );
     if (!updatedWorkout) {

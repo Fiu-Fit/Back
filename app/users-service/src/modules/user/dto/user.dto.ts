@@ -11,4 +11,5 @@ export interface UserDTO {
   interests: Category[];
   coordinates: [number, number];
   phoneNumber?: string;
+  profilePicture?: string;
 }

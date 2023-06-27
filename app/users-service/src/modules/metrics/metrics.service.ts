@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { Role, UserActivityType } from '@prisma/client';
 import { PrismaService } from '../../prisma.service';
 import { GetAuthMetricsQueryDTO, GetUserMetricsQueryDTO } from './dto';
@@ -82,5 +82,22 @@ export class MetricsService {
     return Object.fromEntries(
       Object.values(Role).map(role => [role, countedValues[role] || 0])
     );
+  }
+
+  async createLoginMetric(uid: string) {
+    const user = await this.prismaService.user.findUnique({
+      where: { uid }
+    });
+
+    if (!user) throw new UnauthorizedException('Usuario no existe');
+
+    if (user.blocked) throw new UnauthorizedException('Usuario esta bloqueado');
+
+    await this.prismaService.userActivity.create({
+      data: {
+        type:   UserActivityType.Login,
+        userId: user.id
+      }
+    });
   }
 }
