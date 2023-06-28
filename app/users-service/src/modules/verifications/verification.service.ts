@@ -49,4 +49,10 @@ export class VerificationService {
       where: { id }
     });
   }
+
+  getVerificationByUserId(userId: number): Promise<Verification | null> {
+    return this.prismaService.verification.findFirst({
+      where: { userId }
+    });
+  }
 }

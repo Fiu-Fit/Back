@@ -65,4 +65,19 @@ export class VerificationController {
 
     return updatedVerification;
   }
+
+  @Get('user/:userId')
+  async getVerificationByUserId(
+    @Param('userId', ParseIntPipe) userId: number
+  ): Promise<Verification> {
+    const verification = await this.verificationService.getVerificationByUserId(
+      userId
+    );
+
+    if (!verification) {
+      throw new NotFoundException({ message: 'Verification not found' });
+    }
+
+    return verification;
+  }
 }
