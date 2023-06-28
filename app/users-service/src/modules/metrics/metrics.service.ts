@@ -1,7 +1,8 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { Role, UserActivityType } from '@prisma/client';
+import { RequestStatus, Role, UserActivityType } from '@prisma/client';
 import { PrismaService } from '../../prisma.service';
 import { GetAuthMetricsQueryDTO, GetUserMetricsQueryDTO } from './dto';
+import { TrainerMetrics } from './interfaces';
 
 @Injectable()
 export class MetricsService {
@@ -99,5 +100,31 @@ export class MetricsService {
         userId: user.id
       }
     });
+  }
+
+  async getTrainerMetrics(
+    filter: GetUserMetricsQueryDTO
+  ): Promise<TrainerMetrics> {
+    const trainerCount = await this.prismaService.user.count({
+      where: {
+        role: Role.Trainer,
+        ...filter
+      }
+    });
+
+    const verifiedTrainerCount = await this.prismaService.verification.count({
+      where: {
+        status: RequestStatus.Approved,
+        user:   {
+          role: Role.Trainer,
+          ...filter
+        }
+      }
+    });
+
+    return {
+      unverifiedTrainers: trainerCount - verifiedTrainerCount,
+      verifiedTrainers:   verifiedTrainerCount
+    };
   }
 }
