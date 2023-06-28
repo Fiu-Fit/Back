@@ -243,12 +243,11 @@ export class UserService {
     };
   }
 
-  async getUsersWhoFavoritedWorkout(
+  async getUsersWhoFavoritedWorkoutPerMonth(
     workoutId: string,
-    filter?: FavoritedByFilterDto
-  ): Promise<Array<Page<User>>> {
+    year: number
+  ): Promise<Array<Page<User>> | Page<User>> {
     const pages = [];
-    const year = filter?.year || new Date().getFullYear();
     const endDate = new Date(year, 1, 1);
 
     for (let i = 0; i < 12; i++) {
@@ -263,6 +262,21 @@ export class UserService {
     }
 
     return pages;
+  }
+
+  getUsersWhoFavoritedWorkout(
+    workoutId: string,
+    filter?: FavoritedByFilterDto
+  ): Promise<Array<Page<User>> | Page<User>> {
+    if (filter?.year) {
+      return this.getUsersWhoFavoritedWorkoutPerMonth(workoutId, filter.year);
+    }
+
+    return this.getUsersWhoFavoritedWorkoutPage(
+      workoutId,
+      undefined,
+      undefined
+    );
   }
 
   async editUser(id: number, user: UserDTO): Promise<User> {

@@ -44,7 +44,7 @@ export class UserController {
   getUsersWhoFavoritedWorkout(
     @Param('workoutId') workoutId: string,
     @Query() filter: FavoritedByFilterDto
-  ): Promise<Array<Page<User>>> {
+  ): Promise<Array<Page<User>> | Page<User>> {
     return this.userService.getUsersWhoFavoritedWorkout(workoutId, filter);
   }
 
