@@ -4,6 +4,7 @@ import {
   IsEmail,
   IsEnum,
   IsNotEmpty,
+  IsOptional,
   IsPositive,
   IsString
 } from 'class-validator';
@@ -31,4 +32,9 @@ export class RegisterRequest {
   @Type(() => Number)
   @IsPositive()
   bodyWeight: number;
+
+  @IsString()
+  @IsNotEmpty()
+  @IsOptional()
+  profilePicture?: string;
 }

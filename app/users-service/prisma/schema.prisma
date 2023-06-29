@@ -30,6 +30,7 @@ model User {
   deviceToken          String                @default("") @map("device_token")
   phoneNumber          String?               @map("phone_number")
   verification         Verification?
+  profilePicture       String?               @map("profile_picture")
 }
 
 enum Role {
