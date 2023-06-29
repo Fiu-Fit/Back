@@ -52,7 +52,10 @@ export class UserService {
     return {
       rows: await this.prismaService.user.findMany({
         orderBy: { id: 'asc' },
-        where
+        where,
+        include: {
+          verification: true
+        }
       }),
       count: await this.prismaService.user.count({ where })
     };
@@ -89,7 +92,10 @@ export class UserService {
     return {
       rows: await this.prismaService.user.findMany({
         orderBy: { id: 'asc' },
-        where
+        where,
+        include: {
+          verification: true
+        }
       }),
       count: await this.prismaService.user.count({ where })
     };
@@ -101,7 +107,10 @@ export class UserService {
     const userLocation = await this.userLocationService.findUserLocation(id);
 
     const user = await this.prismaService.user.findUnique({
-      where: { id }
+      where:   { id },
+      include: {
+        verification: true
+      }
     });
 
     if (!user) {
@@ -209,7 +218,10 @@ export class UserService {
 
   getUserByEmail(email: string): Promise<User | null> {
     return this.prismaService.user.findUnique({
-      where: { email }
+      where:   { email },
+      include: {
+        verification: true
+      }
     });
   }
 
@@ -350,6 +362,9 @@ export class UserService {
           in: nearestUsers.map(userLocation => userLocation.userId)
         },
         role: Role.Trainer
+      },
+      include: {
+        verification: true
       }
     });
   }
