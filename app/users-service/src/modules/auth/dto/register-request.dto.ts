@@ -36,5 +36,10 @@ export class RegisterRequest {
   @IsString()
   @IsNotEmpty()
   @IsOptional()
+  phoneNumber?: string;
+
+  @IsString()
+  @IsNotEmpty()
+  @IsOptional()
   profilePicture?: string;
 }
