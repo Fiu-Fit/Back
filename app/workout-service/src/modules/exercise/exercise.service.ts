@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { ExerciseDto } from './dto/exercise.dto';
@@ -27,7 +27,7 @@ export class ExerciseService {
   async getExercise(id: string): Promise<Exercise> {
     const exercise = await this.exerciseModel.findById({ _id: id });
     if (!exercise) {
-      throw new BadRequestException('Exercise not found');
+      throw new NotFoundException('Ejercicio no encontrado');
     }
     return exercise;
   }
@@ -39,7 +39,7 @@ export class ExerciseService {
       { new: true }
     );
     if (!updatedExercise) {
-      throw new BadRequestException('Exercise not found');
+      throw new NotFoundException('Ejercicio no encontrado');
     }
     return updatedExercise;
   }
@@ -49,21 +49,8 @@ export class ExerciseService {
       _id: id
     });
     if (!deletedExercise) {
-      throw new BadRequestException('Exercise not found');
+      throw new NotFoundException('Ejercicio no encontrado');
     }
     return deletedExercise;
-  }
-
-  async getExerciseByName(name: string): Promise<Exercise> {
-    const exercise = await this.exerciseModel.findOne({ name });
-    if (!exercise) {
-      throw new BadRequestException('Exercise not found');
-    }
-    return exercise;
-  }
-
-  async getExerciseByCategory(category: string): Promise<Exercise[]> {
-    const exercises = await this.exerciseModel.find({ category });
-    return exercises;
   }
 }
