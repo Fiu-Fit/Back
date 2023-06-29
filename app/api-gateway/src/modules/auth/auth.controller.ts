@@ -10,12 +10,8 @@ import {
 } from '@nestjs/common';
 import { catchError, firstValueFrom } from 'rxjs';
 import { axiosErrorCatcher } from '../../shared/axios-error-catcher';
-import {
-  LoginRequest,
-  RegisterRequest,
-  ResetPasswordRequest,
-  Token
-} from './interfaces/auth.interface';
+import { LoginRequest, RegisterRequest, ResetPasswordRequest } from './dto';
+import { Token } from './interfaces/auth.interface';
 
 @Injectable()
 @Controller('auth')

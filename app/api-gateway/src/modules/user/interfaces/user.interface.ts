@@ -6,3 +6,9 @@ export interface User {
   role: string;
   favoriteWorkouts: string[];
 }
+
+export enum Role {
+  Athlete = 'Athlete',
+  Trainer = 'Trainer',
+  Admin = 'Admin'
+}
