@@ -9,21 +9,23 @@ import {
   Put,
   Query
 } from '@nestjs/common';
+import { ApiOperation } from '@nestjs/swagger';
 import { catchError, firstValueFrom } from 'rxjs';
 import { axiosErrorCatcher } from './axios-error-catcher';
 
 @Controller()
-export class ServerController {
+export class ServerController<T> {
   constructor(protected httpService: HttpService, private entityName: string) {
     this.httpService = httpService;
     this.entityName = entityName;
   }
 
   @Post()
-  public async create(@Body() entity: any) {
+  @ApiOperation({ summary: 'Get a user by ID' })
+  public async create(@Body() entity: T): Promise<T> {
     const { data } = await firstValueFrom(
       this.httpService
-        .post(this.entityName, entity)
+        .post<T>(this.entityName, entity)
         .pipe(catchError(axiosErrorCatcher))
     );
 
@@ -31,10 +33,12 @@ export class ServerController {
   }
 
   @Get()
-  public async findAll(@Query() params: { [key: string]: string }) {
+  public async findAll(
+    @Query() params: { [key: string]: string }
+  ): Promise<T[]> {
     const { data } = await firstValueFrom(
       this.httpService
-        .get(`/${this.entityName}`, {
+        .get<T[]>(`/${this.entityName}`, {
           params: params
         })
         .pipe(catchError(axiosErrorCatcher))
@@ -44,10 +48,10 @@ export class ServerController {
   }
 
   @Get(':id')
-  public async findOne(@Param('id') id: string) {
+  public async findOne(@Param('id') id: string): Promise<T> {
     const { data } = await firstValueFrom(
       this.httpService
-        .get(`/${this.entityName}/${id}`)
+        .get<T>(`/${this.entityName}/${id}`)
         .pipe(catchError(axiosErrorCatcher))
     );
 
@@ -55,10 +59,10 @@ export class ServerController {
   }
 
   @Delete(':id')
-  public async deleteById(@Param('id') id: string) {
+  public async deleteById(@Param('id') id: string): Promise<T> {
     const { data } = await firstValueFrom(
       this.httpService
-        .delete(`/${this.entityName}/${id}`)
+        .delete<T>(`/${this.entityName}/${id}`)
         .pipe(catchError(axiosErrorCatcher))
     );
 
@@ -66,10 +70,13 @@ export class ServerController {
   }
 
   @Put(':id')
-  public async update(@Param('id') id: string, @Body() entity: any) {
+  public async update(
+    @Param('id') id: string,
+    @Body() entity: Partial<T>
+  ): Promise<T> {
     const { data } = await firstValueFrom(
       this.httpService
-        .put(`/${this.entityName}/${id}`, entity)
+        .put<T>(`/${this.entityName}/${id}`, entity)
         .pipe(catchError(axiosErrorCatcher))
     );
 

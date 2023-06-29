@@ -12,17 +12,14 @@ import {
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { firstValueFrom } from 'rxjs';
-import { ServerController } from '../../shared/server-controller';
 import { AuthGuard } from '../auth/auth.guard';
 
 @ApiTags('Notifications')
 @Injectable()
 @UseGuards(AuthGuard)
 @Controller('notifications')
-export class NotificationController extends ServerController {
-  constructor(httpService: HttpService) {
-    super(httpService, 'notifications');
-  }
+export class NotificationController {
+  constructor(private httpService: HttpService) {}
 
   @Get('goals')
   async getGoalNotifications(@Query('userId') userId: number) {

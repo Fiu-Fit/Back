@@ -13,12 +13,13 @@ import { catchError, firstValueFrom } from 'rxjs';
 import { axiosErrorCatcher } from '../../shared/axios-error-catcher';
 import { ServerController } from '../../shared/server-controller';
 import { AuthGuard } from '../auth/auth.guard';
+import { Workout } from './dto/workout.dto';
 
 @ApiTags('Workouts')
 @Injectable()
 @Controller('workouts')
 @UseGuards(AuthGuard)
-export class WorkoutController extends ServerController {
+export class WorkoutController extends ServerController<Workout> {
   constructor(httpService: HttpService) {
     super(httpService, 'workouts');
   }

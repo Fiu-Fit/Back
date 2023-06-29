@@ -8,7 +8,7 @@ import { ServiceRegistryService } from './service-registry.service';
 @ApiTags('Service Registry')
 @Injectable()
 @Controller('service-registry')
-export class ServiceRegistryController extends ServerController {
+export class ServiceRegistryController extends ServerController<Service> {
   constructor(
     httpService: HttpService,
     private serviceRegistryService: ServiceRegistryService

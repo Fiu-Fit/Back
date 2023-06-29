@@ -20,13 +20,13 @@ import { catchError, firstValueFrom } from 'rxjs';
 import { axiosErrorCatcher } from '../../shared/axios-error-catcher';
 import { ServerController } from '../../shared/server-controller';
 import { AuthGuard } from '../auth/auth.guard';
-import { User } from './interfaces/user.interface';
+import { User } from './dto/user.dto';
 
 @ApiTags('User')
 @Injectable()
 @UseGuards(AuthGuard)
 @Controller('users')
-export class UserController extends ServerController {
+export class UserController extends ServerController<User> {
   constructor(protected httpService: HttpService) {
     super(httpService, 'users');
   }

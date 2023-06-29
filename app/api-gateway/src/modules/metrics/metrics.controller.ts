@@ -4,7 +4,7 @@ import { Body, Controller, Get, Headers, Post, Query } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { catchError, firstValueFrom } from 'rxjs';
 import { axiosErrorCatcher } from '../../shared/axios-error-catcher';
-import { User } from '../user/interfaces/user.interface';
+import { User } from '../user/dto/user.dto';
 
 @ApiTags('Metrics')
 @Controller('metrics')
