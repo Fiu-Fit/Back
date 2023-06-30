@@ -4,6 +4,7 @@ import { Body, Controller, Get, Headers, Post, Query } from '@nestjs/common';
 import { catchError, firstValueFrom } from 'rxjs';
 import { axiosErrorCatcher } from '../../shared/axios-error-catcher';
 import { User } from '../user/interfaces/user.interface';
+import { GetAuthMetricsQueryDTO, GetUserMetricsQueryDTO } from './dto';
 
 @Controller('metrics')
 export class MetricsController {
@@ -12,7 +13,7 @@ export class MetricsController {
   @Get('login')
   async getLoginMetrics(
     @Headers('Authorization') authToken: string,
-    @Query() filter: { [key: string]: string }
+    @Query() filter: GetAuthMetricsQueryDTO
   ) {
     const { data } = await firstValueFrom(
       this.httpService
@@ -29,7 +30,7 @@ export class MetricsController {
   @Get('register')
   async getRegisterMetrics(
     @Headers('Authorization') authToken: string,
-    @Query() filter: { [key: string]: string }
+    @Query() filter: GetAuthMetricsQueryDTO
   ) {
     const { data } = await firstValueFrom(
       this.httpService
@@ -46,7 +47,7 @@ export class MetricsController {
   @Get('password-reset')
   async getPasswordResetMetrics(
     @Headers('Authorization') authToken: string,
-    @Query() filter: { [key: string]: string }
+    @Query() filter: GetAuthMetricsQueryDTO
   ) {
     const { data } = await firstValueFrom(
       this.httpService
@@ -63,7 +64,7 @@ export class MetricsController {
   @Get('users')
   async getUsersMetrics(
     @Headers('Authorization') authToken: string,
-    @Query() filter: { [key: string]: string }
+    @Query() filter: GetUserMetricsQueryDTO
   ) {
     const { data } = await firstValueFrom(
       this.httpService
@@ -93,7 +94,7 @@ export class MetricsController {
   @Get('trainers')
   async getTrainerMetrics(
     @Headers('Authorization') authToken: string,
-    @Query() filter: { [key: string]: string }
+    @Query() filter: GetUserMetricsQueryDTO
   ) {
     const { data } = await firstValueFrom(
       this.httpService
