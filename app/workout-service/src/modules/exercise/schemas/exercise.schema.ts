@@ -20,6 +20,9 @@ export class Exercise {
 
   @Prop()
   METValue: number;
+
+  @Prop()
+  image: string;
 }
 
 export const ExerciseSchema = SchemaFactory.createForClass(Exercise)

@@ -3,6 +3,7 @@ import {
   IsEnum,
   IsNotEmpty,
   IsNumber,
+  IsOptional,
   IsPositive,
   IsString,
   MaxLength
@@ -25,4 +26,8 @@ export class ExerciseDto {
   @IsNumber()
   @IsPositive()
   METValue: number;
+
+  @IsString()
+  @IsOptional()
+  image: string;
 }
