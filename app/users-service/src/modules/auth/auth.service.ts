@@ -76,7 +76,7 @@ export class AuthService {
       }
     }
 
-    return { token, needsConfirmation: true };
+    return { token };
   }
 
   async login(loginInfo: LoginRequest): Promise<Token> {
@@ -95,22 +95,16 @@ export class AuthService {
       });
     }
 
-    let needsConfirmation = false;
+    if (!user.confirmed && user.phoneNumber && !user.confirmationPIN) {
+      const confirmationPIN = this.generateConfirmationPIN();
+      await this.sendWhatsappNotification(confirmationPIN, user.phoneNumber);
 
-    if (!user.confirmed && user.phoneNumber) {
-      if (!user.confirmationPIN) {
-        const confirmationPIN = this.generateConfirmationPIN();
-        await this.sendWhatsappNotification(confirmationPIN, user.phoneNumber);
-
-        await this.userService.editUser(user.id, { confirmationPIN });
-      }
-
-      needsConfirmation = true;
+      await this.userService.editUser(user.id, { confirmationPIN });
     }
 
     await this.updateLoginTime(user.id);
 
-    return { token, needsConfirmation };
+    return { token };
   }
 
   async adminLogin(loginInfo: LoginRequest): Promise<Token> {
@@ -131,7 +125,7 @@ export class AuthService {
 
     await this.updateLoginTime(user.id);
 
-    return { token, needsConfirmation: true };
+    return { token };
   }
 
   async logout(): Promise<void> {
