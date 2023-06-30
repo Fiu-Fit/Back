@@ -8,7 +8,7 @@ import {
   Put,
   Query
 } from '@nestjs/common';
-import { RatingDto } from './dto/rating.dto';
+import { EditRatingDto, RatingDto } from './dto';
 import { RatingService } from './rating.service';
 import { Rating } from './schemas/rating.schema';
 
@@ -42,7 +42,7 @@ export class RatingController {
   @Put(':id')
   updateRating(
     @Param('id') id: string,
-    @Body() rating: Rating
+    @Body() rating: EditRatingDto
   ): Promise<Rating> {
     return this.ratingService.updateRating(id, rating);
   }

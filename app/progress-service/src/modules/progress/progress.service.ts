@@ -78,7 +78,6 @@ export class ProgressService {
     );
 
     const metricData = { burntCalories, ...data };
-    console.log(metricData);
 
     return this.prisma.progressMetric.create({
       data: metricData

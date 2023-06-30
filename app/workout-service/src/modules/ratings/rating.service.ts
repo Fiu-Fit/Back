@@ -8,7 +8,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { sumBy } from 'lodash';
 import { ObjectId } from 'mongodb';
 import { Model } from 'mongoose';
-import { RatingDto } from './dto/rating.dto';
+import { EditRatingDto, RatingDto } from './dto';
 import { Rating } from './schemas/rating.schema';
 
 @Injectable()
@@ -54,7 +54,7 @@ export class RatingService {
     return rating;
   }
 
-  async updateRating(id: string, exercise: Rating): Promise<Rating> {
+  async updateRating(id: string, exercise: EditRatingDto): Promise<Rating> {
     const updatedRating = await this.ratingModel.findByIdAndUpdate(
       { _id: id },
       exercise,

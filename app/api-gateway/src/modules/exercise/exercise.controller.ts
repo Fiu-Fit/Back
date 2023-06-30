@@ -70,7 +70,6 @@ export class ExerciseController {
     @Param('id') id: string,
     @Body() entity: EditExerciseDto
   ) {
-    console.log(entity);
     const { data } = await firstValueFrom(
       this.httpService
         .put(`/${this.entityName}/${id}`, entity)
