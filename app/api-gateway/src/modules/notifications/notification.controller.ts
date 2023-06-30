@@ -18,7 +18,7 @@ import { GoalNotificationDTO, MessageNotificationDTO } from './dto';
 @UseGuards(AuthGuard)
 @Controller('notifications')
 export class NotificationController {
-  private readonly entityName = 'notifications';
+  private readonly entityName: string = 'notifications';
 
   constructor(private httpService: HttpService) {}
 

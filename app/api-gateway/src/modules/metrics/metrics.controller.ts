@@ -8,6 +8,8 @@ import { GetAuthMetricsQueryDTO, GetUserMetricsQueryDTO } from './dto';
 
 @Controller('metrics')
 export class MetricsController {
+  private readonly entityName: string = 'metrics';
+
   constructor(private httpService: HttpService) {}
 
   @Get('login')
@@ -17,7 +19,7 @@ export class MetricsController {
   ) {
     const { data } = await firstValueFrom(
       this.httpService
-        .get<Page<User>>('metrics/login', {
+        .get<Page<User>>(`${this.entityName}/login`, {
           params:  filter,
           headers: { Authorization: authToken }
         })
@@ -34,7 +36,7 @@ export class MetricsController {
   ) {
     const { data } = await firstValueFrom(
       this.httpService
-        .get<Page<User>>('metrics/register', {
+        .get<Page<User>>(`${this.entityName}/register`, {
           params:  filter,
           headers: { Authorization: authToken }
         })
@@ -51,7 +53,7 @@ export class MetricsController {
   ) {
     const { data } = await firstValueFrom(
       this.httpService
-        .get<Page<User>>('metrics/password-reset', {
+        .get<Page<User>>(`${this.entityName}/password-reset`, {
           params:  filter,
           headers: { Authorization: authToken }
         })
@@ -68,7 +70,7 @@ export class MetricsController {
   ) {
     const { data } = await firstValueFrom(
       this.httpService
-        .get<Page<User>>('metrics/users', {
+        .get<Page<User>>(`${this.entityName}/users`, {
           params:  filter,
           headers: { Authorization: authToken }
         })
@@ -82,7 +84,7 @@ export class MetricsController {
   async createLoginMetric(@Body('uid') uid: string) {
     const { data } = await firstValueFrom(
       this.httpService
-        .post('metrics/login', {
+        .post(`${this.entityName}/login`, {
           uid
         })
         .pipe(catchError(axiosErrorCatcher))
@@ -98,7 +100,7 @@ export class MetricsController {
   ) {
     const { data } = await firstValueFrom(
       this.httpService
-        .get<Page<User>>('metrics/trainers', {
+        .get<Page<User>>(`${this.entityName}/trainers`, {
           params:  filter,
           headers: { Authorization: authToken }
         })

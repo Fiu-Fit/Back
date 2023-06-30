@@ -20,11 +20,9 @@ import { EditGoalDto, GetGoalsQueryDto, GoalDto } from './dto';
 @UseGuards(AuthGuard)
 @Controller('goals')
 export class GoalController {
-  private readonly entityName: string;
+  private readonly entityName: string = 'goals';
 
-  constructor(protected httpService: HttpService) {
-    this.entityName = 'goals';
-  }
+  constructor(protected httpService: HttpService) {}
 
   @Post()
   public async createGoal(@Body() goal: GoalDto) {

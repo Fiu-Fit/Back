@@ -18,11 +18,9 @@ import { AuthGuard } from '../auth/auth.guard';
 @UseGuards(AuthGuard)
 @Controller('followers')
 export class FollowerController {
-  private readonly entityName: string;
+  private readonly entityName: string = 'followers';
 
-  constructor(protected httpService: HttpService) {
-    this.entityName = 'followers';
-  }
+  constructor(protected httpService: HttpService) {}
 
   @Post('follow')
   async followUser(

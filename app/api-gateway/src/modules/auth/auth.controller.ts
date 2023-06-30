@@ -16,6 +16,8 @@ import { Token } from './interfaces/auth.interface';
 @Injectable()
 @Controller('auth')
 export class AuthController {
+  private readonly entityName: string = 'auth';
+
   constructor(private httpService: HttpService) {}
 
   @Post('login')
@@ -23,7 +25,7 @@ export class AuthController {
   async login(@Body() loginRequest: LoginRequest): Promise<Token> {
     const { data } = await firstValueFrom(
       this.httpService
-        .post<Token>('auth/login', loginRequest)
+        .post<Token>(`${this.entityName}/login`, loginRequest)
         .pipe(catchError(axiosErrorCatcher))
     );
     return data;
@@ -34,7 +36,7 @@ export class AuthController {
   async adminLogin(@Body() loginRequest: LoginRequest): Promise<Token> {
     const { data } = await firstValueFrom(
       this.httpService
-        .post<Token>('auth/admin/login', loginRequest)
+        .post<Token>(`${this.entityName}/admin/login`, loginRequest)
         .pipe(catchError(axiosErrorCatcher))
     );
     return data;
@@ -44,7 +46,7 @@ export class AuthController {
   async register(@Body() newUser: RegisterRequest): Promise<Token> {
     const { data } = await firstValueFrom(
       this.httpService
-        .post<Token>('auth/register', newUser)
+        .post<Token>(`${this.entityName}/register`, newUser)
         .pipe(catchError(axiosErrorCatcher))
     );
     return data;
@@ -57,7 +59,7 @@ export class AuthController {
   ): Promise<Token> {
     const { data } = await firstValueFrom(
       this.httpService
-        .post<Token>('auth/admin/register', newUser, {
+        .post<Token>(`${this.entityName}/admin/register`, newUser, {
           headers: { Authorization: authToken }
         })
         .pipe(catchError(axiosErrorCatcher))
@@ -70,7 +72,7 @@ export class AuthController {
   async logout(): Promise<Token> {
     const { data } = await firstValueFrom(
       this.httpService
-        .post<Token>('auth/logout')
+        .post<Token>(`${this.entityName}/logout`)
         .pipe(catchError(axiosErrorCatcher))
     );
     return data;
@@ -80,7 +82,7 @@ export class AuthController {
   async resetPassword(@Body() body: ResetPasswordRequest) {
     const { data } = await firstValueFrom(
       this.httpService
-        .post<Token>('auth/password-reset', body)
+        .post<Token>(`${this.entityName}/password-reset`, body)
         .pipe(catchError(axiosErrorCatcher))
     );
     return data;

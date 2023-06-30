@@ -15,11 +15,9 @@ import { EditExerciseDto, ExerciseDto } from './dto';
 
 @Controller('exercises')
 export class ExerciseController {
-  private readonly entityName: string;
+  private readonly entityName: string = 'exercises';
 
-  constructor(protected httpService: HttpService) {
-    this.entityName = 'exercises';
-  }
+  constructor(protected httpService: HttpService) {}
 
   @Post()
   public async createExercise(@Body() entity: ExerciseDto) {
