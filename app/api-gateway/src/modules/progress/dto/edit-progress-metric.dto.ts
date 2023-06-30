@@ -1,4 +1,4 @@
-import { Unit } from '@prisma/client';
+import { Unit } from '@fiu-fit/common';
 import {
   IsEnum,
   IsNotEmpty,
