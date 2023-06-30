@@ -11,21 +11,21 @@ import {
   UseGuards
 } from '@nestjs/common';
 import { firstValueFrom } from 'rxjs';
-import { ServerController } from '../../shared/server-controller';
 import { AuthGuard } from '../auth/auth.guard';
+import { GoalNotificationDTO, MessageNotificationDTO } from './dto';
 
 @Injectable()
 @UseGuards(AuthGuard)
 @Controller('notifications')
-export class NotificationController extends ServerController {
-  constructor(httpService: HttpService) {
-    super(httpService, 'notifications');
-  }
+export class NotificationController {
+  private readonly entityName = 'notifications';
+
+  constructor(private httpService: HttpService) {}
 
   @Get('goals')
   async getGoalNotifications(@Query('userId') userId: number) {
     const { data } = await firstValueFrom(
-      this.httpService.get('/notifications/goals', { params: { userId } })
+      this.httpService.get(`/${this.entityName}/goals`, { params: { userId } })
     );
     return data;
   }
@@ -33,23 +33,32 @@ export class NotificationController extends ServerController {
   @Get('messages')
   async getMessageNotifications(@Query('userId') userId: number) {
     const { data } = await firstValueFrom(
-      this.httpService.get('/notifications/messages', { params: { userId } })
+      this.httpService.get(`/${this.entityName}/messages`, {
+        params: { userId }
+      })
     );
     return data;
   }
 
   @Post('goals')
-  async createGoalNotification(@Body() goalNotificationDto: any) {
+  async createGoalNotification(
+    @Body() goalNotificationDto: GoalNotificationDTO
+  ) {
     const { data } = await firstValueFrom(
-      this.httpService.post('/notifications/goals', goalNotificationDto)
+      this.httpService.post(`/${this.entityName}/goals`, goalNotificationDto)
     );
     return data;
   }
 
   @Post('messages')
-  async createMessageNotification(@Body() messageNotificationDto: any) {
+  async createMessageNotification(
+    @Body() messageNotificationDto: MessageNotificationDTO
+  ) {
     const { data } = await firstValueFrom(
-      this.httpService.post('/notifications/messages', messageNotificationDto)
+      this.httpService.post(
+        `/${this.entityName}/messages`,
+        messageNotificationDto
+      )
     );
     return data;
   }
@@ -57,7 +66,7 @@ export class NotificationController extends ServerController {
   @Delete('goals/:goalId')
   async deleteGoalNotification(@Param('goalId') id: number) {
     const { data } = await firstValueFrom(
-      this.httpService.delete(`/notifications/goals/${id}`)
+      this.httpService.delete(`/${this.entityName}/goals/${id}`)
     );
     return data;
   }
@@ -65,7 +74,7 @@ export class NotificationController extends ServerController {
   @Delete('messages/:senderId')
   async deleteMessageNotification(@Param('senderId') id: number) {
     const { data } = await firstValueFrom(
-      this.httpService.delete(`/notifications/messages/${id}`)
+      this.httpService.delete(`/${this.entityName}/messages/${id}`)
     );
     return data;
   }
