@@ -2,6 +2,7 @@ import { Page } from '@fiu-fit/common';
 import { Injectable } from '@nestjs/common';
 import { RequestStatus, Verification } from '@prisma/client';
 import { PrismaService } from '../../prisma.service';
+import { EditVerificationDto } from './dto';
 
 @Injectable()
 export class VerificationService {
@@ -22,7 +23,7 @@ export class VerificationService {
 
   updateVerification(
     id: number,
-    verification: Verification
+    verification: EditVerificationDto
   ): Promise<Verification> {
     return this.prismaService.verification.update({
       where: { id },

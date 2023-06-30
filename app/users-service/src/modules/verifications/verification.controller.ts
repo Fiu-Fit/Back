@@ -12,6 +12,7 @@ import {
   Put
 } from '@nestjs/common';
 import { Verification } from '@prisma/client';
+import { EditVerificationDto } from './dto';
 import { VerificationService } from './verification.service';
 
 @Controller('verifications')
@@ -54,7 +55,7 @@ export class VerificationController {
   @Put(':id')
   async updateVerification(
     @Param('id', ParseIntPipe) id: number,
-    @Body() verification: Verification
+    @Body() verification: EditVerificationDto
   ): Promise<Verification> {
     const updatedVerification =
       await this.verificationService.updateVerification(id, verification);
