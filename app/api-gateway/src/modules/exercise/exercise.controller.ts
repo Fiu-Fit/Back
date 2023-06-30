@@ -18,7 +18,6 @@ export class ExerciseController {
   private readonly entityName: string;
 
   constructor(protected httpService: HttpService) {
-    this.httpService = httpService;
     this.entityName = 'exercises';
   }
 

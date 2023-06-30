@@ -23,7 +23,6 @@ export class GoalController {
   private readonly entityName: string;
 
   constructor(protected httpService: HttpService) {
-    this.httpService = httpService;
     this.entityName = 'goals';
   }
 

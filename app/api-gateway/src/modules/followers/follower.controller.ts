@@ -21,7 +21,6 @@ export class FollowerController {
   private readonly entityName: string;
 
   constructor(protected httpService: HttpService) {
-    this.httpService = httpService;
     this.entityName = 'followers';
   }
 
