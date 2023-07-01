@@ -15,7 +15,7 @@ import {
 import { catchError, firstValueFrom } from 'rxjs';
 import { axiosErrorCatcher } from '../../shared/axios-error-catcher';
 import { AuthGuard } from '../auth/auth.guard';
-import { WorkoutDto, WorkoutMetricsFilterDto } from './dto';
+import { EditWorkoutDto, WorkoutDto, WorkoutMetricsFilterDto } from './dto';
 
 @Injectable()
 @Controller('workouts')
@@ -80,7 +80,7 @@ export class WorkoutController {
   @Put(':id')
   public async updateWorkout(
     @Param('id') id: string,
-    @Body() workout: Partial<WorkoutDto>
+    @Body() workout: EditWorkoutDto
   ) {
     const { data } = await firstValueFrom(
       this.httpService

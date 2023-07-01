@@ -1,4 +1,3 @@
-import { Unit } from '@fiu-fit/common';
 import {
   IsEnum,
   IsNotEmpty,
@@ -6,6 +5,7 @@ import {
   IsOptional,
   IsPositive
 } from 'class-validator';
+import { Unit } from '../interfaces';
 
 export class EditProgressMetricDTO {
   @IsNumber()

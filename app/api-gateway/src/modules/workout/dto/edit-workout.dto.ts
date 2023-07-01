@@ -13,46 +13,54 @@ import {
 } from 'class-validator';
 import { Category } from '../interfaces';
 
-export class WorkoutDto {
+export class EditWorkoutDto {
   @IsString()
   @IsNotEmpty()
-  name: string;
+  @IsOptional()
+  name?: string;
 
   @IsString()
   @IsNotEmpty()
   @MaxLength(100)
-  description: string;
+  @IsOptional()
+  description?: string;
 
   @IsNumber()
   @IsNotEmpty()
-  duration: number;
+  @IsOptional()
+  duration?: number;
 
   @IsNumber()
   @Min(1)
   @Max(5)
   @IsNotEmpty()
-  difficulty: number;
+  @IsOptional()
+  difficulty?: number;
 
   @IsEnum(Category)
   @IsNotEmpty()
-  category: Category;
+  @IsOptional()
+  category?: Category;
 
   @IsOptional()
-  exercises: WorkoutExercise[] = [];
+  exercises?: WorkoutExercise[] = [];
 
   @IsOptional()
-  athleteIds: number[];
+  athleteIds?: number[];
 
   @IsNumber()
   @IsNotEmpty()
-  authorId: number;
+  @IsOptional()
+  authorId?: number;
 
+  @IsOptional()
   @IsOptional()
   updatedAt?: Date;
 
   @IsArray()
   @IsString({ each: true })
-  multimedia: string[];
+  @IsOptional()
+  multimedia?: string[];
 
   @IsBoolean()
   @IsOptional()

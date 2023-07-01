@@ -1,5 +1,5 @@
-import { ServiceStatus } from '@fiu-fit/common';
 import { IsEnum, IsOptional, IsString } from 'class-validator';
+import { ServiceStatus } from '../interfaces';
 
 export class ServiceRegistryDto {
   @IsString()

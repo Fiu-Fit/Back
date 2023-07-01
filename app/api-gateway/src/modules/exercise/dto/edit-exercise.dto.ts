@@ -1,4 +1,3 @@
-import { Category } from '@fiu-fit/common';
 import {
   IsEnum,
   IsNotEmpty,
@@ -8,6 +7,7 @@ import {
   IsString,
   MaxLength
 } from 'class-validator';
+import { Category } from '../../workout/interfaces';
 
 export class EditExerciseDto {
   @IsString()
