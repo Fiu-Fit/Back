@@ -12,16 +12,15 @@ import {
 } from '@nestjs/common';
 import { catchError, firstValueFrom } from 'rxjs';
 import { axiosErrorCatcher } from '../../shared/axios-error-catcher';
-import { ServerController } from '../../shared/server-controller';
 import { AuthGuard } from '../auth/auth.guard';
 
 @Injectable()
 @UseGuards(AuthGuard)
 @Controller('followers')
-export class FollowerController extends ServerController {
-  constructor(protected httpService: HttpService) {
-    super(httpService, 'followers');
-  }
+export class FollowerController {
+  private readonly entityName: string = 'followers';
+
+  constructor(protected httpService: HttpService) {}
 
   @Post('follow')
   async followUser(
@@ -30,7 +29,11 @@ export class FollowerController extends ServerController {
   ) {
     const { data } = await firstValueFrom(
       this.httpService
-        .post('/followers/follow', { userIdToFollow }, { params: { userId } })
+        .post(
+          `/${this.entityName}/follow`,
+          { userIdToFollow },
+          { params: { userId } }
+        )
         .pipe(catchError(axiosErrorCatcher))
     );
     return data;
@@ -43,7 +46,9 @@ export class FollowerController extends ServerController {
   ) {
     const { data } = await firstValueFrom(
       this.httpService
-        .delete<User>('/followers/unfollow', { params: { userId, followerId } })
+        .delete<User>(`/${this.entityName}/unfollow`, {
+          params: { userId, followerId }
+        })
         .pipe(catchError(axiosErrorCatcher))
     );
     return data;
@@ -53,7 +58,7 @@ export class FollowerController extends ServerController {
   async getFollowers(@Query('userId') userId: number): Promise<User[]> {
     const { data } = await firstValueFrom(
       this.httpService
-        .get<User[]>('/followers/followers', { params: { userId } })
+        .get<User[]>(`/${this.entityName}/followers`, { params: { userId } })
         .pipe(catchError(axiosErrorCatcher))
     );
     return data;
@@ -63,7 +68,7 @@ export class FollowerController extends ServerController {
   async getFollowing(@Query('userId') userId: number): Promise<User[]> {
     const { data } = await firstValueFrom(
       this.httpService
-        .get<User[]>('/followers/following', { params: { userId } })
+        .get<User[]>(`/${this.entityName}/following`, { params: { userId } })
         .pipe(catchError(axiosErrorCatcher))
     );
     return data;

@@ -1,3 +1,4 @@
+import { WorkoutMetric } from '@fiu-fit/common';
 import {
   BadRequestException,
   Body,
@@ -10,7 +11,7 @@ import {
   Query
 } from '@nestjs/common';
 import { ObjectId } from 'mongodb';
-import { WorkoutMetricDto, WorkoutMetricsFilterDto } from './dto';
+import { WorkoutMetricsFilterDto } from './dto';
 import { WorkoutDto } from './dto/workout.dto';
 import { Workout } from './schemas/workout.schema';
 import { WorkoutsService } from './workouts.service';
@@ -64,7 +65,7 @@ export class WorkoutsController {
   getWorkoutMetrics(
     @Param('id') id: string,
     @Query() filters: WorkoutMetricsFilterDto
-  ): Promise<WorkoutMetricDto[]> {
+  ): Promise<WorkoutMetric[]> {
     if (!ObjectId.isValid(id)) throw new BadRequestException('Invalid id');
 
     return this.workoutsService.getWorkoutMetrics(id, filters);

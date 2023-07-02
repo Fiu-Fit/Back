@@ -1,4 +1,10 @@
-import { Page, RatingCount, Service, User } from '@fiu-fit/common';
+import {
+  Page,
+  RatingCount,
+  Service,
+  User,
+  WorkoutMetric
+} from '@fiu-fit/common';
 import { HttpService } from '@nestjs/axios';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
@@ -6,7 +12,7 @@ import { ObjectId } from 'mongodb';
 import { Model } from 'mongoose';
 import { firstValueFrom } from 'rxjs';
 import { RatingService } from '../ratings/rating.service';
-import { WorkoutMetricDto, WorkoutMetricsFilterDto } from './dto';
+import { WorkoutMetricsFilterDto } from './dto';
 import { WorkoutDto } from './dto/workout.dto';
 import { Workout } from './schemas/workout.schema';
 
@@ -133,7 +139,7 @@ export class WorkoutsService {
   async getWorkoutMetrics(
     id: string,
     filters: WorkoutMetricsFilterDto
-  ): Promise<WorkoutMetricDto[]> {
+  ): Promise<WorkoutMetric[]> {
     const workout = await this.workoutModel.findById(id);
     if (!workout) {
       throw new NotFoundException('Workout not found');
