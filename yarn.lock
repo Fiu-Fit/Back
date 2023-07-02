@@ -1580,6 +1580,7 @@ __metadata:
     ts-node: ^10.9.1
     ts-proto: ^1.146.0
     tsconfig-paths: ^4.2.0
+    twilio: ^4.12.0
     typescript: ^5.0.2
     winston: ^3.8.2
   languageName: unknown
@@ -14516,6 +14517,22 @@ __metadata:
     url-parse: ^1.5.9
     xmlbuilder: ^13.0.2
   checksum: 95ce5f74b1e0a1e3b973fc8cd436ca00ea00cbcb6dcc25892c21520361278b7b715f27833e7af5da90744bb34a99c8a022ced10f050d6ebebc9dfd824cd5f98d
+  languageName: node
+  linkType: hard
+
+"twilio@npm:^4.12.0":
+  version: 4.12.0
+  resolution: "twilio@npm:4.12.0"
+  dependencies:
+    axios: ^0.26.1
+    dayjs: ^1.8.29
+    https-proxy-agent: ^5.0.0
+    jsonwebtoken: ^9.0.0
+    qs: ^6.9.4
+    scmp: ^2.1.0
+    url-parse: ^1.5.9
+    xmlbuilder: ^13.0.2
+  checksum: 569b1a74afd35629867a5edde8d72431080ac8a897396de40c1906e9c6347a8e85001cf7e7e43cdd2a0c98e2f790e770c06613e6c8e77effc5488be3dd9302ba
   languageName: node
   linkType: hard
 
