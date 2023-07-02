@@ -51,6 +51,7 @@
     "firebase": "^9.22.1",
     "firebase-admin": "^11.9.0",
     "husky": "^8.0.3",
+    "jest-mock-extended": "^3.0.4",
     "lodash": "^4.17.21",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^4.4.1",

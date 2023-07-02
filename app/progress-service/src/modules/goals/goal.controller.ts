@@ -30,30 +30,16 @@ export class GoalController {
   }
 
   @Get(':id')
-  async getGoalById(
-    @Param('id', ParseIntPipe) id: number
-  ): Promise<Goal | null> {
-    const goal = await this.goalService.getGoalById(id);
-
-    if (!goal) {
-      throw new NotFoundException({ message: 'Goals not found' });
-    }
-
-    return goal;
+  getGoalById(@Param('id', ParseIntPipe) id: number): Promise<Goal | null> {
+    return this.goalService.getGoalById(id);
   }
 
   @Put(':id')
-  async editGoal(
+  editGoal(
     @Param('id', ParseIntPipe) id: number,
     @Body() goal: Goal
   ): Promise<Goal> {
-    const editedGoal = await this.goalService.editGoal(id, goal);
-
-    if (!editedGoal) {
-      throw new NotFoundException({ message: 'Goals not found' });
-    }
-
-    return editedGoal;
+    return this.goalService.editGoal(id, goal);
   }
 
   @Delete(':id')

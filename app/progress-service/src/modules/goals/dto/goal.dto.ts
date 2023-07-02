@@ -30,9 +30,11 @@ export class GoalDto {
   exerciseId: string;
 
   @IsEnum(GoalStatus)
-  status: GoalStatus;
+  @IsOptional()
+  status?: GoalStatus;
 
   @IsArray()
   @IsString({ each: true })
-  multimedia: string[];
+  @IsOptional()
+  multimedia?: string[];
 }

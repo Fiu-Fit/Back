@@ -1,7 +1,7 @@
 import { LoggerFactory, Service, User } from '@fiu-fit/common';
 import { NotificationType } from '@fiu-fit/common/dist/interfaces/notification-type';
 import { HttpService } from '@nestjs/axios';
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { Goal, GoalStatus } from '@prisma/client';
 import { sumBy } from 'lodash';
 import { firstValueFrom } from 'rxjs';
@@ -33,7 +33,7 @@ export class GoalService {
     });
 
     if (!goal) {
-      return null;
+      throw new NotFoundException({ message: 'Meta no encontrada' });
     }
 
     return this.checkGoalStatus(goal);
@@ -76,7 +76,9 @@ export class GoalService {
           }
         }
       )
-    );
+    ).catch(() => {
+      logger.error('Error deleting notifications for goal');
+    });
     return this.prismaService.goal.delete({
       where: { id }
     });
@@ -127,8 +129,8 @@ export class GoalService {
    * @param status the new status of the Goal.
    * @returns the updated Goal.
    */
-  completeGoal(goal: Goal, status: GoalStatus): Promise<Goal> {
-    this.sendGoalNotifications(goal);
+  async completeGoal(goal: Goal, status: GoalStatus): Promise<Goal> {
+    await this.sendGoalNotifications(goal);
 
     return this.editGoal(goal.id, { ...goal, status });
   }
@@ -178,7 +180,7 @@ export class GoalService {
 
     logger.debug('user: ', user.data);
 
-    this.sendPushNotification(goal, user.data.deviceToken);
+    await this.sendPushNotification(goal, user.data.deviceToken);
 
     if (!user.data.phoneNumber) {
       logger.debug('User does not have a phone number');
@@ -187,7 +189,7 @@ export class GoalService {
     this.sendWhatsappNotification(goal, user.data.phoneNumber);
   }
 
-  sendPushNotification(goal: Goal, token: string) {
+  async sendPushNotification(goal: Goal, token: string) {
     logger.info('Sending push notification...');
 
     if (!token) {
@@ -209,7 +211,7 @@ export class GoalService {
       token
     };
 
-    admin.messaging().send({ ...message });
+    await admin.messaging().send({ ...message });
     logger.info('Notification sent succesfully!');
   }
 
