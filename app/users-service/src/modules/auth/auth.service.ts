@@ -192,7 +192,7 @@ export class AuthService {
 
     client.messages
       .create({
-        body: `Tu codigo de registracion es: ${confirmationPIN}`,
+        body: `Tu codigo de confirmacion es: ${confirmationPIN}`,
         from: 'whatsapp:+14155238886',
         to:   'whatsapp:' + phoneNumber
       })
