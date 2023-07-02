@@ -76,7 +76,10 @@ export class GoalService {
           }
         }
       )
-    );
+    ).catch(() => {
+      logger.error('Error deleting notifications for goal');
+    });
+    
     return this.prismaService.goal.delete({
       where: { id }
     });
