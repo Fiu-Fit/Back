@@ -11,7 +11,7 @@ import {
   Query
 } from '@nestjs/common';
 import { ObjectId } from 'mongodb';
-import { WorkoutMetricsFilterDto } from './dto';
+import { EditWorkoutDto, WorkoutMetricsFilterDto } from './dto';
 import { WorkoutDto } from './dto/workout.dto';
 import { Workout } from './schemas/workout.schema';
 import { WorkoutsService } from './workouts.service';
@@ -54,7 +54,7 @@ export class WorkoutsController {
   @Put(':id')
   updateWorkout(
     @Param('id') id: string,
-    @Body() workout: Partial<WorkoutDto>
+    @Body() workout: EditWorkoutDto
   ): Promise<Workout> {
     if (!ObjectId.isValid(id)) throw new BadRequestException('Invalid id');
 
