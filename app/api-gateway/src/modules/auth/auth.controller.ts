@@ -6,6 +6,7 @@ import {
   HttpCode,
   HttpStatus,
   Injectable,
+  Patch,
   Post
 } from '@nestjs/common';
 import { catchError, firstValueFrom } from 'rxjs';
@@ -83,6 +84,22 @@ export class AuthController {
     const { data } = await firstValueFrom(
       this.httpService
         .post<Token>(`${this.entityName}/password-reset`, body)
+        .pipe(catchError(axiosErrorCatcher))
+    );
+    return data;
+  }
+
+  @Patch('confirm-registration')
+  async confirmRegistration(
+    @Body('confirmationPIN') confirmationPIN: string,
+    @Body('userId') userId: number
+  ) {
+    const { data } = await firstValueFrom(
+      this.httpService
+        .patch(`${this.entityName}/confirm-registration`, {
+          confirmationPIN,
+          userId
+        })
         .pipe(catchError(axiosErrorCatcher))
     );
     return data;
