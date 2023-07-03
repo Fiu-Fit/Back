@@ -241,9 +241,10 @@ describe('UserService', () => {
     it('Should update User', async () => {
       const editedUser: UserDTO = {
         ...defaultUser,
-        firstName:      'edited',
-        phoneNumber:    'test',
-        profilePicture: 'test'
+        confirmationPIN: '',
+        firstName:       'edited',
+        phoneNumber:     'test',
+        profilePicture:  'test'
       };
 
       prisma.user.update.mockResolvedValueOnce({
