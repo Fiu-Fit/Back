@@ -168,8 +168,13 @@ export class WorkoutsService {
     const averageRatings: number[] = [];
     const favoritedByCount = favoritedBy.map(page => page.count);
     const endDate = new Date(year, 1, 1);
+    const currentDate = new Date();
 
     for (let i = 0; i < 12; i++) {
+      if (endDate.getMonth() > currentDate.getMonth() + 1) {
+        break;
+      }
+
       const rating = await this.ratingService.getRatingCountPerValue(
         id,
         undefined,
@@ -187,10 +192,20 @@ export class WorkoutsService {
       endDate.setMonth(endDate.getMonth() + 1);
     }
 
+    const ratingsPadding = Array(12 - ratings.length).fill(
+      Array(5).fill({ rating: 0, count: 0 })
+    );
+    const averageRatingsPadding = Array(12 - averageRatings.length).fill(0);
+
+    const ratingsWithPadding = ratings.concat(ratingsPadding);
+    const averageRatingsWithPadding = averageRatings.concat(
+      averageRatingsPadding
+    );
+
     const metrics = favoritedByCount.map((count, index) => {
       return {
-        ratings:       ratings[index],
-        averageRating: averageRatings[index],
+        ratings:       ratingsWithPadding[index],
+        averageRating: averageRatingsWithPadding[index],
         favoriteCount: count
       };
     });
