@@ -12,7 +12,7 @@ import { ObjectId } from 'mongodb';
 import { Model } from 'mongoose';
 import { firstValueFrom } from 'rxjs';
 import { RatingService } from '../ratings/rating.service';
-import { WorkoutMetricsFilterDto } from './dto';
+import { EditWorkoutDto, WorkoutMetricsFilterDto } from './dto';
 import { WorkoutDto } from './dto/workout.dto';
 import { Workout } from './schemas/workout.schema';
 
@@ -121,13 +121,11 @@ export class WorkoutsService {
     return workout;
   }
 
-  async updateWorkout(
-    id: string,
-    workout: Partial<WorkoutDto>
-  ): Promise<Workout> {
+  async updateWorkout(id: string, workout: EditWorkoutDto): Promise<Workout> {
+    console.log(workout);
     const updatedWorkout = await this.workoutModel.findByIdAndUpdate(
       { _id: id },
-      workout,
+      { $set: workout },
       { new: true }
     );
     if (!updatedWorkout) {
