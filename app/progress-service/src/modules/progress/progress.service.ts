@@ -8,7 +8,7 @@ import {
   WorkoutExercise
 } from '@fiu-fit/common';
 import { HttpService } from '@nestjs/axios';
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { ProgressMetric, Unit } from '@prisma/client';
 import { firstValueFrom } from 'rxjs';
 import { PrismaService } from '../../prisma.service';
@@ -109,12 +109,17 @@ export class ProgressService {
     };
   }
 
-  getProgressMetricById(id: number): Promise<ProgressMetric | null> {
-    return this.prisma.progressMetric.findUnique({
+  async getProgressMetricById(id: number): Promise<ProgressMetric | null> {
+    const metric = await this.prisma.progressMetric.findUnique({
       where: {
         id
       }
     });
+    if (!metric) {
+      throw new NotFoundException({ message: 'Metric not found' });
+    }
+
+    return metric;
   }
 
   async editProgressMetric(
