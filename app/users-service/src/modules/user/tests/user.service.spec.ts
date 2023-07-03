@@ -117,6 +117,8 @@ describe('UserService', () => {
       prisma.user.findMany.mockResolvedValueOnce(users);
       prisma.user.count.mockResolvedValueOnce(users.length);
 
+      prisma.user.findMany.mockReset();
+
       const result = await userService.findAndCount({ params: '' });
 
       expect(result).toStrictEqual(page);
@@ -132,6 +134,8 @@ describe('UserService', () => {
       ];
 
       assertFind(users);
+
+      jest.clearAllMocks();
     });
 
     it('Empty array doesnt throw error', () => {
@@ -478,6 +482,67 @@ describe('UserService', () => {
         ];
 
         expect(result).toStrictEqual(expected);
+        expect(prisma.favoriteWorkout.findMany).toHaveBeenCalledTimes(12);
+        expect(prisma.favoriteWorkout.count).toHaveBeenCalledTimes(12);
+      });
+    });
+
+    describe('getNearestTrainers', () => {
+      it('Should return trainers', async () => {
+        const users: User[] = [
+          {
+            ...defaultUser,
+            id:   2,
+            role: Role.Trainer
+          },
+          {
+            ...defaultUser,
+            id:   3,
+            role: Role.Trainer
+          }
+        ];
+
+        prisma.user.findMany.mockResolvedValueOnce(users);
+
+        const userLocations = [
+          {
+            id:       'test',
+            userId:   1,
+            location: { coordinates: [0, 0], type: 'Point' }
+          },
+          {
+            id:       'test',
+            userId:   2,
+            location: { coordinates: [0, 0], type: 'Point' }
+          },
+          {
+            id:       'test',
+            userId:   3,
+            location: { coordinates: [0, 0], type: 'Point' }
+          }
+        ];
+
+        jest
+          .spyOn(userLocationService, 'findNearestUsers')
+          .mockResolvedValueOnce(userLocations);
+
+        const result = await userService.getNearestTrainers(
+          defaultUser.id,
+          100
+        );
+
+        expect(result).toStrictEqual(users);
+        expect(prisma.user.findMany).toBeCalledWith({
+          where: {
+            id: {
+              in: users.map(user => user.id)
+            },
+            role: Role.Trainer
+          },
+          include: {
+            verification: true
+          }
+        });
       });
     });
   });
