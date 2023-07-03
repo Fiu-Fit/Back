@@ -1,7 +1,11 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { RequestStatus, Role, UserActivityType } from '@prisma/client';
 import { PrismaService } from '../../prisma.service';
-import { GetAuthMetricsQueryDTO, GetUserMetricsQueryDTO } from './dto';
+import {
+  GetAuthMetricsQueryDTO,
+  GetBlockedMetricsQueryDTO,
+  GetUserMetricsQueryDTO
+} from './dto';
 import { TrainerMetrics } from './interfaces';
 
 @Injectable()
@@ -126,5 +130,27 @@ export class MetricsService {
       unverifiedTrainers: trainerCount - verifiedTrainerCount,
       verifiedTrainers:   verifiedTrainerCount
     };
+  }
+
+  async getBlockedUsersMetrics(
+    filter: GetBlockedMetricsQueryDTO
+  ): Promise<number[]> {
+    const result = [];
+
+    for (let i = 0; i < 12; i++) {
+      const count = await this.prismaService.user.count({
+        where: {
+          federatedIdentity: filter.federatedIdentity,
+          blocked:           true,
+          blockedAt:         {
+            gte: new Date(filter.year, i),
+            lt:  new Date(filter.year, i + 1)
+          }
+        }
+      });
+      result.push(count);
+    }
+
+    return result;
   }
 }

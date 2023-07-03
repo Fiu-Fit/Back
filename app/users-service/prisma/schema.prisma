@@ -21,6 +21,7 @@ model User {
   followers            Follower[]
   role                 Role
   blocked              Boolean               @default(false)
+  blockedAt            DateTime?             @map("blocked_at")
   federatedIdentity    Boolean               @default(false) @map("federated_identity")
   userActivity         UserActivity[]
   createdAt            DateTime              @default(now()) @map("created_at")
@@ -31,6 +32,8 @@ model User {
   phoneNumber          String?               @map("phone_number")
   verification         Verification?
   profilePicture       String?               @map("profile_picture")
+  confirmationPIN      String?               @map("confirmation_pin")
+  confirmed            Boolean               @default(false)
 }
 
 enum Role {

@@ -1,4 +1,4 @@
-import { WorkoutExercise } from '@fiu-fit/common';
+import { Category, WorkoutExercise } from '@fiu-fit/common';
 import {
   IsArray,
   IsBoolean,
@@ -11,7 +11,6 @@ import {
   MaxLength,
   Min
 } from 'class-validator';
-import { Category } from '../interfaces';
 
 export class EditWorkoutDto {
   @IsString()
@@ -53,7 +52,6 @@ export class EditWorkoutDto {
   @IsOptional()
   authorId?: number;
 
-  @IsOptional()
   @IsOptional()
   updatedAt?: Date;
 
