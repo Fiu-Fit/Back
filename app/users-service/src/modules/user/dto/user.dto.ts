@@ -9,7 +9,8 @@ export interface UserDTO {
   role: Role;
   bodyWeight: number;
   interests: Category[];
-  coordinates: [number, number];
-  phoneNumber?: string;
-  profilePicture?: string;
+  coordinates?: [number, number];
+  phoneNumber: string;
+  deviceToken: string;
+  profilePicture: string;
 }
