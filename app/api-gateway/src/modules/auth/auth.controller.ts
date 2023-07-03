@@ -10,7 +10,12 @@ import {
 } from '@nestjs/common';
 import { catchError, firstValueFrom } from 'rxjs';
 import { axiosErrorCatcher } from '../../shared/axios-error-catcher';
-import { LoginRequest, RegisterRequest, ResetPasswordRequest } from './dto';
+import {
+  AdminRegisterRequest,
+  LoginRequest,
+  RegisterRequest,
+  ResetPasswordRequest
+} from './dto';
 import { Token } from './interfaces/auth.interface';
 
 @Injectable()
@@ -55,7 +60,7 @@ export class AuthController {
   @Post('admin/register')
   async adminRegister(
     @Headers('Authorization') authToken: string,
-    @Body() newUser: RegisterRequest
+    @Body() newUser: AdminRegisterRequest
   ): Promise<Token> {
     const { data } = await firstValueFrom(
       this.httpService

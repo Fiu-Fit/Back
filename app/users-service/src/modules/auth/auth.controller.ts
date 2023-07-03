@@ -39,7 +39,13 @@ export class AuthController {
   adminRegister(
     @Body() newUser: AdminRegisterRequest
   ): Promise<{ token: string }> {
-    return this.authService.register(newUser);
+    const registerRequest: RegisterRequest = {
+      ...newUser,
+      role:        Role.Admin,
+      bodyWeight:  -1,
+      phoneNumber: ''
+    };
+    return this.authService.register(registerRequest);
   }
 
   @Post('admin/login')

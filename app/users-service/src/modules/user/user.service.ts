@@ -291,7 +291,7 @@ export class UserService {
     );
   }
 
-  async editUser(id: number, user: UserDTO): Promise<User> {
+  async editUser(id: number, user: Partial<UserDTO>): Promise<User> {
     const { coordinates, ...rest } = user;
 
     if (coordinates) {
