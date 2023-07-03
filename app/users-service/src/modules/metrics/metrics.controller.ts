@@ -1,6 +1,10 @@
 import { Body, Controller, Get, Post, Query, UseGuards } from '@nestjs/common';
 import { AdminGuard } from '../auth/admin.guard';
-import { GetAuthMetricsQueryDTO, GetUserMetricsQueryDTO } from './dto';
+import {
+  GetAuthMetricsQueryDTO,
+  GetBlockedMetricsQueryDTO,
+  GetUserMetricsQueryDTO
+} from './dto';
 import { TrainerMetrics } from './interfaces';
 import { MetricsService } from './metrics.service';
 
@@ -39,5 +43,12 @@ export class MetricsController {
     @Query() filter: GetUserMetricsQueryDTO
   ): Promise<TrainerMetrics> {
     return this.metricsService.getTrainerMetrics(filter);
+  }
+
+  @Get('blocked')
+  getBlockedUsersMetrics(
+    @Query() filter: GetBlockedMetricsQueryDTO
+  ): Promise<number[]> {
+    return this.metricsService.getBlockedUsersMetrics(filter);
   }
 }

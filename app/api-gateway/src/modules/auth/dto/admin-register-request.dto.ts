@@ -1,14 +1,4 @@
-import {
-  Equals,
-  IsEmail,
-  IsEnum,
-  IsNotEmpty,
-  IsNumber,
-  IsString
-} from 'class-validator';
-import { Role } from '../../user/interfaces/user.interface';
-
-const ADMIN_DEFAULT_BODY_WEIGHT = -1;
+import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
 
 export class AdminRegisterRequest {
   @IsString()
@@ -26,12 +16,4 @@ export class AdminRegisterRequest {
   @IsString()
   @IsNotEmpty()
   password: string;
-
-  @IsEnum(Role)
-  @Equals(Role.Admin)
-  role: Role = Role.Admin;
-
-  @IsNumber()
-  @Equals(ADMIN_DEFAULT_BODY_WEIGHT)
-  bodyWeight: number = -1;
 }

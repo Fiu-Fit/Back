@@ -261,19 +261,30 @@ export class UserService {
   ): Promise<Array<Page<User>> | Page<User>> {
     const pages = [];
     const endDate = new Date(year, 1, 1);
+    const currentDate = new Date();
 
     for (let i = 0; i < 12; i++) {
+      if (endDate.getMonth() > currentDate.getMonth() + 1) {
+        break;
+      }
+
       const page = await this.getUsersWhoFavoritedWorkoutPage(
         workoutId,
         undefined,
         endDate
       );
+
       pages.push(page);
 
       endDate.setMonth(endDate.getMonth() + 1);
     }
 
-    return pages;
+    const padding = Array(12 - pages.length).fill({
+      rows:  [],
+      count: 0
+    });
+
+    return pages.concat(padding);
   }
 
   getUsersWhoFavoritedWorkout(
@@ -291,7 +302,7 @@ export class UserService {
     );
   }
 
-  async editUser(id: number, user: UserDTO): Promise<User> {
+  async editUser(id: number, user: Partial<UserDTO>): Promise<User> {
     const { coordinates, ...rest } = user;
 
     if (coordinates) {

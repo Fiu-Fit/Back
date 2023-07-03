@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Patch,
   Post,
   UnauthorizedException,
   UseGuards
@@ -38,7 +39,13 @@ export class AuthController {
   adminRegister(
     @Body() newUser: AdminRegisterRequest
   ): Promise<{ token: string }> {
-    return this.authService.register(newUser);
+    const registerRequest: RegisterRequest = {
+      ...newUser,
+      role:        Role.Admin,
+      bodyWeight:  -1,
+      phoneNumber: ''
+    };
+    return this.authService.register(registerRequest);
   }
 
   @Post('admin/login')
@@ -54,5 +61,13 @@ export class AuthController {
   @Post('password-reset')
   async resetPassword(@Body() body: ResetPasswordRequest) {
     await this.authService.resetPassword(body.email);
+  }
+
+  @Patch('confirm-registration')
+  confirmRegistration(
+    @Body('confirmationPIN') confirmationPIN: string,
+    @Body('userId') userId: number
+  ) {
+    return this.authService.confirmRegistration(userId, confirmationPIN);
   }
 }

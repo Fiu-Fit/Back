@@ -13,10 +13,12 @@ import {
   signInWithEmailAndPassword,
   signOut
 } from 'firebase/auth';
+import { Twilio } from 'twilio';
 import { firebaseApp } from '../../firebase/firebase';
 import { PrismaService } from '../../prisma.service';
 import { UserService } from '../user/user.service';
-import { AdminRegisterRequest, LoginRequest, RegisterRequest } from './dto';
+import { LoginRequest, RegisterRequest } from './dto';
+import { Token } from './interfaces/auth.interface';
 
 @Injectable()
 export class AuthService {
@@ -25,12 +27,10 @@ export class AuthService {
     private userService: UserService
   ) {}
 
-  async register(
-    newUser: RegisterRequest | AdminRegisterRequest
-  ): Promise<{ token: string }> {
+  async register(newUser: RegisterRequest): Promise<Token> {
     const auth = getAuth(firebaseApp);
     let userCredentials: UserCredential;
-    let token: string;
+    let token: string = '';
 
     try {
       userCredentials = await createUserWithEmailAndPassword(
@@ -39,12 +39,22 @@ export class AuthService {
         newUser.password
       );
       const { password, ...userData } = newUser;
+
+      const confirmationPIN = this.generateConfirmationPIN();
       await this.prismaService.user.create({
         data: {
           ...userData,
-          uid: userCredentials.user.uid
+          uid: userCredentials.user.uid,
+          confirmationPIN
         }
       });
+
+      if (userData.phoneNumber) {
+        await this.sendWhatsappNotification(
+          confirmationPIN,
+          userData.phoneNumber
+        );
+      }
 
       token = await userCredentials.user.getIdToken();
     } catch (error: any) {
@@ -67,7 +77,7 @@ export class AuthService {
     return { token };
   }
 
-  async login(loginInfo: LoginRequest): Promise<{ token: string }> {
+  async login(loginInfo: LoginRequest): Promise<Token> {
     const token = await this.getUserToken(loginInfo);
     const user = await this.userService.getUserByToken(token);
 
@@ -83,12 +93,19 @@ export class AuthService {
       });
     }
 
+    if (!user.confirmed && user.phoneNumber && !user.confirmationPIN) {
+      const confirmationPIN = this.generateConfirmationPIN();
+      await this.sendWhatsappNotification(confirmationPIN, user.phoneNumber);
+
+      await this.userService.editUser(user.id, { confirmationPIN });
+    }
+
     await this.updateLoginTime(user.id);
 
     return { token };
   }
 
-  async adminLogin(loginInfo: LoginRequest): Promise<{ token: string }> {
+  async adminLogin(loginInfo: LoginRequest): Promise<Token> {
     const token = await this.getUserToken(loginInfo);
     const user = await this.userService.getUserByToken(token);
 
@@ -164,5 +181,41 @@ export class AuthService {
         createdAt: new Date()
       }
     });
+  }
+
+  sendWhatsappNotification(confirmationPIN: string, phoneNumber: string) {
+    const accountSid = process.env.TWILIO_ACCOUNT_SID;
+    const authToken = process.env.TWILIO_AUTH_TOKEN;
+    const client = new Twilio(accountSid, authToken);
+
+    client.messages
+      .create({
+        body: `Tu codigo de confirmacion es: ${confirmationPIN}`,
+        from: 'whatsapp:+14155238886',
+        to:   'whatsapp:' + phoneNumber
+      })
+      .then((message: { sid: any }) => console.log(message.sid));
+
+    console.log('Whatsapp notification sent succesfully!');
+  }
+
+  generateConfirmationPIN() {
+    return Math.floor(100000 + Math.random() * 900000).toString();
+  }
+
+  async confirmRegistration(
+    userId: number,
+    confirmationPIN: string
+  ): Promise<void> {
+    const user = await this.userService.getUserById(userId);
+
+    if (!user) throw new BadRequestException('Usuario no existe');
+
+    if (user.confirmed) throw new BadRequestException('Usuario ya confirmado');
+
+    if (user.confirmationPIN !== confirmationPIN)
+      throw new BadRequestException('Codigo de confirmacion incorrecto');
+
+    await this.userService.editUser(userId, { confirmed: true });
   }
 }
