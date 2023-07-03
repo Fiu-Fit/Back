@@ -116,6 +116,8 @@ describe('UserService', () => {
       prisma.user.findMany.mockResolvedValueOnce(users);
       prisma.user.count.mockResolvedValueOnce(users.length);
 
+      prisma.user.findMany.mockReset();
+
       const result = await userService.findAndCount({ params: '' });
 
       expect(result).toStrictEqual(page);
@@ -131,6 +133,8 @@ describe('UserService', () => {
       ];
 
       assertFind(users);
+
+      jest.clearAllMocks();
     });
 
     it('Empty array doesnt throw error', () => {
@@ -241,9 +245,10 @@ describe('UserService', () => {
     it('Should update User', async () => {
       const editedUser: UserDTO = {
         ...defaultUser,
-        firstName:      'edited',
-        phoneNumber:    'test',
-        profilePicture: 'test'
+        confirmationPIN: '',
+        firstName:       'edited',
+        phoneNumber:     'test',
+        profilePicture:  'test'
       };
 
       prisma.user.update.mockResolvedValueOnce({
@@ -266,6 +271,62 @@ describe('UserService', () => {
       const result = await userService.deleteUser(defaultUser.id);
 
       expect(result).toStrictEqual(defaultUser);
+    });
+  });
+
+  describe('getNearestTrainers', () => {
+    it('Should return trainers', async () => {
+      const users: User[] = [
+        {
+          ...defaultUser,
+          id:   2,
+          role: Role.Trainer
+        },
+        {
+          ...defaultUser,
+          id:   3,
+          role: Role.Trainer
+        }
+      ];
+
+      prisma.user.findMany.mockResolvedValueOnce(users);
+
+      const userLocations = [
+        {
+          id:       'test',
+          userId:   1,
+          location: { coordinates: [0, 0], type: 'Point' }
+        },
+        {
+          id:       'test',
+          userId:   2,
+          location: { coordinates: [0, 0], type: 'Point' }
+        },
+        {
+          id:       'test',
+          userId:   3,
+          location: { coordinates: [0, 0], type: 'Point' }
+        }
+      ];
+
+      jest
+        .spyOn(userLocationService, 'findNearestUsers')
+        .mockResolvedValueOnce(userLocations);
+
+      const result = await userService.getNearestTrainers(defaultUser.id, 100);
+
+      expect(result).toStrictEqual(users);
+      expect(prisma.user.findMany).toBeCalledWith({
+        where: {
+          id: {
+            in: users.map(user => user.id)
+          },
+          role: Role.Trainer
+        },
+        include: {
+          verification: true
+        }
+      });
     });
   });
 });
