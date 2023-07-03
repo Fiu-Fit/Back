@@ -4,7 +4,11 @@ import { Body, Controller, Get, Headers, Post, Query } from '@nestjs/common';
 import { catchError, firstValueFrom } from 'rxjs';
 import { axiosErrorCatcher } from '../../shared/axios-error-catcher';
 import { User } from '../user/interfaces/user.interface';
-import { GetAuthMetricsQueryDTO, GetUserMetricsQueryDTO } from './dto';
+import {
+  GetAuthMetricsQueryDTO,
+  GetBlockedMetricsQueryDTO,
+  GetUserMetricsQueryDTO
+} from './dto';
 
 @Controller('metrics')
 export class MetricsController {
@@ -86,6 +90,23 @@ export class MetricsController {
       this.httpService
         .post(`${this.entityName}/login`, {
           uid
+        })
+        .pipe(catchError(axiosErrorCatcher))
+    );
+
+    return data;
+  }
+
+  @Get('blocked')
+  async getBlockedUsersMetrics(
+    @Headers('Authorization') authToken: string,
+    @Query() filter: GetBlockedMetricsQueryDTO
+  ) {
+    const { data } = await firstValueFrom(
+      this.httpService
+        .get<Page<User>>(`${this.entityName}/blocked`, {
+          params:  filter,
+          headers: { Authorization: authToken }
         })
         .pipe(catchError(axiosErrorCatcher))
     );
