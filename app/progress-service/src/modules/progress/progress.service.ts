@@ -67,7 +67,10 @@ export class ProgressService {
         }
       )
     );
-    return Math.round((METValue * 3.5 * bodyWeight) / (200 * 60)) * timeSpent;
+
+    const burntCalories =
+      ((METValue * 3.5 * bodyWeight) / (200 * 60)) * timeSpent;
+    return Math.round((burntCalories + Number.EPSILON) * 10) / 10;
   }
 
   async createProgressMetric(data: ProgressMetricDTO): Promise<ProgressMetric> {
@@ -283,17 +286,17 @@ export class ProgressService {
       0
     );
 
-    logger.debug('User progress: ', {
+    logger.info('User progress: ', {
       traveledDistance,
-      timeSpent:         Math.round(timeSpent / 60), // in minutes
-      burntCalories:     Math.round(burntCalories),
+      timeSpent:         Math.round((timeSpent / 60 + Number.EPSILON) * 10) / 10,
+      burntCalories:     Math.round((burntCalories + Number.EPSILON) * 10) / 10,
       numberOfExercises: metrics.count
     });
 
     return {
       traveledDistance,
-      timeSpent:         Math.round(timeSpent / 60), // in minutes
-      burntCalories:     Math.round(burntCalories),
+      timeSpent:         Math.round((timeSpent / 60 + Number.EPSILON) * 10) / 10, // in minutes
+      burntCalories:     Math.round((burntCalories + Number.EPSILON) * 10) / 10,
       numberOfExercises: metrics.count
     };
   }
