@@ -17,7 +17,7 @@ import { Twilio } from 'twilio';
 import { firebaseApp } from '../../firebase/firebase';
 import { PrismaService } from '../../prisma.service';
 import { UserService } from '../user/user.service';
-import { AdminRegisterRequest, LoginRequest, RegisterRequest } from './dto';
+import { LoginRequest, RegisterRequest } from './dto';
 import { Token } from './interfaces/auth.interface';
 
 @Injectable()
@@ -27,9 +27,7 @@ export class AuthService {
     private userService: UserService
   ) {}
 
-  async register(
-    newUser: RegisterRequest | AdminRegisterRequest
-  ): Promise<Token> {
+  async register(newUser: RegisterRequest): Promise<Token> {
     const auth = getAuth(firebaseApp);
     let userCredentials: UserCredential;
     let token: string = '';
