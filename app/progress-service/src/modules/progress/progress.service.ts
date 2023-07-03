@@ -289,14 +289,14 @@ export class ProgressService {
     logger.info('User progress: ', {
       traveledDistance,
       timeSpent:         Math.round((timeSpent / 60 + Number.EPSILON) * 10) / 10,
-      burntCalories,
+      burntCalories:     Math.round((burntCalories + Number.EPSILON) * 10) / 10,
       numberOfExercises: metrics.count
     });
 
     return {
       traveledDistance,
       timeSpent:         Math.round((timeSpent / 60 + Number.EPSILON) * 10) / 10, // in minutes
-      burntCalories,
+      burntCalories:     Math.round((burntCalories + Number.EPSILON) * 10) / 10,
       numberOfExercises: metrics.count
     };
   }
