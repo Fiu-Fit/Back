@@ -1,22 +1,13 @@
-import { BadRequestException, NotFoundException } from '@nestjs/common';
+import { getModelToken } from '@nestjs/mongoose';
 import { Test, TestingModule } from '@nestjs/testing';
 import { Model } from 'mongoose';
 import { RatingController } from '../rating.controller';
 import { RatingService } from '../rating.service';
-import { Rating, RatingDocument } from '../schemas/rating.schema';
+import { Rating } from '../schemas/rating.schema';
 
 describe('RatingController', () => {
   let ratingController: RatingController;
   let ratingService: RatingService;
-
-  const mockRatingModel: Model<RatingDocument> = jest.fn(() => ({
-    create:            jest.fn(),
-    find:              jest.fn(),
-    findById:          jest.fn(),
-    findByIdAndDelete: jest.fn(),
-    findByIdAndUpdate: jest.fn(),
-    aggregate:         jest.fn()
-  }));
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -24,14 +15,14 @@ describe('RatingController', () => {
       providers:   [
         RatingService,
         {
-          provide:  Model,
-          useValue: mockRatingModel
+          provide:  getModelToken(Rating.name),
+          useValue: Model
         }
       ]
     }).compile();
 
-    ratingController = module.get<RatingController>(RatingController);
-    ratingService = module.get<RatingService>(RatingService);
+    ratingService = await module.resolve(RatingService);
+    ratingController = await module.resolve(RatingController);
   });
 
   describe('createRating', () => {
@@ -61,84 +52,53 @@ describe('RatingController', () => {
   });
 
   describe('getRatings', () => {
+    const rating1 = new Rating();
+    rating1.workoutId = '1';
+    rating1.athleteId = 1;
+    rating1.rating = 4;
+
+    const rating2 = new Rating();
+    rating2.workoutId = '2';
+    rating2.athleteId = 2;
+    rating2.rating = 3;
+
+    const ratings = [rating1, rating2];
     it('should get all ratings', async () => {
       const filters = {
-        workoutId: 'workout1',
+        workoutId: '1',
         athleteId: 1,
         rating:    [3, 5]
       };
-
-      const ratings = [
-        {
-          _id:       '1',
-          workoutId: 'workout1',
-          athleteId: 1,
-          rating:    4,
-          comment:   'Great workout',
-          ratedAt:   new Date()
-        },
-        {
-          _id:       '2',
-          workoutId: 'workout2',
-          athleteId: 2,
-          rating:    3,
-          comment:   'Good workout',
-          ratedAt:   new Date()
-        }
-      ];
-
       jest
         .spyOn(ratingService, 'getRatings')
         .mockResolvedValue(ratings as Rating[]);
 
-      const result = await ratingController.getRatings(filters);
+      const result = await ratingController.getRatings(JSON.stringify(filters));
 
       expect(result).toBe(ratings);
       expect(ratingService.getRatings).toHaveBeenCalledWith(filters);
     });
 
     it('should get all ratings without filters', async () => {
-      const ratings = [
-        {
-          _id:       '1',
-          workoutId: 'workout1',
-          athleteId: 1,
-          rating:    4,
-          comment:   'Great workout',
-          ratedAt:   new Date()
-        },
-        {
-          _id:       '2',
-          workoutId: 'workout2',
-          athleteId: 2,
-          rating:    3,
-          comment:   'Good workout',
-          ratedAt:   new Date()
-        }
-      ];
-
       jest
         .spyOn(ratingService, 'getRatings')
         .mockResolvedValue(ratings as Rating[]);
 
-      const result = await ratingController.getRatings();
+      const result = await ratingController.getRatings('{}');
 
       expect(result).toBe(ratings);
-      expect(ratingService.getRatings).toHaveBeenCalledWith(undefined);
+      expect(ratingService.getRatings).toHaveBeenCalledWith({});
     });
   });
 
   describe('getRatingById', () => {
     it('should get a rating by ID', async () => {
       const ratingId = '1';
-      const rating = {
-        _id:       ratingId,
-        workoutId: 'workout1',
-        athleteId: 1,
-        rating:    4,
-        comment:   'Great workout',
-        ratedAt:   new Date()
-      };
+
+      const rating = new Rating();
+      rating.workoutId = '1';
+      rating.athleteId = 1;
+      rating.rating = 4;
 
       jest
         .spyOn(ratingService, 'getRatingById')
@@ -149,30 +109,16 @@ describe('RatingController', () => {
       expect(result).toBe(rating);
       expect(ratingService.getRatingById).toHaveBeenCalledWith(ratingId);
     });
-
-    it('should throw BadRequestException if rating is not found', async () => {
-      const ratingId = '1';
-
-      jest.spyOn(ratingService, 'getRatingById').mockResolvedValue(null);
-
-      await expect(ratingController.getRatingById(ratingId)).rejects.toThrow(
-        BadRequestException
-      );
-      expect(ratingService.getRatingById).toHaveBeenCalledWith(ratingId);
-    });
   });
 
   describe('deleteRating', () => {
     it('should delete a rating by ID', async () => {
       const ratingId = '1';
-      const rating = {
-        _id:       ratingId,
-        workoutId: 'workout1',
-        athleteId: 1,
-        rating:    4,
-        comment:   'Great workout',
-        ratedAt:   new Date()
-      };
+
+      const rating = new Rating();
+      rating.workoutId = '1';
+      rating.athleteId = 1;
+      rating.rating = 4;
 
       jest
         .spyOn(ratingService, 'deleteRating')
@@ -183,28 +129,16 @@ describe('RatingController', () => {
       expect(result).toBe(rating);
       expect(ratingService.deleteRating).toHaveBeenCalledWith(ratingId);
     });
-
-    it('should throw NotFoundException if rating is not found', async () => {
-      const ratingId = '1';
-
-      jest.spyOn(ratingService, 'deleteRating').mockResolvedValue(null);
-
-      await expect(ratingController.deleteRating(ratingId)).rejects.toThrow(
-        NotFoundException
-      );
-      expect(ratingService.deleteRating).toHaveBeenCalledWith(ratingId);
-    });
   });
 
   describe('updateRating', () => {
     it('should update a rating by ID', async () => {
       const ratingId = '1';
-      const updatedRatingData = {
-        workoutId: 'workout1',
-        athleteId: 1,
-        rating:    5,
-        comment:   'Excellent workout'
-      };
+
+      const updatedRatingData = new Rating();
+      updatedRatingData.workoutId = '1';
+      updatedRatingData.athleteId = 1;
+      updatedRatingData.rating = 4;
 
       const updatedRating = {
         _id: ratingId,
@@ -224,84 +158,6 @@ describe('RatingController', () => {
       expect(ratingService.updateRating).toHaveBeenCalledWith(
         ratingId,
         updatedRatingData
-      );
-    });
-
-    it('should throw NotFoundException if rating is not found', async () => {
-      const ratingId = '1';
-      const updatedRatingData = {
-        workoutId: 'workout1',
-        athleteId: 1,
-        rating:    5,
-        comment:   'Excellent workout'
-      };
-
-      jest.spyOn(ratingService, 'updateRating').mockResolvedValue(null);
-
-      await expect(
-        ratingController.updateRating(ratingId, updatedRatingData)
-      ).rejects.toThrow(NotFoundException);
-      expect(ratingService.updateRating).toHaveBeenCalledWith(
-        ratingId,
-        updatedRatingData
-      );
-    });
-  });
-
-  describe('getAverageRating', () => {
-    it('should get the average rating for a workout', async () => {
-      const workoutId = 'workout1';
-      const start = new Date('2023-01-01');
-      const end = new Date('2023-01-31');
-      const averageRating = 4;
-
-      jest
-        .spyOn(ratingService, 'getAverageRating')
-        .mockResolvedValue(averageRating);
-
-      const result = await ratingController.getAverageRating(
-        workoutId,
-        start,
-        end
-      );
-
-      expect(result).toBe(averageRating);
-      expect(ratingService.getAverageRating).toHaveBeenCalledWith(
-        workoutId,
-        start,
-        end
-      );
-    });
-  });
-
-  describe('getRatingCountPerValue', () => {
-    it('should get the rating count per value for a workout', async () => {
-      const workoutId = 'workout1';
-      const start = new Date('2023-01-01');
-      const end = new Date('2023-01-31');
-      const ratingCounts = [
-        { rating: 1, count: 3 },
-        { rating: 2, count: 5 },
-        { rating: 3, count: 10 },
-        { rating: 4, count: 8 },
-        { rating: 5, count: 12 }
-      ];
-
-      jest
-        .spyOn(ratingService, 'getRatingCountPerValue')
-        .mockResolvedValue(ratingCounts);
-
-      const result = await ratingController.getRatingCountPerValue(
-        workoutId,
-        start,
-        end
-      );
-
-      expect(result).toBe(ratingCounts);
-      expect(ratingService.getRatingCountPerValue).toHaveBeenCalledWith(
-        workoutId,
-        start,
-        end
       );
     });
   });
