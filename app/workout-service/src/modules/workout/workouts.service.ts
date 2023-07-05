@@ -134,6 +134,14 @@ export class WorkoutsService {
     return updatedWorkout;
   }
 
+  isFutureDate(date: Date, currentDate: Date): boolean {
+    return (
+      date.getFullYear() > currentDate.getFullYear() ||
+      (date.getFullYear() == currentDate.getFullYear() &&
+        date.getMonth() > currentDate.getMonth() + 1)
+    );
+  }
+
   async getWorkoutMetrics(
     id: string,
     filters: WorkoutMetricsFilterDto
@@ -169,7 +177,7 @@ export class WorkoutsService {
     const currentDate = new Date();
 
     for (let i = 0; i < 12; i++) {
-      if (endDate.getMonth() > currentDate.getMonth() + 1) {
+      if (this.isFutureDate(endDate, currentDate)) {
         break;
       }
 

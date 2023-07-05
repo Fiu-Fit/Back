@@ -1,6 +1,4 @@
-import { HttpModule } from '@nestjs/axios';
 import { UnauthorizedException } from '@nestjs/common';
-import { getModelToken } from '@nestjs/mongoose';
 import { Test, TestingModule } from '@nestjs/testing';
 import {
   PrismaClient,
@@ -10,10 +8,8 @@ import {
   UserActivityType
 } from '@prisma/client';
 import { DeepMockProxy, mockDeep } from 'jest-mock-extended';
-import { Model } from 'mongoose';
 import { PrismaService } from '../../../prisma.service';
 import { UserDTO } from '../../user/dto';
-import { UserLocation } from '../../user-location/schema/user-location.schema';
 import { MetricsService } from '../metrics.service';
 
 const authMock = {
@@ -86,15 +82,7 @@ describe('MetricsService', () => {
 
   beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      imports:   [HttpModule],
-      providers: [
-        PrismaService,
-        MetricsService,
-        {
-          provide:  getModelToken(UserLocation.name),
-          useValue: Model
-        }
-      ]
+      providers: [PrismaService, MetricsService]
     })
       .overrideProvider(PrismaService)
       .useValue(mockDeep<PrismaClient>())

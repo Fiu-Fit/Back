@@ -24,7 +24,7 @@ export class VerificationService {
   updateVerification(
     id: number,
     verification: EditVerificationDto
-  ): Promise<Verification> {
+  ): Promise<Verification | null> {
     return this.prismaService.verification.update({
       where: { id },
       data:  verification
@@ -39,9 +39,12 @@ export class VerificationService {
         where: { status }
       }
     );
+    const count = await this.prismaService.verification.count({
+      where: { status }
+    });
     return {
       rows:  verificationRequests,
-      count: verificationRequests.length
+      count: count
     };
   }
 
