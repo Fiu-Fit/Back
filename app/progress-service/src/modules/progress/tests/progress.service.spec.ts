@@ -234,42 +234,6 @@ describe('ProgressService', () => {
     });
   });
 
-  // describe('updateMetricWithSameExercise', () => {
-  //   it('Should update Progress metric', async () => {
-  //     const metric: ProgressMetric = {
-  //       ...defaultProgressMetric
-  //     };
-
-  //     const editedMetric: ProgressMetric = {
-  //       id:            1,
-  //       timeSpent:     120,
-  //       value:         100,
-  //       unit:          Unit.REPETITIONS,
-  //       burntCalories: 140,
-  //       updatedAt:     new Date(),
-  //       userId:        1,
-  //       exerciseId:    '64a1f222926f9054816becbd'
-  //     };
-
-  //     prisma.progressMetric.findUnique.mockResolvedValueOnce(metric);
-
-  //     const result = await progressService.updateMetricWithSameExercise(
-  //       {
-  //         exerciseId:  '64a1f222926f9054816becbd',
-  //         sets:        1,
-  //         reps:        20,
-  //         unit:        Unit.REPETITIONS,
-  //         repDuration: 1
-  //       },
-  //       1,
-  //       Unit.REPETITIONS
-  //     );
-
-  //     expect(result).toEqual(editedMetric);
-
-  //   });
-  // });
-
   describe('completeWorkout', () => {
     it('Should create many Progress Metrics', async () => {
       const progressMetrics = [
