@@ -14,11 +14,11 @@ import { ObjectId } from 'mongodb';
 import { EditWorkoutDto, WorkoutMetricsFilterDto } from './dto';
 import { WorkoutDto } from './dto/workout.dto';
 import { Workout } from './schemas/workout.schema';
-import { WorkoutsService } from './workouts.service';
+import { WorkoutService } from './workouts.service';
 
 @Controller('workouts')
 export class WorkoutsController {
-  constructor(private workoutsService: WorkoutsService) {}
+  constructor(private workoutsService: WorkoutService) {}
 
   @Get()
   getWorkouts(
