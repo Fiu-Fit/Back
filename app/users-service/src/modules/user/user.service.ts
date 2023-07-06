@@ -384,7 +384,9 @@ export class UserService {
     return this.prismaService.user.findMany({
       where: {
         id: {
-          in: nearestUsers.map(userLocation => userLocation.userId)
+          in: nearestUsers
+            .filter(user => user.userId != userId)
+            .map(userLocation => userLocation.userId)
         },
         role: Role.Trainer
       },
