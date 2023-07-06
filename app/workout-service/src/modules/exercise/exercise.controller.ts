@@ -23,8 +23,8 @@ export class ExerciseController {
 
   @Get()
   getExercises(
-    @Query('q') q: string,
-    @Query('filters') filters: string
+    @Query('q') q?: string,
+    @Query('filters') filters?: string
   ): Promise<Exercise[]> {
     const parsedFilters: Record<string, string> = filters
       ? JSON.parse(filters)
@@ -49,17 +49,5 @@ export class ExerciseController {
   @Delete(':id')
   deleteExercise(@Param('id') id: string): Promise<Exercise> {
     return this.exerciseService.deleteExercise(id);
-  }
-
-  @Get('name/:name')
-  getExerciseByName(@Param('name') name: string): Promise<Exercise> {
-    return this.exerciseService.getExerciseByName(name);
-  }
-
-  @Get('category/:category')
-  getExerciseByCategory(
-    @Param('category') category: string
-  ): Promise<Exercise[]> {
-    return this.exerciseService.getExerciseByCategory(category);
   }
 }

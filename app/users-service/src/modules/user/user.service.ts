@@ -114,7 +114,7 @@ export class UserService {
     });
 
     if (!user) {
-      throw new NotFoundException({ message: 'User not found' });
+      throw new NotFoundException({ message: 'Usuario no encontrado' });
     }
 
     return {
