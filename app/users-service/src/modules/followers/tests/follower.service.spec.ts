@@ -93,12 +93,10 @@ describe('FollowerService', () => {
         count: 3
       };
 
-      jest
-        .spyOn(prisma.user, 'findUnique')
-        .mockResolvedValue({
-          ...defaultUser,
-          followers: followers.rows as any
-        });
+      jest.spyOn(prisma.user, 'findUnique').mockResolvedValue({
+        ...defaultUser,
+        followers: followers.rows as any
+      });
 
       jest
         .spyOn(userService, 'findAndCount')

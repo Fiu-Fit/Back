@@ -80,7 +80,7 @@ export class RatingService {
     });
 
     if (!ratings) {
-      throw new BadRequestException('No ratings found');
+      return 0;
     }
     return Math.round(sumBy(ratings, 'rating') / ratings.length);
   }

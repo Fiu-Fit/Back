@@ -5,7 +5,7 @@ import { RatingService } from '../ratings/rating.service';
 import { Rating, RatingSchema } from '../ratings/schemas/rating.schema';
 import { Workout, WorkoutSchema } from './schemas/workout.schema';
 import { WorkoutsController } from './workouts.controllers';
-import { WorkoutsService } from './workouts.service';
+import { WorkoutService } from './workouts.service';
 
 @Module({
   imports: [
@@ -15,8 +15,8 @@ import { WorkoutsService } from './workouts.service';
     ]),
     HttpModule
   ],
-  exports:     [WorkoutsService],
+  exports:     [WorkoutService],
   controllers: [WorkoutsController],
-  providers:   [WorkoutsService, RatingService]
+  providers:   [WorkoutService, RatingService]
 })
 export class WorkoutsModule {}

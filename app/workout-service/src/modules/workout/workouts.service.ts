@@ -17,7 +17,7 @@ import { WorkoutDto } from './dto/workout.dto';
 import { Workout } from './schemas/workout.schema';
 
 @Injectable()
-export class WorkoutsService {
+export class WorkoutService {
   constructor(
     @InjectModel(Workout.name)
     private workoutModel: Model<Workout>,
@@ -122,7 +122,6 @@ export class WorkoutsService {
   }
 
   async updateWorkout(id: string, workout: EditWorkoutDto): Promise<Workout> {
-    console.log(workout);
     const updatedWorkout = await this.workoutModel.findByIdAndUpdate(
       { _id: id },
       { $set: workout },
@@ -169,6 +168,8 @@ export class WorkoutsService {
       )
     );
 
+    console.log('favoritedBy', favoritedBy);
+
     const year = filters.year || new Date().getFullYear();
     const ratings: RatingCount[][] = [];
     const averageRatings: number[] = [];
@@ -186,6 +187,7 @@ export class WorkoutsService {
         undefined,
         endDate
       );
+      console.log('rating per value array: ', rating);
       const averageRating = await this.ratingService.getAverageRating(
         id,
         undefined,
@@ -215,6 +217,8 @@ export class WorkoutsService {
         favoriteCount: count
       };
     });
+    console.log('metrics', metrics);
+    console.log('metrics length', metrics.length);
 
     return metrics;
   }
