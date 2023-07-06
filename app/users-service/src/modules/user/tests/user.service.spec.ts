@@ -313,236 +313,230 @@ describe('UserService', () => {
         userService.addFavoriteWorkout(defaultUser.id, workoutId)
       ).rejects.toThrow(NotFoundException);
     });
+  });
 
-    describe('getUsersWhoFavoritedWorkout', () => {
-      it('Should return users who favorited workout', async () => {
-        const workoutId = 'testWorkoutId';
-        const users = [
-          defaultUser,
-          {
-            ...defaultUser,
-            id: 2
-          },
-          {
-            ...defaultUser,
-            id: 3
-          }
-        ];
-        const favoriteWorkouts = [
-          {
-            id:        1,
-            userId:    1,
-            workoutId,
-            createdAt: new Date(),
-            user:      users[0]
-          },
-          {
-            id:        3,
-            userId:    3,
-            workoutId,
-            createdAt: new Date(),
-            user:      users[2]
-          }
-        ] as unknown as FavoriteWorkout[];
-
-        prisma.favoriteWorkout.findMany.mockResolvedValueOnce(favoriteWorkouts);
-        prisma.favoriteWorkout.count.mockResolvedValueOnce(2);
-
-        const result = await userService.getUsersWhoFavoritedWorkout(workoutId);
-
-        expect(result).toStrictEqual({
-          rows:  [users[0], users[2]],
-          count: 2
-        });
-      });
-
-      it('Should return users who favorited workout per month', async () => {
-        const workoutId = 'testWorkoutId';
-        const users = [
-          defaultUser,
-          {
-            ...defaultUser,
-            id: 2
-          },
-          {
-            ...defaultUser,
-            id: 3
-          }
-        ];
-        const januaryFavoriteWorkouts = [
-          {
-            id:        1,
-            userId:    1,
-            workoutId,
-            createdAt: new Date('2021-01-01'),
-            user:      users[0]
-          }
-        ] as unknown as FavoriteWorkout[];
-        const februaryFavoriteWorkouts = [
-          {
-            id:        3,
-            userId:    3,
-            workoutId,
-            createdAt: new Date('2021-02-15'),
-            user:      users[2]
-          }
-        ] as unknown as FavoriteWorkout[];
-        const decemberFavoriteWorkouts = [
-          {
-            id:        2,
-            userId:    2,
-            workoutId,
-            createdAt: new Date('2021-12-25'),
-            user:      users[1]
-          }
-        ];
-
-        prisma.favoriteWorkout.findMany
-          .mockResolvedValueOnce(januaryFavoriteWorkouts)
-          .mockResolvedValueOnce(februaryFavoriteWorkouts)
-          .mockResolvedValueOnce([])
-          .mockResolvedValueOnce([])
-          .mockResolvedValueOnce([])
-          .mockResolvedValueOnce([])
-          .mockResolvedValueOnce([])
-          .mockResolvedValueOnce([])
-          .mockResolvedValueOnce([])
-          .mockResolvedValueOnce([])
-          .mockResolvedValueOnce([])
-          .mockResolvedValueOnce(decemberFavoriteWorkouts);
-        prisma.favoriteWorkout.count
-          .mockResolvedValueOnce(1)
-          .mockResolvedValueOnce(1)
-          .mockResolvedValueOnce(0)
-          .mockResolvedValueOnce(0)
-          .mockResolvedValueOnce(0)
-          .mockResolvedValueOnce(0)
-          .mockResolvedValueOnce(0)
-          .mockResolvedValueOnce(0)
-          .mockResolvedValueOnce(0)
-          .mockResolvedValueOnce(0)
-          .mockResolvedValueOnce(0)
-          .mockResolvedValueOnce(1);
-
-        const result = await userService.getUsersWhoFavoritedWorkout(
+  describe('getUsersWhoFavoritedWorkout', () => {
+    it('Should return users who favorited workout', async () => {
+      const workoutId = 'testWorkoutId';
+      const users = [
+        defaultUser,
+        {
+          ...defaultUser,
+          id: 2
+        },
+        {
+          ...defaultUser,
+          id: 3
+        }
+      ];
+      const favoriteWorkouts = [
+        {
+          id:        1,
+          userId:    1,
           workoutId,
-          {
-            year: 2021
-          }
-        );
-        const expected = [
-          {
-            rows:  [users[0]],
-            count: 1
-          },
-          {
-            rows:  [users[2]],
-            count: 1
-          },
-          {
-            rows:  [],
-            count: 0
-          },
-          {
-            rows:  [],
-            count: 0
-          },
-          {
-            rows:  [],
-            count: 0
-          },
-          {
-            rows:  [],
-            count: 0
-          },
-          {
-            rows:  [],
-            count: 0
-          },
-          {
-            rows:  [],
-            count: 0
-          },
-          {
-            rows:  [],
-            count: 0
-          },
-          {
-            rows:  [],
-            count: 0
-          },
-          {
-            rows:  [],
-            count: 0
-          },
-          {
-            rows:  [users[1]],
-            count: 1
-          }
-        ];
+          createdAt: new Date(),
+          user:      users[0]
+        },
+        {
+          id:        3,
+          userId:    3,
+          workoutId,
+          createdAt: new Date(),
+          user:      users[2]
+        }
+      ] as unknown as FavoriteWorkout[];
 
-        expect(result).toStrictEqual(expected);
-        expect(prisma.favoriteWorkout.findMany).toHaveBeenCalledTimes(12);
-        expect(prisma.favoriteWorkout.count).toHaveBeenCalledTimes(12);
+      prisma.favoriteWorkout.findMany.mockResolvedValueOnce(favoriteWorkouts);
+      prisma.favoriteWorkout.count.mockResolvedValueOnce(2);
+
+      const result = await userService.getUsersWhoFavoritedWorkout(workoutId);
+
+      expect(result).toStrictEqual({
+        rows:  [users[0], users[2]],
+        count: 2
       });
     });
 
-    describe('getNearestTrainers', () => {
-      it('Should return trainers', async () => {
-        const users: User[] = [
-          {
-            ...defaultUser,
-            id:   2,
-            role: Role.Trainer
+    it('Should return users who favorited workout per month', async () => {
+      const workoutId = 'testWorkoutId';
+      const users = [
+        defaultUser,
+        {
+          ...defaultUser,
+          id: 2
+        },
+        {
+          ...defaultUser,
+          id: 3
+        }
+      ];
+      const januaryFavoriteWorkouts = [
+        {
+          id:        1,
+          userId:    1,
+          workoutId,
+          createdAt: new Date('2021-01-01'),
+          user:      users[0]
+        }
+      ] as unknown as FavoriteWorkout[];
+      const februaryFavoriteWorkouts = [
+        {
+          id:        3,
+          userId:    3,
+          workoutId,
+          createdAt: new Date('2021-02-15'),
+          user:      users[2]
+        }
+      ] as unknown as FavoriteWorkout[];
+      const decemberFavoriteWorkouts = [
+        {
+          id:        2,
+          userId:    2,
+          workoutId,
+          createdAt: new Date('2021-12-25'),
+          user:      users[1]
+        }
+      ];
+
+      prisma.favoriteWorkout.findMany
+        .mockResolvedValueOnce(januaryFavoriteWorkouts)
+        .mockResolvedValueOnce(februaryFavoriteWorkouts)
+        .mockResolvedValueOnce([])
+        .mockResolvedValueOnce([])
+        .mockResolvedValueOnce([])
+        .mockResolvedValueOnce([])
+        .mockResolvedValueOnce([])
+        .mockResolvedValueOnce([])
+        .mockResolvedValueOnce([])
+        .mockResolvedValueOnce([])
+        .mockResolvedValueOnce([])
+        .mockResolvedValueOnce(decemberFavoriteWorkouts);
+      prisma.favoriteWorkout.count
+        .mockResolvedValueOnce(1)
+        .mockResolvedValueOnce(1)
+        .mockResolvedValueOnce(0)
+        .mockResolvedValueOnce(0)
+        .mockResolvedValueOnce(0)
+        .mockResolvedValueOnce(0)
+        .mockResolvedValueOnce(0)
+        .mockResolvedValueOnce(0)
+        .mockResolvedValueOnce(0)
+        .mockResolvedValueOnce(0)
+        .mockResolvedValueOnce(0)
+        .mockResolvedValueOnce(1);
+
+      const result = await userService.getUsersWhoFavoritedWorkout(workoutId, {
+        year: 2021
+      });
+      const expected = [
+        {
+          rows:  [users[0]],
+          count: 1
+        },
+        {
+          rows:  [users[2]],
+          count: 1
+        },
+        {
+          rows:  [],
+          count: 0
+        },
+        {
+          rows:  [],
+          count: 0
+        },
+        {
+          rows:  [],
+          count: 0
+        },
+        {
+          rows:  [],
+          count: 0
+        },
+        {
+          rows:  [],
+          count: 0
+        },
+        {
+          rows:  [],
+          count: 0
+        },
+        {
+          rows:  [],
+          count: 0
+        },
+        {
+          rows:  [],
+          count: 0
+        },
+        {
+          rows:  [],
+          count: 0
+        },
+        {
+          rows:  [users[1]],
+          count: 1
+        }
+      ];
+
+      expect(result).toStrictEqual(expected);
+      expect(prisma.favoriteWorkout.findMany).toHaveBeenCalledTimes(12);
+      expect(prisma.favoriteWorkout.count).toHaveBeenCalledTimes(12);
+    });
+  });
+
+  describe('getNearestTrainers', () => {
+    it('Should return trainers', async () => {
+      const users: User[] = [
+        {
+          ...defaultUser,
+          id:   2,
+          role: Role.Trainer
+        },
+        {
+          ...defaultUser,
+          id:   3,
+          role: Role.Trainer
+        }
+      ];
+
+      prisma.user.findMany.mockResolvedValueOnce(users);
+
+      const userLocations = [
+        {
+          id:       'test',
+          userId:   1,
+          location: { coordinates: [0, 0], type: 'Point' }
+        },
+        {
+          id:       'test',
+          userId:   2,
+          location: { coordinates: [0, 0], type: 'Point' }
+        },
+        {
+          id:       'test',
+          userId:   3,
+          location: { coordinates: [0, 0], type: 'Point' }
+        }
+      ];
+
+      jest
+        .spyOn(userLocationService, 'findNearestUsers')
+        .mockResolvedValueOnce(userLocations);
+
+      const result = await userService.getNearestTrainers(defaultUser.id, 100);
+
+      expect(result).toStrictEqual(users);
+      expect(prisma.user.findMany).toBeCalledWith({
+        where: {
+          id: {
+            in: users.map(user => user.id)
           },
-          {
-            ...defaultUser,
-            id:   3,
-            role: Role.Trainer
-          }
-        ];
-
-        prisma.user.findMany.mockResolvedValueOnce(users);
-
-        const userLocations = [
-          {
-            id:       'test',
-            userId:   1,
-            location: { coordinates: [0, 0], type: 'Point' }
-          },
-          {
-            id:       'test',
-            userId:   2,
-            location: { coordinates: [0, 0], type: 'Point' }
-          },
-          {
-            id:       'test',
-            userId:   3,
-            location: { coordinates: [0, 0], type: 'Point' }
-          }
-        ];
-
-        jest
-          .spyOn(userLocationService, 'findNearestUsers')
-          .mockResolvedValueOnce(userLocations);
-
-        const result = await userService.getNearestTrainers(
-          defaultUser.id,
-          100
-        );
-
-        expect(result).toStrictEqual(users);
-        expect(prisma.user.findMany).toBeCalledWith({
-          where: {
-            id: {
-              in: users.map(user => user.id)
-            },
-            role: Role.Trainer
-          },
-          include: {
-            verification: true
-          }
-        });
+          role: Role.Trainer
+        },
+        include: {
+          verification: true
+        }
       });
     });
   });

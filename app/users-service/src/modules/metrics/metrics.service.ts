@@ -98,7 +98,7 @@ export class MetricsService {
 
     if (user.blocked) throw new UnauthorizedException('Usuario esta bloqueado');
 
-    await this.prismaService.userActivity.create({
+    return this.prismaService.userActivity.create({
       data: {
         type:   UserActivityType.Login,
         userId: user.id

@@ -8,7 +8,7 @@ import {
   WorkoutExercise
 } from '@fiu-fit/common';
 import { HttpService } from '@nestjs/axios';
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { ProgressMetric, Unit } from '@prisma/client';
 import { firstValueFrom } from 'rxjs';
 import { PrismaService } from '../../prisma.service';
@@ -39,6 +39,8 @@ export class ProgressService {
       )
     );
 
+    console.log('Workout service: ', workoutService.data);
+
     const {
       data: { METValue }
     } = await firstValueFrom(
@@ -56,7 +58,6 @@ export class ProgressService {
       )
     );
 
-    logger.info('Getting bodyweight...');
     const {
       data: { bodyWeight }
     } = await firstValueFrom(
@@ -67,7 +68,11 @@ export class ProgressService {
         }
       )
     );
-    return Math.round((METValue * 3.5 * bodyWeight) / (200 * 60)) * timeSpent;
+    const burntCalories =
+      ((METValue * 3.5 * bodyWeight) / (200 * 60)) * timeSpent;
+    logger.info('Burnt calories: ', burntCalories);
+
+    return Math.round((burntCalories + Number.EPSILON) * 10) / 10;
   }
 
   async createProgressMetric(data: ProgressMetricDTO): Promise<ProgressMetric> {
@@ -109,12 +114,17 @@ export class ProgressService {
     };
   }
 
-  getProgressMetricById(id: number): Promise<ProgressMetric | null> {
-    return this.prisma.progressMetric.findUnique({
+  async getProgressMetricById(id: number): Promise<ProgressMetric | null> {
+    const metric = await this.prisma.progressMetric.findUnique({
       where: {
         id
       }
     });
+    if (!metric) {
+      throw new NotFoundException({ message: 'Metric not found' });
+    }
+
+    return metric;
   }
 
   async editProgressMetric(
@@ -196,7 +206,6 @@ export class ProgressService {
       }
 
       logger.info('Creating progress metric');
-      logger.info('repDuration: ', exercise.repDuration);
       const duration = exercise.repDuration ?? 1;
       const metric = await this.createProgressMetric({
         timeSpent:  duration * exercise.sets * exercise.reps,
@@ -283,17 +292,17 @@ export class ProgressService {
       0
     );
 
-    logger.debug('User progress: ', {
+    logger.info('User progress: ', {
       traveledDistance,
-      timeSpent:         Math.round(timeSpent / 60), // in minutes
-      burntCalories:     Math.round(burntCalories),
+      timeSpent:         Math.round((timeSpent / 60 + Number.EPSILON) * 10) / 10,
+      burntCalories:     Math.round((burntCalories + Number.EPSILON) * 10) / 10,
       numberOfExercises: metrics.count
     });
 
     return {
       traveledDistance,
-      timeSpent:         Math.round(timeSpent / 60), // in minutes
-      burntCalories:     Math.round(burntCalories),
+      timeSpent:         Math.round((timeSpent / 60 + Number.EPSILON) * 10) / 10, // in minutes
+      burntCalories:     Math.round((burntCalories + Number.EPSILON) * 10) / 10,
       numberOfExercises: metrics.count
     };
   }

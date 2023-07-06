@@ -238,7 +238,13 @@ export class UserService {
           lt:  end
         }
       },
-      select: { user: true }
+      select: {
+        user: {
+          include: {
+            verification: true
+          }
+        }
+      }
     });
 
     return {
