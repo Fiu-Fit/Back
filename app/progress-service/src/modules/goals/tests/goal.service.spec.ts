@@ -28,8 +28,9 @@ describe('GoalService', () => {
 
   const defaultGoal: Omit<Goal, 'createdAt'> = {
     ...newGoal,
-    id:     1,
-    status: GoalStatus.InProgress
+    id:         1,
+    status:     GoalStatus.InProgress,
+    multimedia: []
   };
 
   beforeAll(async () => {
@@ -87,7 +88,8 @@ describe('GoalService', () => {
           deadline:    new Date(),
           createdAt:   new Date(),
           userId:      1,
-          exerciseId:  'test'
+          exerciseId:  'test',
+          multimedia:  []
         },
         {
           id:          2,
@@ -98,7 +100,8 @@ describe('GoalService', () => {
           deadline:    new Date(),
           createdAt:   new Date(),
           userId:      1,
-          exerciseId:  'test'
+          exerciseId:  'test',
+          multimedia:  []
         }
       ];
 
@@ -160,7 +163,8 @@ describe('GoalService', () => {
         deadline:    new Date(),
         createdAt:   new Date(),
         userId:      1,
-        exerciseId:  '5t432'
+        exerciseId:  '5t432',
+        multimedia:  []
       };
 
       prisma.goal.update.mockResolvedValueOnce(editedGoal);
